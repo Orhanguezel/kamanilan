@@ -2,35 +2,52 @@ import type { Metadata } from "next";
 import { t } from "@/lib/t";
 import { fetchAPI } from "@/lib/api-server";
 import { API_ENDPOINTS } from "@/endpoints/api-endpoints";
-import { AboutPageClient } from "./about-client";
+import { CustomPageClient } from "./about-client";
 
-async function getPageContent(slug: string) {
+interface CustomPageData {
+  id: string;
+  title: string;
+  slug: string;
+  content: { html?: string } | null;
+  image_url?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+}
+
+async function getPageContent(slug: string): Promise<CustomPageData | null> {
   try {
-    const res = await fetchAPI<any>(`${API_ENDPOINTS.PAGES}/${slug}`, {}, "tr");
-    return res;
+    const data = await fetchAPI<any>(`${API_ENDPOINTS.PAGES}/by-slug/${slug}`, {}, "tr");
+    if (!data) return null;
+    // Backend stores content as JSON string — parse it
+    if (typeof data.content === "string") {
+      try { data.content = JSON.parse(data.content); } catch { data.content = null; }
+    }
+    return data as CustomPageData;
   } catch {
     return null;
   }
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await getPageContent("about");
+  const data = await getPageContent("hakkimizda");
   return {
     title: data?.meta_title || t("seo.about_title"),
     description: data?.meta_description || t("seo.about_description"),
-    alternates: {
-      canonical: "/hakkimizda",
-    },
+    alternates: { canonical: "/hakkimizda" },
   };
 }
 
-export default async function AboutPage() {
-  const data = await getPageContent("about");
+export default async function HakkimizdaPage() {
+  const data = await getPageContent("hakkimizda");
   return (
-    <AboutPageClient
-      title={t("pages.about")}
-      content={data?.content}
-      breadcrumbs={[{ label: t("common.home"), href: "/" }, { label: t("pages.about") }]}
+    <CustomPageClient
+      title={data?.title || t("pages.about")}
+      htmlContent={data?.content?.html ?? null}
+      imageUrl={data?.image_url ?? null}
+      breadcrumbs={[
+        { label: t("common.home"), href: "/" },
+        { label: data?.title || t("pages.about") },
+      ]}
     />
   );
 }

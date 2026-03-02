@@ -55,7 +55,9 @@ export type AdminNavKey =
   | 'announcements'
   | 'articles'
   | 'news_sources'
-  | 'news_suggestions';
+  | 'news_suggestions'
+  | 'wallets'
+  | 'coupons';
 
 const ADMIN_ONLY: PanelRole[] = ['admin'];
 const ADMIN_AND_SELLER: PanelRole[] = ['admin', 'seller'];

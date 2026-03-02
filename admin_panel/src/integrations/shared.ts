@@ -75,3 +75,4 @@ export * from '@/integrations/shared/subscription.types';
 export * from '@/integrations/shared/announcements';
 export * from '@/integrations/shared/articles';
 export * from '@/integrations/shared/newsAggregator';
+export * from '@/integrations/shared/coupon.types';

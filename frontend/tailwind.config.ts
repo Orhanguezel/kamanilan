@@ -5,6 +5,20 @@ const config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    // Custom page (dangerouslySetInnerHTML) gradient / color utilities
+    { pattern: /^bg-gradient-to-(r|l|t|b|br|bl|tr|tl)$/ },
+    { pattern: /^(from|to|via)-(slate|blue|white|black|gray)-(50|100|200|300|400|500|600|700|800|900|950)$/ },
+    { pattern: /^text-(slate|blue|white|black|gray)-(50|100|200|300|400|500|600|700|800|900|950)$/ },
+    { pattern: /^text-white(\/\d+)?$/ },
+    { pattern: /^bg-(slate|blue|white|black|gray)-(50|100|200|300|400|500|600|700|800|900|950)$/ },
+    { pattern: /^border-(slate|blue|gray)-(100|200|300|400|500|600|700|800|900)$/ },
+    { pattern: /^border-(l|r|t|b)-(\d)$/ },
+    "shrink-0",
+    "space-y-1", "space-y-2", "space-y-4", "space-y-5",
+    "leading-relaxed",
+    "rounded-r-lg",
+  ],
   prefix: "",
   theme: {
     container: {

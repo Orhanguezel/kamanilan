@@ -52,6 +52,9 @@ import { registerOrders } from '@/modules/orders/router';
 import { registerSeller } from '@/modules/seller/router';
 import { registerSubscription } from '@/modules/subscription/router';
 import { registerIntegrationSettings } from '@/modules/integrationSettings/router';
+import { registerWallet } from '@/modules/wallet/router';
+import { registerSupport } from '@/modules/support/router';
+import { registerCoupons } from '@/modules/coupons/router';
 
 // Admin modüller
 import { registerCustomPagesAdmin } from "@/modules/customPages/admin.routes";
@@ -83,6 +86,9 @@ import { registerCartAdmin } from '@/modules/cart/admin.routes';
 import { registerSubscriptionAdmin } from '@/modules/subscription/admin.routes';
 import { registerIntegrationSettingsAdmin } from '@/modules/integrationSettings/admin.routes';
 import { registerNewsAggregatorAdmin } from '@/modules/newsAggregator/admin.routes';
+import { registerWalletAdmin } from '@/modules/wallet/admin.routes';
+import { registerSupportAdmin } from '@/modules/support/admin.routes';
+import { registerCouponsAdmin } from '@/modules/coupons/admin.routes';
 
 // Haber toplayıcı cron
 import { startNewsAggregatorCron } from '@/modules/newsAggregator/cron';
@@ -245,6 +251,9 @@ export async function createApp() {
     await api.register(registerSubscriptionAdmin, { prefix: '/admin' });
     await api.register(registerIntegrationSettingsAdmin, { prefix: '/admin' });
     await api.register(registerNewsAggregatorAdmin, { prefix: '/admin' });
+    await api.register(registerWalletAdmin, { prefix: '/admin' });
+    await api.register(registerSupportAdmin, { prefix: '/admin' });
+    await api.register(registerCouponsAdmin, { prefix: '/admin' });
 
     // --- Public modüller → /api/...
     await registerAuth(api);
@@ -283,6 +292,9 @@ export async function createApp() {
     await registerSeller(api);
     await registerSubscription(api);
     await registerIntegrationSettings(api);
+    await registerWallet(api);
+    await registerSupport(api);
+    await registerCoupons(api);
 
   }, { prefix: "/api" });
 

@@ -79,3 +79,5 @@ export * from '@/integrations/endpoints/admin/units_admin.endpoints';
 export * from '@/integrations/endpoints/admin/announcements_admin.endpoints';
 export * from '@/integrations/endpoints/admin/articles_admin.endpoints';
 export * from '@/integrations/endpoints/admin/news_aggregator_admin.endpoints';
+export * from '@/integrations/endpoints/admin/wallet_admin.endpoints';
+export * from '@/integrations/endpoints/admin/coupons_admin.endpoints';

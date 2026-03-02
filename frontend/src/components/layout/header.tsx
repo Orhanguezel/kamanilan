@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/config/routes";
 import { useAuthStore } from "@/stores/auth-store";
-import { useToken } from "@/lib/use-token";
 import { t } from "@/lib/t";
 import { MobileNav } from "./mobile-nav";
 import {
@@ -15,8 +14,6 @@ import {
   User,
   Bell,
   MessageSquare,
-  LogOut,
-  ClipboardList,
   Mail,
   Phone,
   LayoutGrid,
@@ -114,8 +111,6 @@ export function Header() {
   /* ── Auth ─────────────────────────────────────── */
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const user            = useAuthStore((s) => s.user);
-  const logout          = useAuthStore((s) => s.logout);
-  const { removeToken } = useToken();
 
   /* ── Cart ─────────────────────────────────────── */
   const cartItemCount = useCartStore((s) => s.totalItems());
@@ -124,7 +119,6 @@ export function Header() {
     setMounted(true);
   }, []);
 
-  const handleLogout = () => { removeToken(); logout(); };
 
   const handleSearch = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -313,39 +307,16 @@ export function Header() {
                     >
                       <MessageSquare className="h-4.5 w-4.5" />
                     </Link>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          className="flex h-9 w-9 items-center justify-center rounded-full transition-colors"
-                          style={{ backgroundColor: "hsl(var(--primary) / 0.1)", color: "hsl(var(--primary))" }}
-                        >
-                          <User className="h-4.5 w-4.5" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-44">
-                        {user?.full_name && (
-                          <div className="px-3 py-2 text-sm font-medium truncate">{user.full_name}</div>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href={ROUTES.PROFILE} className="flex items-center gap-2">
-                            <User className="h-4 w-4" />{t("nav.account")}
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href={ROUTES.MY_LISTINGS} className="flex items-center gap-2">
-                            <ClipboardList className="h-4 w-4" />{t("nav.my_listings")}
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={handleLogout}
-                          className="flex items-center gap-2 text-destructive focus:text-destructive"
-                        >
-                          <LogOut className="h-4 w-4" />{t("nav.logout")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Link
+                      href={ROUTES.PROFILE}
+                      scroll={true}
+                      className="flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+                      style={{ backgroundColor: "hsl(var(--primary) / 0.1)", color: "hsl(var(--primary))" }}
+                      aria-label={t("nav.account")}
+                      title={user?.full_name ?? t("nav.account")}
+                    >
+                      <User className="h-4.5 w-4.5" />
+                    </Link>
                   </>
                 ) : (
                   <Link

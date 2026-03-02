@@ -25,6 +25,8 @@ export const ROUTES = {
 
   // Statik Sayfalar
   ABOUT: "/hakkimizda",
+  MISSION_VISION: "/misyon-vizyon",
+  QUALITY_POLICY: "/kalite-politikamiz",
   CONTACT: "/iletisim",
   TERMS: "/kullanim-kosullari",
   PRIVACY: "/gizlilik-politikasi",
@@ -35,6 +37,14 @@ export const ROUTES = {
 
   // Kullanıcı (Korumalı)
   PROFILE: "/hesabim",
+  PROFILE_INFO: "/hesabim/profil",
+  PROFILE_PASSWORD: "/hesabim/sifre-degistir",
+  PROFILE_ADDRESSES: "/hesabim/adreslerim",
+  PROFILE_ORDERS: "/hesabim/siparislerim",
+  PROFILE_RECENTLY_VIEWED: "/hesabim/son-goruntulenenler",
+  PROFILE_SUPPORT: "/hesabim/destek",
+  PROFILE_WALLET: "/hesabim/cuzdan",
+  PROFILE_FAVORITES: "/hesabim/favorilerim",
   MESSAGES: "/mesajlar",
   NOTIFICATIONS: "/bildirimler",
 
@@ -47,6 +57,9 @@ export const ROUTES = {
   // Haberler
   NEWS: "/haberler",
   NEWS_DETAIL: (slug: string) => `/haberler/${slug}`,
+
+  // Kuponlar
+  COUPONS: "/kuponlar",
 
   // Mağazalar (yakında)
   STORES: "/magazalar",

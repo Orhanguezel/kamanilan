@@ -42,6 +42,7 @@ export const API_ENDPOINTS = {
   CUSTOM_PAGES: "/custom_pages",
   PAGES: "/custom_pages",
   FAQS: "/faqs",
+  COUPONS: "/coupons",
   CONTACTS: "/contacts", // POST → contact form submission
   FOOTER: "/footer_sections",
   MENU_ITEMS: "/menu_items",
@@ -80,12 +81,12 @@ export const API_ENDPOINTS = {
   CONVERSATION_SEEN: "/conversations/:id/seen",
 
   // Support / Tickets
-  SUPPORT_TICKETS: "/support/tickets",
-  SUPPORT_TICKET_CREATE: "/support/tickets",
-  SUPPORT_TICKET_DETAIL: "/support/tickets/:id",
-  SUPPORT_TICKET_MESSAGES: "/support/tickets/:id/messages",
-  SUPPORT_TICKET_ADD_MESSAGE: "/support/tickets/:id/messages",
-  SUPPORT_TICKET_RESOLVE: "/support/tickets/:id/resolve",
+  SUPPORT_TICKETS: "/support_tickets",
+  SUPPORT_TICKET_CREATE: "/support_tickets",
+  SUPPORT_TICKET_DETAIL: "/support_tickets/:id",
+  SUPPORT_TICKET_MESSAGES: "/ticket_replies/by-ticket/:id",
+  SUPPORT_TICKET_ADD_MESSAGE: "/ticket_replies",
+  SUPPORT_TICKET_RESOLVE: "/support_tickets/:id",
 
   // AI Chat
   AI_CHAT_STATUS: "/ai-chat/status",
@@ -104,6 +105,10 @@ export const API_ENDPOINTS = {
   ORDER_INIT_IYZICO: "/orders/:id/init-iyzico",
   ORDER_GATEWAYS: "/orders/gateways",
   ADDRESSES: "/orders/addresses",
+
+  // Wallet (auth required)
+  WALLET: "/wallet",
+  WALLET_TRANSACTIONS: "/wallet/transactions",
 
   // Haberler (kendi makalelerimiz)
   ARTICLES:          "/articles",
