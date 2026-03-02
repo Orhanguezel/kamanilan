@@ -19,7 +19,8 @@ export function useThemeQuery() {
       const res = await api.get<ThemeConfig>(API_ENDPOINTS.THEME);
       return res.data;
     },
-    staleTime: 1000 * 60 * 10, // 10 dk cache
-    gcTime:    1000 * 60 * 60,
+    staleTime:           1000 * 30,      // 30 sn — admin değişiklikleri hızlıca yansısın
+    gcTime:              1000 * 60 * 10,
+    refetchOnWindowFocus: true,
   });
 }

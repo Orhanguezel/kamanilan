@@ -17,7 +17,7 @@ export const DEFAULT_LAYOUT_BLOCKS: LayoutBlock[] = [
   { id: "announcements__1",           type: "announcements",           instance: 1, enabled_disabled: "on" },
   { id: "news_feed__1",               type: "news_feed",               instance: 1, enabled_disabled: "on" },
   { id: "newsletters_section__1",     type: "newsletters_section",     instance: 1, enabled_disabled: "on" },
-  { id: "infinite_listings__1",       type: "infinite_listings",       instance: 1, enabled_disabled: "off" },
+  { id: "infinite_listings__1",       type: "infinite_listings",       instance: 1, enabled_disabled: "on" },
 ];
 
 /** Veritabanında kayıt yoksa veya parse edilemezse kullanılan varsayılan tema */
