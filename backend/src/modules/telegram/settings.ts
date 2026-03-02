@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { db } from '@/db/client';
 import { siteSettings } from '@/modules/siteSettings/schema';
 
@@ -40,13 +40,13 @@ export async function getSiteSettingsMap(keys: readonly string[]): Promise<Map<s
   if (!keys.length) return new Map();
 
   const rows = await db
-    .select({ key: siteSettings.key, locale: siteSettings.locale, value: siteSettings.value })
+    .select({ key: siteSettings.key, value: siteSettings.value })
     .from(siteSettings)
-    .where(and(inArray(siteSettings.key, keys as string[]), inArray(siteSettings.locale, [GLOBAL_LOCALE])));
+    .where(inArray(siteSettings.key, keys as string[]));
 
   const out = new Map<string, string>();
   for (const k of keys) {
-    const hit = rows.find((r) => r.key === k && r.locale === GLOBAL_LOCALE);
+    const hit = rows.find((r) => r.key === k);
     if (hit) out.set(k, String(hit.value ?? ''));
   }
   return out;

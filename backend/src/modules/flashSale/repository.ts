@@ -6,6 +6,7 @@ import {
   flashSaleSubcategories,
   flashSaleProperties,
   flashSaleSellers,
+  type FlashSaleRow,
   type NewFlashSaleRow,
   type FlashSaleScopeType,
 } from './schema';
@@ -64,7 +65,7 @@ export async function listFlashSales(params: ListFlashSalesParams) {
   if (params.slug?.trim()) filters.push(eq(flashSales.slug, params.slug.trim()));
   if (params.locale?.trim()) filters.push(eq(flashSales.locale, params.locale.trim()));
 
-  if (params.ids?.length) filters.push(inArray(flashSales.id, params.ids));
+  if (params.ids?.length) filters.push(inArray(flashSales.id, params.ids.map(String)));
 
   if (params.q?.trim()) {
     const s = `%${params.q.trim()}%`;

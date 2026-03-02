@@ -17,7 +17,7 @@ export const boolLike = z.union([
 ]);
 
 // Çoklu dil desteği
-const LOCALE_ENUM = z.enum(LOCALES as [string, ...string[]]);
+const LOCALE_ENUM = z.enum([...LOCALES] as [string, ...string[]]);
 
 /**
  * PUBLIC: Subscribe

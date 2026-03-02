@@ -15,7 +15,7 @@ export const boolLike = z.union([
   z.literal("false"),
 ]);
 
-const LOCALE_ENUM = z.enum(LOCALES as [string, ...string[]]);
+const LOCALE_ENUM = z.enum([...LOCALES] as [string, ...string[]]);
 
 // ---------- Public ----------
 

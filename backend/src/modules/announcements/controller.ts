@@ -45,7 +45,6 @@ export async function listAnnouncements(req: FastifyRequest, reply: FastifyReply
   return reply.send({
     items: rows.map((r) => rowToPublic(r.row, r.cover_url)),
     total,
-    page:  q.page  ?? 1,
     limit: q.limit ?? 12,
   });
 }

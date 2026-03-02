@@ -58,7 +58,7 @@ export async function repoMyList(userId: string, q: ListQuery): Promise<{ items:
   const conds: any[] = [eq((properties as any).user_id, userId)];
   if (typeof q.is_active === "boolean")
     conds.push(eq(properties.is_active, q.is_active ? 1 : 0));
-  if (q.type) conds.push(eq(properties.type, q.type));
+  if (q.type) conds.push(eq((properties as any).type, q.type));
   if (q.status) conds.push(eq(properties.status, q.status));
   if (q.q) conds.push(like(properties.title, `%${q.q.trim()}%`));
 

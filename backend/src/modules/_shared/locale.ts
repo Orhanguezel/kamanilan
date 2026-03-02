@@ -23,7 +23,7 @@ function normalizeLooseLocale(v: unknown): string | null {
 
 function pickSafeDefault(): string {
   const base = normalizeLocale(getRuntimeDefaultLocale()) || getRuntimeDefaultLocale() || 'de';
-  if (LOCALES.includes(base)) return base;
+  if ((LOCALES as readonly string[]).includes(base)) return base;
   return LOCALES[0] || 'de';
 }
 
