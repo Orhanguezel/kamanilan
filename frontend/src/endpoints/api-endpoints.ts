@@ -43,7 +43,7 @@ export const API_ENDPOINTS = {
   PAGES: "/custom_pages",
   FAQS: "/faqs",
   CONTACTS: "/contacts", // POST → contact form submission
-  FOOTER: "/footer-sections",
+  FOOTER: "/footer_sections",
   MENU_ITEMS: "/menu_items",
 
   // Listings — public read

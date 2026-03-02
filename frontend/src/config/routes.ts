@@ -47,4 +47,7 @@ export const ROUTES = {
   // Haberler
   NEWS: "/haberler",
   NEWS_DETAIL: (slug: string) => `/haberler/${slug}`,
+
+  // Mağazalar (yakında)
+  STORES: "/magazalar",
 } as const;

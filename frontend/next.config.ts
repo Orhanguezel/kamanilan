@@ -10,6 +10,17 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: "standalone",
   poweredByHeader: false,
+  async redirects() {
+    return [
+      // Eski / alternatif URL'leri doğru route'lara yönlendir
+      { source: "/uye-ol",         destination: "/kayit",    permanent: true },
+      { source: "/uyelik",         destination: "/kayit",    permanent: true },
+      { source: "/giris-yap",      destination: "/giris",    permanent: true },
+      { source: "/login",          destination: "/giris",    permanent: true },
+      { source: "/register",       destination: "/kayit",    permanent: true },
+      { source: "/ilanlar/ara",    destination: "/ara",      permanent: false },
+    ];
+  },
   async rewrites() {
     return [
       // Backend API proxy

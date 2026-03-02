@@ -1,160 +1,98 @@
 import type { MetadataRoute } from "next";
-import axios from "axios";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_REST_API_ENDPOINT ||
-  "https://sportoonline.com/api/v1";
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://sportoonline.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://kamanilan.com";
 
-async function fetchSlugs(endpoint: string): Promise<string[]> {
+const API_URL =
+  process.env.NEXT_PUBLIC_REST_API_ENDPOINT || "http://localhost:8078/api";
+
+async function fetchSlugs(
+  endpoint: string,
+  slugField = "slug",
+): Promise<string[]> {
   try {
-    const res = await axios.get(`${BASE_URL}${endpoint}`, {
-      params: { per_page: 1000, language: "tr" },
-      timeout: 10000,
+    const res = await fetch(`${API_URL}${endpoint}?limit=500&sort=created_at&order=desc`, {
+      next: { revalidate: 3600 },
     });
-    const items = res.data?.data ?? [];
-    return items.map((item: { slug: string }) => item.slug).filter(Boolean);
+    if (!res.ok) return [];
+    const json = await res.json();
+    const items: unknown[] = Array.isArray(json)
+      ? json
+      : Array.isArray(json?.items)
+        ? json.items
+        : Array.isArray(json?.data)
+          ? json.data
+          : [];
+    return items
+      .map((item) => (item as Record<string, string>)[slugField])
+      .filter(Boolean);
   } catch {
     return [];
   }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const locales = ["tr", "en"];
   const now = new Date().toISOString();
 
-  // Static pages
-  const staticPages = [
-    { path: "", priority: 1.0, changeFrequency: "daily" as const },
-    { path: "/blog", priority: 0.7, changeFrequency: "daily" as const },
-    { path: "/kampanyalar", priority: 0.6, changeFrequency: "daily" as const },
-    { path: "/magazalar", priority: 0.6, changeFrequency: "weekly" as const },
-    { path: "/kuponlar", priority: 0.5, changeFrequency: "weekly" as const },
-    { path: "/hakkimizda", priority: 0.3, changeFrequency: "monthly" as const },
-    { path: "/iletisim", priority: 0.3, changeFrequency: "monthly" as const },
-    {
-      path: "/kullanim-kosullari",
-      priority: 0.2,
-      changeFrequency: "monthly" as const,
-    },
-    {
-      path: "/gizlilik-politikasi",
-      priority: 0.2,
-      changeFrequency: "monthly" as const,
-    },
+  // ── Statik sayfalar ─────────────────────────────────────
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: `${SITE_URL}/`,                    lastModified: now, priority: 1.0,  changeFrequency: "daily"   },
+    { url: `${SITE_URL}/ilanlar`,             lastModified: now, priority: 0.9,  changeFrequency: "hourly"  },
+    { url: `${SITE_URL}/haberler`,            lastModified: now, priority: 0.8,  changeFrequency: "daily"   },
+    { url: `${SITE_URL}/kategoriler`,         lastModified: now, priority: 0.7,  changeFrequency: "weekly"  },
+    { url: `${SITE_URL}/duyurular`,           lastModified: now, priority: 0.7,  changeFrequency: "daily"   },
+    { url: `${SITE_URL}/kampanyalar`,         lastModified: now, priority: 0.6,  changeFrequency: "daily"   },
+    { url: `${SITE_URL}/magazalar`,           lastModified: now, priority: 0.6,  changeFrequency: "weekly"  },
+    { url: `${SITE_URL}/ilan-ver`,            lastModified: now, priority: 0.8,  changeFrequency: "monthly" },
+    { url: `${SITE_URL}/reklam-ver`,          lastModified: now, priority: 0.5,  changeFrequency: "monthly" },
+    { url: `${SITE_URL}/hakkimizda`,          lastModified: now, priority: 0.4,  changeFrequency: "monthly" },
+    { url: `${SITE_URL}/iletisim`,            lastModified: now, priority: 0.4,  changeFrequency: "monthly" },
+    { url: `${SITE_URL}/gizlilik-politikasi`, lastModified: now, priority: 0.2,  changeFrequency: "yearly"  },
+    { url: `${SITE_URL}/kullanim-kosullari`,  lastModified: now, priority: 0.2,  changeFrequency: "yearly"  },
   ];
 
-  const staticEntries: MetadataRoute.Sitemap = staticPages.flatMap((page) =>
-    locales.map((locale) => ({
-      url: `${SITE_URL}/${locale}${page.path}`,
-      lastModified: now,
-      changeFrequency: page.changeFrequency,
-      priority: page.priority,
-      alternates: {
-        languages: Object.fromEntries(
-          locales.map((l) => [l, `${SITE_URL}/${l}${page.path}`])
-        ),
-      },
-    }))
-  );
-
-  // Dynamic pages — fetch slugs in parallel
-  const [productSlugs, categorySlugs, brandSlugs, blogSlugs, storeSlugs] =
+  // ── Dinamik sayfalar ─────────────────────────────────────
+  const [listingSlugs, categorySlugs, articleSlugs, announcementSlugs] =
     await Promise.all([
-      fetchSlugs("/product-list"),
-      fetchSlugs("/product-category/list"),
-      fetchSlugs("/brand-list"),
-      fetchSlugs("/blogs"),
-      fetchSlugs("/store-list"),
+      fetchSlugs("/properties"),
+      fetchSlugs("/categories"),
+      fetchSlugs("/articles"),
+      fetchSlugs("/announcements"),
     ]);
 
-  const dynamicEntries: MetadataRoute.Sitemap = [];
+  const listingEntries: MetadataRoute.Sitemap = listingSlugs.map((slug) => ({
+    url: `${SITE_URL}/ilan/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
 
-  // Products
-  for (const slug of productSlugs) {
-    for (const locale of locales) {
-      dynamicEntries.push({
-        url: `${SITE_URL}/${locale}/urun/${slug}`,
-        lastModified: now,
-        changeFrequency: "daily",
-        priority: 0.8,
-        alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, `${SITE_URL}/${l}/urun/${slug}`])
-          ),
-        },
-      });
-    }
-  }
+  const categoryEntries: MetadataRoute.Sitemap = categorySlugs.map((slug) => ({
+    url: `${SITE_URL}/kategori/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
 
-  // Categories
-  for (const slug of categorySlugs) {
-    for (const locale of locales) {
-      dynamicEntries.push({
-        url: `${SITE_URL}/${locale}/kategori/${slug}`,
-        lastModified: now,
-        changeFrequency: "weekly",
-        priority: 0.7,
-        alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, `${SITE_URL}/${l}/kategori/${slug}`])
-          ),
-        },
-      });
-    }
-  }
+  const articleEntries: MetadataRoute.Sitemap = articleSlugs.map((slug) => ({
+    url: `${SITE_URL}/haberler/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
 
-  // Brands
-  for (const slug of brandSlugs) {
-    for (const locale of locales) {
-      dynamicEntries.push({
-        url: `${SITE_URL}/${locale}/marka/${slug}`,
-        lastModified: now,
-        changeFrequency: "weekly",
-        priority: 0.6,
-        alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, `${SITE_URL}/${l}/marka/${slug}`])
-          ),
-        },
-      });
-    }
-  }
+  const announcementEntries: MetadataRoute.Sitemap = announcementSlugs.map((slug) => ({
+    url: `${SITE_URL}/duyurular/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.5,
+  }));
 
-  // Blog posts
-  for (const slug of blogSlugs) {
-    for (const locale of locales) {
-      dynamicEntries.push({
-        url: `${SITE_URL}/${locale}/blog/${slug}`,
-        lastModified: now,
-        changeFrequency: "weekly",
-        priority: 0.7,
-        alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, `${SITE_URL}/${l}/blog/${slug}`])
-          ),
-        },
-      });
-    }
-  }
-
-  // Stores
-  for (const slug of storeSlugs) {
-    for (const locale of locales) {
-      dynamicEntries.push({
-        url: `${SITE_URL}/${locale}/magaza/${slug}`,
-        lastModified: now,
-        changeFrequency: "weekly",
-        priority: 0.6,
-        alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, `${SITE_URL}/${l}/magaza/${slug}`])
-          ),
-        },
-      });
-    }
-  }
-
-  return [...staticEntries, ...dynamicEntries];
+  return [
+    ...staticPages,
+    ...listingEntries,
+    ...categoryEntries,
+    ...articleEntries,
+    ...announcementEntries,
+  ];
 }
