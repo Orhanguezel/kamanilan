@@ -121,6 +121,20 @@ function safeRemoveLocalStorageItem(key: string) {
   }
 }
 
+function redirectToLoginIfBrowser() {
+  try {
+    if (typeof window === 'undefined') return;
+    const here = window.location.pathname + window.location.search;
+    const authPath = '/auth/login';
+    const target = `${authPath}?next=${encodeURIComponent(here)}`;
+    if (!window.location.pathname.startsWith(authPath)) {
+      window.location.replace(target);
+    }
+  } catch {
+    // ignore
+  }
+}
+
 /* -------------------- Base Query -------------------- */
 
 type RBQ = BaseQueryFn<
@@ -262,6 +276,11 @@ const baseQueryWithReauth: RBQ = async (args, api, extra) => {
       safeRemoveLocalStorageItem('mh_access_token');
       safeRemoveLocalStorageItem('mh_refresh_token');
     }
+  }
+
+  // Refresh denemesi sonrası halen 401 ise kullanıcıyı login'e yönlendir.
+  if (result.error?.status === 401 && !AUTH_SKIP_REAUTH.has(cleanPath)) {
+    redirectToLoginIfBrowser();
   }
 
   return result;

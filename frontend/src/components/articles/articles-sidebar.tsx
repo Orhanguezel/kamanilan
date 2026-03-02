@@ -23,13 +23,26 @@ export function SidebarBannerCard({ banner }: { banner: BannerItem }) {
   const btn    = banner.button_color       || "hsl(var(--accent))";
   const btnHov = banner.button_hover_color || banner.button_color || "hsl(var(--accent))";
   const btnTxt = banner.button_text_color  || "#ffffff";
-  const img    = banner.thumbnail ?? banner.image;
+  const bgImage = banner.image;
+  const thumbImage = banner.thumbnail && banner.thumbnail !== banner.image ? banner.thumbnail : null;
 
   const inner = (
     <div
       className="group relative overflow-hidden rounded-lg transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
       style={{ backgroundColor: bg }}
     >
+      {bgImage && (
+        <div className="pointer-events-none absolute inset-0">
+          <Image
+            src={bgImage}
+            alt={banner.alt ?? banner.title}
+            fill
+            className="object-cover opacity-[0.2] transition-transform duration-300 group-hover:scale-[1.03]"
+            sizes="(max-width: 768px) 100vw, 360px"
+            unoptimized
+          />
+        </div>
+      )}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/15" />
       <div className="absolute inset-y-0 left-0 w-1 rounded-l-lg" style={{ backgroundColor: btn }} />
 
@@ -61,10 +74,10 @@ export function SidebarBannerCard({ banner }: { banner: BannerItem }) {
           )}
         </div>
 
-        {img && (
+        {thumbImage && (
           <div className="relative hidden shrink-0 sm:block" style={{ height: 120, width: 90 }}>
             <Image
-              src={img}
+              src={thumbImage}
               alt={banner.alt ?? banner.title}
               fill
               className="object-contain object-right-bottom"

@@ -44,5 +44,5 @@ export function useLikedListings() {
 
   const isLiked = useCallback((id: string) => liked.has(id), [liked]);
 
-  return { isLiked, toggle };
+  return { liked, isLiked, toggle };
 }

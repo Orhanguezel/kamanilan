@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapPin,
   Calendar,
@@ -19,6 +19,7 @@ import { t } from "@/lib/t";
 import { ROUTES } from "@/config/routes";
 import { useListingBySlugQuery } from "@/modules/listing/listing.service";
 import { useCartStore } from "@/stores/cart-store";
+import { useRecentlyViewedStore } from "@/stores/recently-viewed-store";
 import type { ListingVariantValue } from "@/modules/listing/listing.types";
 
 function formatPrice(price: string | null, currency: string): string {
@@ -148,6 +149,19 @@ interface ListingDetailProps {
 export function ListingDetail({ slug }: ListingDetailProps) {
   const { data: listing, isPending, isError } = useListingBySlugQuery(slug);
   const addItem = useCartStore((s) => s.addItem);
+  const addRecentlyViewed = useRecentlyViewedStore((s) => s.addItem);
+
+  useEffect(() => {
+    if (!listing) return;
+    addRecentlyViewed({
+      slug: listing.slug,
+      title: listing.title,
+      image: listing.image_url ?? undefined,
+      price: listing.price ? parseFloat(listing.price) : undefined,
+      currency: listing.currency,
+      category: listing.categories?.name ?? undefined,
+    });
+  }, [listing, addRecentlyViewed]);
 
   if (isPending) {
     return (

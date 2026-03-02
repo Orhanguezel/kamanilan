@@ -78,6 +78,8 @@ export type ListParams = {
   sub_category_id?: string;
   tag_ids?: string[] | string;
 
+  ids?: string[];
+
   price_min?: number;
   price_max?: number;
 
@@ -192,6 +194,11 @@ function buildWhere(params: ListParams): SQL | undefined {
   }
   if (isNonEmpty(params.created_to)) {
     filters.push(lte(properties.created_at, sql`CAST(${params.created_to!.trim()} AS DATETIME)`));
+  }
+
+  const ids = toArray(params.ids)?.filter(isUuid36);
+  if (ids?.length) {
+    filters.push(inArray(properties.id, ids));
   }
 
   if (isNonEmpty(params.q)) {

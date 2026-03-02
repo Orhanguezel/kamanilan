@@ -29,7 +29,9 @@ type FormState = {
   subtitle: string;
   description: string;
   image_url: string;
+  image_asset_id: string;
   thumbnail_url: string;
+  thumbnail_asset_id: string;
   alt: string;
   background_color: string;
   title_color: string;
@@ -56,7 +58,9 @@ const initialForm: FormState = {
   subtitle: '',
   description: '',
   image_url: '',
+  image_asset_id: '',
   thumbnail_url: '',
+  thumbnail_asset_id: '',
   alt: '',
   background_color: '#EEF7EF',
   title_color: '#1A3C25',
@@ -110,7 +114,9 @@ export default function AdminBannersDetailClient(props: Props) {
       subtitle: data.subtitle || '',
       description: data.description || '',
       image_url: data.image_effective_url || data.image_url || '',
+      image_asset_id: data.image_asset_id || '',
       thumbnail_url: data.thumbnail_url || '',
+      thumbnail_asset_id: data.thumbnail_asset_id || '',
       alt: data.alt || '',
       background_color: data.background_color || '',
       title_color: data.title_color || '',
@@ -148,7 +154,9 @@ export default function AdminBannersDetailClient(props: Props) {
       subtitle: form.subtitle.trim() || null,
       description: form.description.trim() || null,
       image_url: form.image_url.trim() || null,
+      image_asset_id: form.image_asset_id.trim() || null,
       thumbnail_url: form.thumbnail_url.trim() || null,
+      thumbnail_asset_id: form.thumbnail_asset_id.trim() || null,
       alt: form.alt.trim() || null,
       background_color: form.background_color.trim() || null,
       title_color: form.title_color.trim() || null,
@@ -239,7 +247,7 @@ export default function AdminBannersDetailClient(props: Props) {
               placeholder="0"
             />
             <p className="text-xs text-muted-foreground">
-              0 = ana sayfada yok. 1, 2, 3… istediğiniz slot numarasını girin (tema panelindeki Banner instance numarasıyla eşleşmeli).
+              Bu alan satır bazlı eski düzen içindir. Yeni düzende ana sayfa bannerı, tema panelindeki Banner `instance` değerine yazılan Banner ID ile çağrılır.
             </p>
           </div>
 
@@ -273,6 +281,13 @@ export default function AdminBannersDetailClient(props: Props) {
               label={t('form.image')}
               value={form.image_url}
               onChange={(url) => setForm((p) => ({ ...p, image_url: url }))}
+              onSelectAsset={({ assetId, url }) =>
+                setForm((p) => ({
+                  ...p,
+                  image_url: url,
+                  image_asset_id: assetId ?? '',
+                }))
+              }
               bucket="default"
               folder="banners/images"
             />
@@ -282,6 +297,13 @@ export default function AdminBannersDetailClient(props: Props) {
               label={t('form.thumbnail')}
               value={form.thumbnail_url}
               onChange={(url) => setForm((p) => ({ ...p, thumbnail_url: url }))}
+              onSelectAsset={({ assetId, url }) =>
+                setForm((p) => ({
+                  ...p,
+                  thumbnail_url: url,
+                  thumbnail_asset_id: assetId ?? '',
+                }))
+              }
               bucket="default"
               folder="banners/thumbs"
               previewAspect="1x1"

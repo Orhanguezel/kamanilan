@@ -77,6 +77,7 @@ export const propertyListQuerySchema = z.object({
   category_id:    z.string().uuid().optional(),
   sub_category_id: z.string().uuid().optional(),
 
+  ids:     z.preprocess(toArrayFromQuery, z.array(z.string().uuid()).max(200)).optional(),
   tag_ids: z.preprocess(toArrayFromQuery, z.array(z.string().uuid()).max(100)).optional(),
 
   price_min: num.nonnegative().optional(),

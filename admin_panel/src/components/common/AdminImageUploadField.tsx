@@ -45,6 +45,7 @@ export type AdminImageUploadFieldProps = {
 
   value?: string;
   onChange?: (url: string) => void;
+  onSelectAsset?: (selection: { url: string; assetId: string | null }) => void;
 
   values?: string[];
   onChangeMultiple?: (urls: string[]) => void;
@@ -202,6 +203,7 @@ export const AdminImageUploadField: React.FC<AdminImageUploadFieldProps> = ({
 
   value,
   onChange,
+  onSelectAsset,
 
   values,
   onChangeMultiple,
@@ -271,7 +273,7 @@ export const AdminImageUploadField: React.FC<AdminImageUploadFieldProps> = ({
     fileInputRef.current?.click();
   };
 
-  const handleSelectFromLibrary = (url: string) => {
+  const handleSelectFromLibrary = (url: string, assetId?: string | null) => {
     if (!url) return;
 
     if (multiple && onChangeMultiple) {
@@ -279,6 +281,7 @@ export const AdminImageUploadField: React.FC<AdminImageUploadFieldProps> = ({
       toast.success('Görsel eklendi.');
     } else if (onChange) {
       onChange(url);
+      onSelectAsset?.({ url, assetId: assetId ?? null });
       toast.success('Görsel seçildi.');
     }
 
@@ -317,8 +320,10 @@ export const AdminImageUploadField: React.FC<AdminImageUploadFieldProps> = ({
           metadata: meta,
         } as any).unwrap();
         const url = norm((res as any)?.url);
+        const assetId = norm((res as any)?.id) || null;
         if (!url) throw new Error("Görsel URL'i alınamadı.");
         onChange?.(url);
+        onSelectAsset?.({ url, assetId });
         toast.success('Görsel yüklendi.');
         setIsModalOpen(false);
       } catch (err: any) {
@@ -732,7 +737,7 @@ export const AdminImageUploadField: React.FC<AdminImageUploadFieldProps> = ({
                         <button
                           key={asset.id}
                           type="button"
-                          onClick={() => handleSelectFromLibrary(rawUrl)}
+                          onClick={() => handleSelectFromLibrary(rawUrl, asset.id)}
                           disabled={busy}
                           className={cn(
                             'group relative overflow-hidden rounded-lg border transition-all hover:border-primary',

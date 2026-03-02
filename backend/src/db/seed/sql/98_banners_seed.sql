@@ -669,3 +669,74 @@ VALUES
   2, 2,
   'Murat Meşe', '+90 5XX XXX XX XX'
 );
+
+-- =============================================================
+-- Banner görselleri (storage_assets üzerinden)
+-- Not: image_url + image_asset_id birlikte set edilir; admin panelden değiştirilebilir.
+-- =============================================================
+UPDATE `banners`
+SET
+  `image_asset_id` = CASE `id`
+    WHEN 1  THEN '00009700-0000-4000-8000-000000000004'
+    WHEN 2  THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 3  THEN '00009700-0000-4000-8000-000000000001'
+    WHEN 10 THEN '00009700-0000-4000-8000-000000000004'
+    WHEN 11 THEN '00009700-0000-4000-8000-000000000004'
+    WHEN 12 THEN '00009700-0000-4000-8000-000000000001'
+    WHEN 13 THEN '00009700-0000-4000-8000-000000000001'
+    WHEN 20 THEN '00009700-0000-4000-8000-000000000004'
+    WHEN 21 THEN '00009700-0000-4000-8000-000000000001'
+    WHEN 22 THEN '00009700-0000-4000-8000-000000000001'
+    WHEN 23 THEN '00009400-0000-4000-8000-000000000096'
+    WHEN 24 THEN '00009400-0000-4000-8000-000000000096'
+    WHEN 25 THEN '00009400-0000-4000-8000-000000000096'
+    WHEN 30 THEN '00009700-0000-4000-8000-000000000004'
+    WHEN 31 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 50 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 51 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 52 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 53 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 55 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 56 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 57 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 58 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 60 THEN '00009700-0000-4000-8000-000000000004'
+    WHEN 61 THEN '00009700-0000-4000-8000-000000000004'
+    WHEN 62 THEN '00009700-0000-4000-8000-000000000003'
+    WHEN 63 THEN '00009700-0000-4000-8000-000000000003'
+    ELSE `image_asset_id`
+  END,
+  `image_url` = CASE `id`
+    WHEN 1  THEN '/uploads/media/assets/images'
+    WHEN 2  THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 3  THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 10 THEN '/uploads/media/assets/images'
+    WHEN 11 THEN '/uploads/media/assets/images'
+    WHEN 12 THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 13 THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 20 THEN '/uploads/media/assets/images'
+    WHEN 21 THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 22 THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 23 THEN '/uploads/media/images/banner-illustration.png'
+    WHEN 24 THEN '/uploads/media/images/banner-illustration.png'
+    WHEN 25 THEN '/uploads/media/images/banner-illustration.png'
+    WHEN 30 THEN '/uploads/media/assets/images'
+    WHEN 31 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 50 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 51 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 52 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 53 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 55 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 56 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 57 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 58 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 60 THEN '/uploads/media/assets/images'
+    WHEN 61 THEN '/uploads/media/assets/images'
+    WHEN 62 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 63 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    ELSE `image_url`
+  END
+WHERE `id` IN (
+  1, 2, 3, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 30, 31,
+  50, 51, 52, 53, 55, 56, 57, 58, 60, 61, 62, 63
+);

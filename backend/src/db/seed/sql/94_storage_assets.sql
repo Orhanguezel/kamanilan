@@ -149,7 +149,6 @@ VALUES
 ('00009400-0000-4000-8000-000000000105','logo-icon-transparent.png','default','media/logo/logo-icon-transparent.png','media/logo','image/png',8072,'/uploads/media/logo/logo-icon-transparent.png','local','media/logo/logo-icon-transparent.png','image','png'),
 ('00009400-0000-4000-8000-000000000106','logo-preview.html','default','media/logo/logo-preview.html','media/logo','text/html',17512,'/uploads/media/logo/logo-preview.html','local','media/logo/logo-preview.html','raw','html'),
 ('00009400-0000-4000-8000-000000000107','og-image.png','default','media/logo/og-image.png','media/logo','image/png',19103,'/uploads/media/logo/og-image.png','local','media/logo/og-image.png','image','png');
-
 -- ── SLIDER ARKAPLAN GÖRSELLERİ (external / Unsplash) ──────────────────────
 INSERT INTO `storage_assets`
   (`id`, `name`, `bucket`, `path`, `folder`, `mime`, `size`, `url`,
@@ -158,4 +157,4 @@ VALUES
 ('00009700-0000-4000-8000-000000000001','slide-kaman-cevizi.jpg','default','slides/slide-kaman-cevizi.jpg','slides','image/jpeg',0,'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80','external','slides/slide-kaman-cevizi.jpg','image','jpg'),
 ('00009700-0000-4000-8000-000000000002','slide-emlak-kira.jpg','default','slides/slide-emlak-kira.jpg','slides','image/jpeg',0,'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&h=600&fit=crop&auto=format&q=80','external','slides/slide-emlak-kira.jpg','image','jpg'),
 ('00009700-0000-4000-8000-000000000003','slide-ucretsiz-ilan.jpg','default','slides/slide-ucretsiz-ilan.jpg','slides','image/jpeg',0,'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80','external','slides/slide-ucretsiz-ilan.jpg','image','jpg'),
-('00009700-0000-4000-8000-000000000004','slide-hayvan-tarim.jpg','default','slides/slide-hayvan-tarim.jpg','slides','image/jpeg',0,'https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=1200&h=600&fit=crop&auto=format&q=80','external','slides/slide-hayvan-tarim.jpg','image','jpg');
+('00009700-0000-4000-8000-000000000004','slide-hayvan-tarim.jpg','default','slides/slide-hayvan-tarim.jpg','slides','image/jpeg',0,'/uploads/media/assets/images','external','slides/slide-hayvan-tarim.jpg','image','jpg');

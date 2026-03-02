@@ -1059,10 +1059,8 @@ export default function AdminThemeClient() {
       const blocks = [...(p.layout_blocks ?? [])];
       const b = blocks[idx];
       if (!b) return p;
-      const newId = `${b.type}__${newInstance}`;
-      /* Aynı ID zaten varsa değiştirme */
-      if (blocks.some((bl, i) => i !== idx && bl.id === newId)) return p;
-      blocks[idx] = { ...b, id: newId, instance: newInstance };
+      // instance, içerik seçimini temsil eder (ör: banner ID). Blok id'si stabil kalmalı.
+      blocks[idx] = { ...b, instance: newInstance };
       return { ...p, layout_blocks: blocks };
     });
   }, []);

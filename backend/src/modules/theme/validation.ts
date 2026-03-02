@@ -56,7 +56,8 @@ const layoutBlockConfigSchema = z.object({
 const layoutBlockSchema = z.object({
   id:               z.string().min(1).max(100),
   type:             z.string().min(1).max(60),
-  instance:         z.number().int().min(1).max(20),
+  // Admin UI allows 1..99 instance values (e.g. banner_section__40).
+  instance:         z.number().int().min(1).max(99),
   enabled_disabled: z.enum(['on', 'off']),
   config:           layoutBlockConfigSchema.optional(),
 });

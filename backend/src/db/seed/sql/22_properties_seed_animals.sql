@@ -39,20 +39,6 @@ VALUES
   DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 6 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
 ),
 (
-  '32000000-0000-4000-8000-000000000002',
-  @SELLER_ID,
-  'Satilik Akkaraman Koc - Damizlik', 'satilik-akkaraman-koc-damizlik',
-  '10000000-0000-4000-8000-000000000005', NULL,
-  'satilik',
-  'Yenikoy Merasi', 'Kaman', 'Kirsehir', 'Yenikoy',
-  'Damizlik kalite, kupe kaydi mevcut.',
-  18500.00, 'TRY', 17000.00,
-  'KMN-ANM-1002', NULL, 0,
-  'https://images.unsplash.com/photo-1456926631375-92c8ce872def?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Akkaraman koc',
-  102, 1,
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 5 DAY), CURRENT_TIMESTAMP(3)
-),
-(
   '32000000-0000-4000-8000-000000000003',
   @CUSTOMER_ID,
   'Bulundu Kupeli Inek - Sahibi Araniyor', 'bulundu-kupeli-inek-sahibi-araniyor-kaman',
@@ -93,21 +79,8 @@ VALUES
   'https://images.unsplash.com/photo-1600402872705-a25a8d0fdd3f?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Hindi surusu',
   105, 1,
   DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 7 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 2 DAY)
-),
-(
-  '32000000-0000-4000-8000-000000000006',
-  @CUSTOMER_ID,
-  'Kayip 8 Adet Kaz - Son Gorulme Dereboyu', 'kayip-8-adet-kaz-son-gorulme-dereboyu',
-  '10000000-0000-4000-8000-000000000005', NULL,
-  'kayip',
-  'Dereboyu Cevresi', 'Kaman', 'Kirsehir', 'Dereboyu',
-  'Sahipli kazlar kaybolmustur, gorenlerin ulasmasi rica olunur.',
-  0.00, 'TRY', NULL,
-  'KMN-ANM-1006', 'Kayip', 0,
-  'https://images.unsplash.com/photo-1565972923572-1b2e0bdf6b17?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Kayip kaz ilani',
-  106, 1,
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY), CURRENT_TIMESTAMP(3)
 )
+
 ON DUPLICATE KEY UPDATE
   `user_id`         = VALUES(`user_id`),
   `title`           = VALUES(`title`),

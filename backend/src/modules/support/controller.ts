@@ -28,9 +28,14 @@ import { sendTemplatedEmail } from "@/modules/email-templates/mailer";
 type AuthUser =
   | {
     id?: string;
+    sub?: string;   // JWT standard claim
     role?: string;
   }
   | undefined;
+
+function getUserId(authUser: AuthUser): string | undefined {
+  return (authUser?.id ?? authUser?.sub) as string | undefined;
+}
 
 /* ========== ortak helpers (mail + notification için) ========== */
 
@@ -144,10 +149,16 @@ export async function fireTicketRepliedEventsForTicket(args: {
 /* ========== Controller ========== */
 
 export const SupportController = {
-  /** GET /support_tickets (public) */
+  /** GET /support_tickets — kullanıcının kendi ticketları */
   async listTickets(req: FastifyRequest, reply: FastifyReply) {
     try {
-      const q = listTicketsQuerySchema.parse(req.query);
+      const authUser = req.user as AuthUser;
+      const userId = getUserId(authUser);
+      if (!userId) {
+        reply.code(401);
+        return { message: "Kimlik doğrulama gerekli." };
+      }
+      const q = listTicketsQuerySchema.parse({ ...(req.query as object), user_id: userId });
       const { data, total } = await SupportRepo.list(q);
       reply.header("x-total-count", String(total));
       return data;
@@ -158,14 +169,20 @@ export const SupportController = {
     }
   },
 
-  /** GET /support_tickets/:id (public) */
+  /** GET /support_tickets/:id — ownership kontrolü */
   async getTicket(req: FastifyRequest, reply: FastifyReply) {
     try {
+      const authUser = req.user as AuthUser;
+      const userId = getUserId(authUser);
       const { id } = req.params as { id: string };
       const row = await SupportRepo.getById(id);
       if (!row) {
         reply.code(404);
         return { message: "Kayıt bulunamadı." };
+      }
+      if (userId && row.user_id !== userId) {
+        reply.code(403);
+        return { message: "Bu kaydı görüntüleme yetkiniz yok." };
       }
       return row;
     } catch (err) {
@@ -175,12 +192,18 @@ export const SupportController = {
     }
   },
 
-  /** POST /support_tickets (protected) */
+  /** POST /support_tickets — user_id JWT'den alınır */
   async createTicket(req: FastifyRequest, reply: FastifyReply) {
     try {
-      const body = createTicketBodySchema.parse(req.body);
+      const authUser = req.user as AuthUser;
+      const userId = getUserId(authUser);
+      if (!userId) {
+        reply.code(401);
+        return { message: "Kimlik doğrulama gerekli." };
+      }
+      const body = createTicketBodySchema.parse({ ...(req.body as object), user_id: userId });
       const created = await SupportRepo.createTicket({
-        user_id: body.user_id,
+        user_id: userId,
         subject: body.subject,
         message: body.message,
         priority: body.priority as any,
@@ -299,8 +322,7 @@ export const SupportController = {
 
       const authUser = req.user as AuthUser;
       const role = (authUser?.role as string | undefined) ?? "user";
-      const userId =
-        (authUser?.id as string | undefined) ?? body.user_id ?? null;
+      const userId = getUserId(authUser) ?? body.user_id ?? null;
 
       const created = await SupportRepo.createReply({
         ticket_id: body.ticket_id,

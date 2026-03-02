@@ -45,6 +45,7 @@ export const listPropertiesPublic: RouteHandler<{ Querystring: PropertyListQuery
       brand_id:        q.brand_id,
       category_id:     q.category_id,
       sub_category_id: q.sub_category_id,
+      ids:             q.ids,
       tag_ids:         q.tag_ids,
 
       price_min: q.price_min,

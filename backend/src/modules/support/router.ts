@@ -4,53 +4,18 @@
 
 import type { FastifyInstance } from "fastify";
 import { SupportController } from "./controller";
+import { requireAuth } from "@/common/middleware/auth";
 
 const BASE = "/support_tickets";
 const REPLIES_BASE = "/ticket_replies";
 
 export async function registerSupport(app: FastifyInstance) {
-  // LIST — public
-  app.route({
-    method: "GET",
-    url: `${BASE}`,
-    config: { public: true },
-    handler: SupportController.listTickets,
-  });
+  const auth = { preHandler: [requireAuth] };
 
-  // GET by id — public
-  app.route({
-    method: "GET",
-    url: `${BASE}/:id`,
-    config: { public: true },
-    handler: SupportController.getTicket,
-  });
-
-  // CREATE ticket — protected
-  app.route({
-    method: "POST",
-    url: `${BASE}`,
-    handler: SupportController.createTicket,
-  });
-
-  // UPDATE ticket — protected (RBAC kontrolü controller içinde)
-  app.route({
-    method: "PATCH",
-    url: `${BASE}/:id`,
-    handler: SupportController.updateTicket,
-  });
-
-  // LIST replies by ticket — public
-  app.route({
-    method: "GET",
-    url: `${REPLIES_BASE}/by-ticket/:ticketId`,
-    config: { public: true },
-    handler: SupportController.listRepliesByTicket,
-  });
-
-  // CREATE reply — protected
-  app.route({
-    method: "POST",
-    url: `${REPLIES_BASE}`,
-    handler: SupportController.createReply,
-  });
+  app.route({ method: "GET",   url: BASE,                                  ...auth, handler: SupportController.listTickets });
+  app.route({ method: "GET",   url: `${BASE}/:id`,                         ...auth, handler: SupportController.getTicket });
+  app.route({ method: "POST",  url: BASE,                                  ...auth, handler: SupportController.createTicket });
+  app.route({ method: "PATCH", url: `${BASE}/:id`,                         ...auth, handler: SupportController.updateTicket });
+  app.route({ method: "GET",   url: `${REPLIES_BASE}/by-ticket/:ticketId`, ...auth, handler: SupportController.listRepliesByTicket });
+  app.route({ method: "POST",  url: REPLIES_BASE,                          ...auth, handler: SupportController.createReply });
 }

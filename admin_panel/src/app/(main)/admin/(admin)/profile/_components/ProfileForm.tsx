@@ -65,12 +65,15 @@ export function ProfileForm() {
     e.preventDefault();
 
     try {
+      const trimmedName = fullName.trim();
+      const trimmedAvatar = avatarUrl.trim();
+
       // 1. Update Profile (Full Name, Avatar)
       await upsertProfile({
         profile: {
-          full_name: fullName,
-          avatar_url: avatarUrl,
-        }
+          ...(trimmedName ? { full_name: trimmedName } : {}),
+          ...(trimmedAvatar ? { avatar_url: trimmedAvatar } : {}),
+        },
       }).unwrap();
 
       // 2. Update Auth User (Email)

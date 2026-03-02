@@ -58,7 +58,7 @@ INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUE
   (UUID(), 'ui_admin_config',
    '{
      "default_locale":"tr",
-     "theme":{"mode":"light","preset":"default","font":"inter"},
+     "theme":{"mode":"light","preset":"soft-pop","font":"inter"},
      "layout":{"sidebar_variant":"inset","sidebar_collapsible":"icon","navbar_style":"sticky","content_layout":"full-width"},
      "branding":{
        "app_name":"Kaman Ilan Admin Panel",

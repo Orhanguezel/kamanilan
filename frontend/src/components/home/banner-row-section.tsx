@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { useBannersByRowQuery } from "@/modules/banner/banner.service";
+import { useBannersByIdsQuery } from "@/modules/banner/banner.service";
 import type { BannerItem } from "@/modules/banner/banner.type";
 import type { SectionConfig } from "@/modules/theme/theme.type";
 
@@ -22,13 +22,27 @@ function BannerCard({ banner }: { banner: BannerItem }) {
   const btn    = banner.button_color       || "hsl(var(--accent))";
   const btnHov = banner.button_hover_color || banner.button_color || "hsl(var(--accent))";
   const btnTxt = banner.button_text_color  || "hsl(var(--accent-foreground))";
-  const image  = banner.thumbnail || banner.image;
+  const bgImage = banner.image;
+  const thumbImage = banner.thumbnail && banner.thumbnail !== banner.image ? banner.thumbnail : null;
 
   return (
     <div
       className="group relative overflow-hidden rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[200px] w-full h-full"
       style={{ backgroundColor: bg }}
     >
+      {bgImage && (
+        <div className="pointer-events-none absolute inset-0">
+          <Image
+            src={bgImage}
+            alt={banner.alt ?? banner.title}
+            fill
+            className="object-cover opacity-[0.2] transition-transform duration-300 group-hover:scale-[1.03]"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            unoptimized
+          />
+        </div>
+      )}
+
       {/* Derinlik katmanları */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/20" />
       <div
@@ -85,15 +99,15 @@ function BannerCard({ banner }: { banner: BannerItem }) {
           )}
         </div>
 
-        {/* Sağ: görsel */}
-        {image && (
-          <div className="relative hidden shrink-0 md:block" style={{ height: 200, width: 280 }}>
+        {/* Sağ: ön plan görseli (thumbnail varsa) */}
+        {thumbImage && (
+          <div className="relative hidden shrink-0 sm:block" style={{ height: 180, width: 240 }}>
             <Image
-              src={image}
+              src={thumbImage}
               alt={banner.alt ?? banner.title}
               fill
               className="object-contain object-right-bottom transition-transform duration-300 group-hover:scale-[1.04]"
-              sizes="280px"
+              sizes="(max-width: 1024px) 220px, 240px"
               unoptimized
             />
           </div>
@@ -105,8 +119,8 @@ function BannerCard({ banner }: { banner: BannerItem }) {
 
 /* ─────────────────────────────────────────────────
    Ana bölüm
-   Her banner_section__N bloğu, instance=N olan satırın
-   bannerlarını getirir ve dikey olarak listeler.
+   Her banner_section__N bloğu, instance=N olan banner ID'sini
+   getirir ve dikey olarak listeler.
    Yan yana düzen = dış 12-sütun grid ile yönetilir,
    BannerRowSection içinde yatay grid YOKTUR.
 ───────────────────────────────────────────────── */
@@ -115,13 +129,14 @@ export function BannerRowSection({ config }: Props) {
   const rowFromKey = Number(
     config?.key?.replace("banner_row_", "").replace(/banner_section__/, "") || 0,
   );
-  const row        = instance ?? rowFromKey;
+  const bannerId   = instance ?? rowFromKey;
+  const ids        = bannerId > 0 ? String(bannerId) : "";
   const stackCount = Math.max(1, Number((config as any)?.stack_count ?? 1));
   const isSolo     = !config?.span || config.span >= 12;
 
-  const { data: banners = [], isFetching } = useBannersByRowQuery(row);
+  const { data: banners = [], isFetching } = useBannersByIdsQuery(ids, Math.max(1, stackCount));
 
-  if (row === 0) return null;
+  if (!ids) return null;
 
   if (isFetching && !banners.length) {
     return (

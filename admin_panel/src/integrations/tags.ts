@@ -49,6 +49,8 @@ export const tags = [
   'Variants',
   'Unit',
   'Units',
+  'Wallets',
+  'Wallet',
   'WalletTransactions',
   'PaymentRequests',
   'SiteSettings',
