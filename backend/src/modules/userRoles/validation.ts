@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const userRoleListQuerySchema = z.object({
   user_id: z.string().uuid().optional(),
-  role: z.enum(["admin", "moderator", "user"]).optional(),
+  role: z.enum(["admin", "moderator", "seller", "user"]).optional(),
   order: z.literal("created_at").optional(),
   direction: z.enum(["asc", "desc"]).optional(),
   limit: z.coerce.number().int().positive().optional(),
@@ -11,7 +11,7 @@ export const userRoleListQuerySchema = z.object({
 
 export const createUserRoleSchema = z.object({
   user_id: z.string().uuid(),
-  role: z.enum(["admin", "moderator", "user"]),
+  role: z.enum(["admin", "moderator", "seller", "user"]),
 });
 
 export type UserRoleListQuery = z.infer<typeof userRoleListQuerySchema>;

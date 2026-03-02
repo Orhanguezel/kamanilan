@@ -1,6 +1,6 @@
 // =============================================================
 // FILE: src/modules/properties/controller.ts (PUBLIC)
-// FINAL: select=enums desteği (backward compatible)
+// CLEAN: category_id/sub_category_id; kind-specific removed
 // =============================================================
 import type { RouteHandler } from "fastify";
 import {
@@ -10,10 +10,9 @@ import {
   listDistricts as listDistrictsRepo,
   listCities as listCitiesRepo,
   listNeighborhoods as listNeighborhoodsRepo,
-  listTypes as listTypesRepo,
   listStatuses as listStatusesRepo,
 } from "./repository";
-import { propertyListQuerySchema, type PropertyListQuery, HEATING, USAGE_STATUS, ROOMS } from "./validation";
+import { propertyListQuerySchema, type PropertyListQuery } from "./validation";
 
 /** LIST (public) */
 export const listPropertiesPublic: RouteHandler<{ Querystring: PropertyListQuery }> = async (req, reply) => {
@@ -25,88 +24,38 @@ export const listPropertiesPublic: RouteHandler<{ Querystring: PropertyListQuery
   }
 
   const q = parsed.data;
-  const select = Array.isArray(q.select) ? q.select : [];
 
   try {
     const { items, total } = await listPropertiesPublicRepo({
       orderParam: typeof q.order === "string" ? q.order : undefined,
-      sort: q.sort,
-      order: q.orderDir,
-      limit: q.limit,
-      offset: q.offset,
+      sort:       q.sort,
+      order:      q.orderDir,
+      limit:      q.limit,
+      offset:     q.offset,
 
       is_active: q.is_active,
-      featured: q.featured,
+      featured:  q.featured,
 
-      q: q.q,
-      slug: q.slug,
-      district: q.district,
-      city: q.city,
-      neighborhood: q.neighborhood,
-      type: q.type,
-      status: q.status,
+      q:               q.q,
+      slug:            q.slug,
+      district:        q.district,
+      city:            q.city,
+      neighborhood:    q.neighborhood,
+      status:          q.status,
+      brand_id:        q.brand_id,
+      category_id:     q.category_id,
+      sub_category_id: q.sub_category_id,
+      tag_ids:         q.tag_ids,
 
       price_min: q.price_min,
       price_max: q.price_max,
-      gross_m2_min: q.gross_m2_min,
-      gross_m2_max: q.gross_m2_max,
-      net_m2_min: q.net_m2_min,
-      net_m2_max: q.net_m2_max,
-
-      rooms: q.rooms,
-      rooms_multi: q.rooms_multi,
-      bedrooms_min: q.bedrooms_min,
-      bedrooms_max: q.bedrooms_max,
-
-      building_age: q.building_age,
-
-      floor: q.floor,
-      floor_no_min: q.floor_no_min,
-      floor_no_max: q.floor_no_max,
-      total_floors_min: q.total_floors_min,
-      total_floors_max: q.total_floors_max,
-
-      heating: q.heating,
-      heating_multi: q.heating_multi,
-      usage_status: q.usage_status,
-      usage_status_multi: q.usage_status_multi,
-
-      furnished: q.furnished,
-      in_site: q.in_site,
-      has_balcony: q.has_balcony,
-      has_parking: q.has_parking,
-      has_elevator: q.has_elevator,
-      has_garden: q.has_garden,
-      has_terrace: q.has_terrace,
-      credit_eligible: q.credit_eligible,
-      swap: q.swap,
-      has_video: q.has_video,
-      has_clip: q.has_clip,
-      has_virtual_tour: q.has_virtual_tour,
-      has_map: q.has_map,
-      accessible: q.accessible,
 
       created_from: q.created_from,
-      created_to: q.created_to,
+      created_to:   q.created_to,
     });
 
     reply.header("x-total-count", String(total ?? 0));
-
-    // ✅ select=enums/meta istenirse object dön
-    if (select.includes("enums") || select.includes("meta")) {
-      return reply.send({
-        items,
-        total,
-        enums: {
-          rooms: ROOMS,
-          heating: HEATING,
-          usage_status: USAGE_STATUS,
-        },
-      });
-    }
-
-    // default: eski davranış (array)
-    return reply.send(items);
+    return reply.send({ items, total });
   } catch (err) {
     req.log.error({ err }, "properties_public_list_failed");
     return reply.code(500).send({ error: { message: "properties_public_list_failed" } });
@@ -137,11 +86,62 @@ export const getPropertyBySlugPublic: RouteHandler<{ Params: { slug: string } }>
   }
 };
 
+/** GET /properties/rss — Son ilanlar RSS 2.0 feed */
+export const listPropertiesRss: RouteHandler = async (req, reply) => {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3003";
+
+  const escXml = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+  try {
+    const { items } = await listPropertiesPublicRepo({
+      is_active: true,
+      limit:     30,
+      offset:    0,
+      sort:      "created_at",
+      order:     "desc",
+    });
+
+    const rssItems = (items as any[]).map((item) => {
+      const link    = `${siteUrl}/ilan/${escXml(item.slug ?? String(item.id))}`;
+      const pubDate = new Date(item.created_at).toUTCString();
+      const desc    = escXml(item.excerpt ?? item.description ?? item.title ?? "");
+      const img     = item.image_url ?? null;
+      return `
+  <item>
+    <title>${escXml(item.title ?? "")}</title>
+    <link>${link}</link>
+    <guid isPermaLink="true">${link}</guid>
+    <description>${desc}</description>
+    <pubDate>${pubDate}</pubDate>
+    ${img ? `<enclosure url="${escXml(img)}" type="image/jpeg" length="0"/>` : ""}
+  </item>`;
+    }).join("\n");
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kaman İlan — Son İlanlar</title>
+    <link>${siteUrl}/ilanlar</link>
+    <description>Kaman İlan platformundaki en son ilanlar</description>
+    <language>tr</language>
+    <atom:link href="${siteUrl}/api/properties/rss" rel="self" type="application/rss+xml"/>
+    ${rssItems}
+  </channel>
+</rss>`;
+
+    reply.header("Content-Type", "application/rss+xml; charset=utf-8");
+    return reply.send(xml);
+  } catch (err) {
+    req.log.error({ err }, "properties_rss_failed");
+    return reply.code(500).send({ error: { message: "properties_rss_failed" } });
+  }
+};
+
 /** META: districts */
 export const listDistrictsPublic: RouteHandler = async (req, reply) => {
   try {
-    const arr = await listDistrictsRepo();
-    return reply.send(arr);
+    return reply.send(await listDistrictsRepo());
   } catch (err) {
     req.log.error({ err }, "properties_public_districts_failed");
     return reply.code(500).send({ error: { message: "properties_public_districts_failed" } });
@@ -151,8 +151,7 @@ export const listDistrictsPublic: RouteHandler = async (req, reply) => {
 /** META: cities */
 export const listCitiesPublic: RouteHandler = async (req, reply) => {
   try {
-    const arr = await listCitiesRepo();
-    return reply.send(arr);
+    return reply.send(await listCitiesRepo());
   } catch (err) {
     req.log.error({ err }, "properties_public_cities_failed");
     return reply.code(500).send({ error: { message: "properties_public_cities_failed" } });
@@ -162,30 +161,17 @@ export const listCitiesPublic: RouteHandler = async (req, reply) => {
 /** META: neighborhoods */
 export const listNeighborhoodsPublic: RouteHandler = async (req, reply) => {
   try {
-    const arr = await listNeighborhoodsRepo();
-    return reply.send(arr);
+    return reply.send(await listNeighborhoodsRepo());
   } catch (err) {
     req.log.error({ err }, "properties_public_neighborhoods_failed");
     return reply.code(500).send({ error: { message: "properties_public_neighborhoods_failed" } });
   }
 };
 
-/** META: types */
-export const listTypesPublic: RouteHandler = async (req, reply) => {
-  try {
-    const arr = await listTypesRepo();
-    return reply.send(arr);
-  } catch (err) {
-    req.log.error({ err }, "properties_public_types_failed");
-    return reply.code(500).send({ error: { message: "properties_public_types_failed" } });
-  }
-};
-
 /** META: statuses */
 export const listStatusesPublic: RouteHandler = async (req, reply) => {
   try {
-    const arr = await listStatusesRepo();
-    return reply.send(arr);
+    return reply.send(await listStatusesRepo());
   } catch (err) {
     req.log.error({ err }, "properties_public_statuses_failed");
     return reply.code(500).send({ error: { message: "properties_public_statuses_failed" } });

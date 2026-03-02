@@ -1,7 +1,6 @@
 -- =============================================================
 -- FILE: 21_properties_seed.sql
--- Seed for properties + property_assets (FINAL schema compatible)
--- - created_at / updated_at set explicitly for "kaç gündür yayında" testi
+-- Kaman Ilan - general listing seed (category_id based)
 -- =============================================================
 
 SET NAMES utf8mb4;
@@ -9,516 +8,299 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 START TRANSACTION;
 
--- =============================================================
--- PROPERTIES
--- =============================================================
 INSERT INTO `properties`
 (
   `id`,
+  `user_id`,
   `title`, `slug`,
-  `type`, `status`,
+  `category_id`, `sub_category_id`,
+  `status`,
   `address`, `district`, `city`, `neighborhood`,
-  `lat`, `lng`,
   `description`,
-
   `price`, `currency`,
-  `min_price_admin`,
-
   `listing_no`, `badge_text`, `featured`,
-
-  `gross_m2`, `net_m2`,
-
-  `rooms`, `rooms_multi`,
-  `bedrooms`,
-  `building_age`,
-
-  `floor`, `floor_no`,
-  `total_floors`,
-
-  `heating`, `heating_multi`,
-  `usage_status`, `usage_status_multi`,
-
-  `furnished`, `in_site`,
-  `has_elevator`, `has_parking`, `has_balcony`,
-  `has_garden`, `has_terrace`,
-
-  `credit_eligible`, `swap`,
-
-  `has_video`, `has_clip`, `has_virtual_tour`,
-  `has_map`, `accessible`,
-
-  `image_url`, `image_asset_id`, `alt`,
-
+  `image_url`, `alt`,
   `display_order`, `is_active`,
-
   `created_at`, `updated_at`
 )
 VALUES
--- ================= 1) Kadıköy / Moda (3 gündür) =================
 (
-  '11111111-1111-4111-8111-111111111111',
-  'Kadıköy Moda’da Ferah 2+1, Balkonlu', 'kadikoy-moda-ferah-2-1-balkonlu',
-  'Daire', 'satilik',
-  'Caferağa Mah. Moda Cd. No:12 D:5', 'Kadıköy', 'İstanbul', 'Moda',
-  40.987200, 29.026600,
-  'Notlar:
-- Tapu: Kat mülkiyeti (örnek)
-- Ulaşım: İskeleye ~12 dk yürüme (örnek)
-- Cephe: Güney / Aydınlık (örnek)
-- Aidat: 1.250 TL (örnek)
-- Not: Bu kayıt demo amaçlıdır.',
-
-  8950000.00, 'TRY',
-  8200000.00,
-
-  'ILN-IST-000001', 'Fırsat', 1,
-
-  110, 92,
-
-  '2+1', JSON_ARRAY('2+1'),
-  2,
-  '5-10',
-
-  '3', 3,
-  6,
-
-  'kombi', JSON_ARRAY('kombi'),
-  'bos', JSON_ARRAY('bos'),
-
-  0, 1,
-  1, 0, 1,
-  0, 0,
-
-  1, 0,
-
-  0, 0, 1,
+  '31000000-0000-4000-8000-000000000001',
+  @ADMIN_ID,
+  'Satilik 3+1 Daire - Kaman Merkez', 'satilik-3-1-daire-kaman-merkez',
+  '10000000-0000-4000-8000-000000000001', NULL,
+  'satilik',
+  'Yeni Mahalle Ataturk Cad. No:14', 'Kaman', 'Kirsehir', 'Merkez',
+  'Kaman merkezde aileye uygun genis daire.',
+  2350000.00, 'TRY',
+  'KMN-EML-0001', 'One Cikan', 1,
+  'https://images.unsplash.com/photo-1560518883-ce09059eeffa?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Kaman merkez satilik daire',
   1, 1,
-
-  'https://images.unsplash.com/photo-1568605114967-8130f3a36994?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
-  NULL,
-  'Kadıköy Moda ferah daire (örnek görsel)',
-
-  0, 1,
-
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 3 DAY),
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 8 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
 ),
-
--- ================= 2) Beşiktaş / Levent (5 gündür) =================
 (
-  '22222222-2222-4222-8222-222222222222',
-  'Levent’te Site İçi 3+1, Otoparklı, Asansörlü', 'levent-site-ici-3-1-otoparkli-asansorlu',
-  'Daire', 'satilik',
-  'Levent Mah. Büyükdere Cd. No:88 D:14', 'Beşiktaş', 'İstanbul', 'Levent',
-  41.081000, 29.011600,
-  'Notlar:
-- Güvenlik: 7/24 (örnek)
-- Otopark: Kapalı (örnek)
-- Sosyal alan: Spor salonu / havuz (örnek)
-- Kredi: Uygun (örnek)
-- Not: Bu kayıt demo amaçlıdır.',
-
-  24500000.00, 'TRY',
-  23000000.00,
-
-  'ILN-IST-000002', 'Lüks', 1,
-
-  185, 160,
-
-  '3+1', JSON_ARRAY('3+1'),
-  3,
-  '0-5',
-
-  '14', 14,
-  22,
-
-  'merkezi', JSON_ARRAY('merkezi'),
-  'ev_sahibi', JSON_ARRAY('ev_sahibi'),
-
-  0, 1,
-  1, 1, 1,
-  0, 1,
-
-  1, 0,
-
-  1, 0, 1,
-  1, 1,
-
-  'https://images.unsplash.com/photo-1501183638710-841dd1904471?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
-  NULL,
-  'Levent site içi modern daire (örnek görsel)',
-
-  1, 1,
-
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 5 DAY),
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 2 DAY)
-),
-
--- ================= 3) Şişli / Mecidiyeköy (bugün) =================
-(
-  '33333333-3333-4333-8333-333333333333',
-  'Mecidiyeköy’de Eşyalı 1+1, Metroya Yakın', 'mecidiyekoy-esyali-1-1-metroya-yakin',
-  'Daire', 'kiralik',
-  'Fulya Mah. Büyükdere Cd. No:45 D:7', 'Şişli', 'İstanbul', 'Mecidiyeköy',
-  41.065900, 28.998600,
-  'Notlar:
-- Kiracı profili: Beyaz yaka / öğrenci (örnek)
-- Depozito: 2 kira (örnek)
-- Eşya: Tam (örnek)
-- Not: Bu kayıt demo amaçlıdır.',
-
-  55000.00, 'TRY',
-  45000.00,
-
-  'ILN-IST-000003', 'Yeni', 0,
-
-  65, 55,
-
-  '1+1', JSON_ARRAY('1+1'),
-  1,
-  '10+',
-
-  '7', 7,
-  12,
-
-  'kombi', JSON_ARRAY('kombi'),
-  'bos', JSON_ARRAY('bos'),
-
-  1, 1,
-  1, 0, 0,
-  0, 0,
-
-  0, 0,
-
-  1, 1, 0,
-  1, 1,
-
-  'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
-  NULL,
-  'Mecidiyeköy eşyalı 1+1 (örnek görsel)',
-
+  '31000000-0000-4000-8000-000000000002',
+  @SELLER_ID,
+  '2020 Model Fiat Egea 1.4 - Temiz', '2020-fiat-egea-temiz',
+  '10000000-0000-4000-8000-000000000002', NULL,
+  'satilik',
+  'Sanayi Sitesi 4. Blok', 'Kaman', 'Kirsehir', 'Sanayi',
+  'Bakimli, ekspertiz raporlu arac.',
+  845000.00, 'TRY',
+  'KMN-ARC-0002', 'Bakimli', 1,
+  'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Satilik otomobil',
   2, 1,
-
-  CURRENT_TIMESTAMP(3),
-  CURRENT_TIMESTAMP(3)
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 6 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
 ),
-
--- ================= 4) Üsküdar / Kuzguncuk (12 gündür) =================
 (
-  '44444444-4444-4444-8444-444444444444',
-  'Kuzguncuk’ta Boğaz Havası, 2+1, Sessiz Sokak', 'kuzguncuk-bogaz-havasi-2-1-sessiz-sokak',
-  'Daire', 'satilik',
-  'Kuzguncuk Mah. İcadiye Cd. No:19 D:2', 'Üsküdar', 'İstanbul', 'Kuzguncuk',
-  41.036900, 29.034500,
-  'Notlar:
-- Manzara: Kısmi boğaz (örnek)
-- Cephe: Kuzey-doğu (örnek)
-- Otopark: Sokak (örnek)
-- Not: Bu kayıt demo amaçlıdır.',
-
-  13250000.00, 'TRY',
-  12500000.00,
-
-  'ILN-IST-000004', 'Manzara', 1,
-
-  105, 90,
-
-  '2+1', JSON_ARRAY('2+1'),
-  2,
-  '10+',
-
-  '2', 2,
-  4,
-
-  'kombi', JSON_ARRAY('kombi'),
-  'kiracili', JSON_ARRAY('kiracili'),
-
-  0, 0,
-  0, 0, 1,
-  1, 0,
-
-  1, 1,
-
-  0, 0, 1,
-  1, 0,
-
-  'https://images.unsplash.com/photo-1460317442991-0ec209397118?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
-  NULL,
-  'Kuzguncuk sokak ve ev atmosferi (örnek görsel)',
-
+  '31000000-0000-4000-8000-000000000003',
+  @CUSTOMER_ID,
+  'Ikinci El Kose Takimi - Temiz Kullanildi', 'ikinci-el-kose-takimi-temiz-kullanildi',
+  '10000000-0000-4000-8000-000000000003', NULL,
+  'satilik',
+  'Bahceler Mahallesi 22. Sokak', 'Kaman', 'Kirsehir', 'Bahceler',
+  'Lekesiz, deformesiz ikinci el kose takimi.',
+  17500.00, 'TRY',
+  'KMN-IKI-0003', NULL, 0,
+  'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Ikinci el oturma grubu',
   3, 1,
-
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 12 DAY),
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 4 DAY)
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 5 DAY), CURRENT_TIMESTAMP(3)
 ),
-
--- ================= 5) Ataşehir / Finans Merkezi (30 gündür) =================
 (
-  '55555555-5555-4555-8555-555555555555',
-  'Ataşehir Finans Merkezine Yakın 4+1, Aileye Uygun', 'atasehir-finans-merkezine-yakin-4-1-aileye-uygun',
-  'Daire', 'satilik',
-  'Barbaros Mah. Mor Sümbül Sk. No:7 D:18', 'Ataşehir', 'İstanbul', 'Barbaros',
-  40.992300, 29.124600,
-  'Notlar:
-- Site içi: Çocuk parkı / sosyal alan (örnek)
-- Asansör: Var
-- Otopark: Var
-- Aidat: 2.100 TL (örnek)
-- Not: Bu kayıt demo amaçlıdır.',
-
-  17990000.00, 'TRY',
-  16800000.00,
-
-  'ILN-IST-000005', NULL, 0,
-
-  210, 185,
-
-  '4+1', JSON_ARRAY('4+1'),
-  4,
-  '0-5',
-
-  '18', 18,
-  24,
-
-  'merkezi', JSON_ARRAY('merkezi'),
-  'bos', JSON_ARRAY('bos'),
-
-  0, 1,
-  1, 1, 1,
-  0, 1,
-
-  1, 0,
-
-  1, 0, 1,
-  1, 1,
-
-  'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
-  NULL,
-  'Ataşehir aileye uygun geniş daire (örnek görsel)',
-
+  '31000000-0000-4000-8000-000000000004',
+  @SELLER_ID,
+  'Kabuklu Kaman Cevizi - Yeni Hasat 25 KG', 'kabuklu-kaman-cevizi-yeni-hasat-25kg',
+  '10000000-0000-4000-8000-000000000004', NULL,
+  'satilik',
+  'Ceviz Uretici Birligi Deposu', 'Kaman', 'Kirsehir', 'Sofular',
+  'Yeni sezon Kaman cevizi, dogrudan ureticiden.',
+  4950.00, 'TRY',
+  'KMN-CEV-0004', 'Yeni Hasat', 1,
+  'https://images.unsplash.com/photo-1615485737651-10f6f5b9b5d4?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Kabuklu ceviz',
   4, 1,
-
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 30 DAY),
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 10 DAY)
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 10 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 2 DAY)
 ),
-
--- ================= 6) Beylikdüzü / Marina (satıldı, 60 gün önce açılmış) =================
 (
-  '66666666-6666-4666-8666-666666666666',
-  'Satıldı: Beylikdüzü Marina Yakını 1+1', 'satildi-beylikduzu-marina-yakini-1-1',
-  'Daire', 'sold',
-  'Adnan Kahveci Mah. Yavuz Sultan Selim Blv. No:31 D:9', 'Beylikdüzü', 'İstanbul', 'Adnan Kahveci',
-  40.982800, 28.639900,
-  'Notlar:
-- Satış tamamlandı (örnek)
-- Evrak arşivlendi (örnek)
-- Not: Bu kayıt demo amaçlıdır.',
-
+  '31000000-0000-4000-8000-000000000005',
+  @SELLER_ID,
+  'Satilik Simental Dana - Veteriner Kontrollu', 'satilik-simental-dana-veteriner-kontrollu',
+  '10000000-0000-4000-8000-000000000005', NULL,
+  'satilik',
+  'Ciftlik Yolu 3. Km', 'Kaman', 'Kirsehir', 'Ciftlikler',
+  'Asilari tam, kupe kaydi mevcut.',
+  132000.00, 'TRY',
+  'KMN-HYT-0005', 'Saglikli', 1,
+  'https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=900&q=80', 'Satilik buyukbas hayvan',
+  5, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 7 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
+),
+(
+  '31000000-0000-4000-8000-000000000006',
+  @ADMIN_ID,
+  'Kasiyer Araniyor - Kaman Merkez Market', 'kasiyer-araniyor-kaman-merkez-market',
+  '10000000-0000-4000-8000-000000000006', NULL,
+  'acik',
+  'Ataturk Cad. No:48', 'Kaman', 'Kirsehir', 'Merkez',
+  'Deneyimli kasiyer arayisimiz vardir.',
+  25000.00, 'TRY',
+  'KMN-ISI-0006', 'Acil', 0,
+  'https://images.unsplash.com/photo-1521790797524-b2497295b8a0?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Is ilani ofis',
+  6, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 3 DAY), CURRENT_TIMESTAMP(3)
+),
+(
+  '31000000-0000-4000-8000-000000000007',
+  @SELLER_ID,
+  'Gunluk Ciftlik Sutu - 10 LT', 'gunluk-ciftlik-sutu-10-lt',
+  '10000000-0000-4000-8000-000000000007', NULL,
+  'satilik',
+  'Sut Toplama Noktasi', 'Kaman', 'Kirsehir', 'Merkez',
+  'Sabah sagim, soguk zincirle teslim.',
+  420.00, 'TRY',
+  'KMN-SYT-0007', 'Gunluk', 1,
+  'https://images.unsplash.com/photo-1563636619-e9143da7973b?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Taze sut',
+  7, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY), CURRENT_TIMESTAMP(3)
+),
+(
+  '31000000-0000-4000-8000-000000000008',
+  @SELLER_ID,
+  'Organik Domates - 15 KG Kasa', 'organik-domates-15kg-kasa',
+  '10000000-0000-4000-8000-000000000008', NULL,
+  'satilik',
+  'Hal Ici 12 Numara', 'Kaman', 'Kirsehir', 'Pazar',
+  'Ilacsiz uretim domates, tarladan kasaya.',
+  680.00, 'TRY',
+  'KMN-MYS-0008', NULL, 0,
+  'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Organik domates kasasi',
+  8, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 2 DAY), CURRENT_TIMESTAMP(3)
+),
+(
+  '31000000-0000-4000-8000-000000000009',
+  @SELLER_ID,
+  'Nohut - Elekten Gecmis 50 KG', 'nohut-elekten-gecmis-50kg',
+  '10000000-0000-4000-8000-000000000009', NULL,
+  'satilik',
+  'Tahil Pazari', 'Kaman', 'Kirsehir', 'Sanayi',
+  'Yeni sezon nohut, cuval bazli satis.',
+  2950.00, 'TRY',
+  'KMN-HUB-0009', NULL, 0,
+  'https://images.unsplash.com/photo-1515543904379-3d757afe72e3?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Nohut cuvali',
+  9, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 4 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
+),
+(
+  '31000000-0000-4000-8000-000000000010',
+  @CUSTOMER_ID,
+  'Dag Bisikleti - Az Kullanilmis', 'dag-bisikleti-az-kullanilmis',
+  '10000000-0000-4000-8000-000000000010', NULL,
+  'satilik',
+  'Cumhuriyet Mahallesi', 'Kaman', 'Kirsehir', 'Cumhuriyet',
+  '26 jant dag bisikleti, bakimlari yapildi.',
+  9500.00, 'TRY',
+  'KMN-GNS-0010', 'Firsat', 0,
+  'https://images.unsplash.com/photo-1511994298241-608e28f14fde?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Dag bisikleti',
+  10, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 6 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 2 DAY)
+),
+(
+  '31000000-0000-4000-8000-000000000011',
+  @CUSTOMER_ID,
+  'Kislik Mont - Erkek L Beden', 'kislik-mont-erkek-l-beden',
+  '10000000-0000-4000-8000-000000000011', NULL,
+  'satilik',
+  'Pazar Yeri 2. Koridor', 'Kaman', 'Kirsehir', 'Pazar',
+  'Su gecirmez, temiz kullanilmis mont.',
+  1750.00, 'TRY',
+  'KMN-GYM-0011', NULL, 0,
+  'https://images.unsplash.com/photo-1548883354-94bcfe321cbb?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Erkek mont',
+  11, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 9 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 3 DAY)
+),
+(
+  '31000000-0000-4000-8000-000000000012',
+  @CUSTOMER_ID,
+  'Ikinci El iPhone 13 - 128 GB', 'ikinci-el-iphone-13-128gb',
+  '10000000-0000-4000-8000-000000000012', NULL,
+  'satilik',
+  'Merkez Telefoncular Carsisi', 'Kaman', 'Kirsehir', 'Merkez',
+  'Kutulu, faturali, pil sagligi yuksek.',
+  27900.00, 'TRY',
+  'KMN-ELK-0012', 'Kutulu', 1,
+  'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Akilli telefon',
+  12, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 2 DAY), CURRENT_TIMESTAMP(3)
+),
+(
+  '31000000-0000-4000-8000-000000000013',
+  @SELLER_ID,
+  'Elektrikci Hizmeti - Acil Ariza', 'elektrikci-hizmeti-acil-ariza',
+  '10000000-0000-4000-8000-000000000013', NULL,
+  'hizmet',
+  'Kaman Geneli', 'Kaman', 'Kirsehir', 'Merkez',
+  'Acil elektrik arizalari icin yerinde servis.',
+  750.00, 'TRY',
+  'KMN-UST-0013', '7/24', 1,
+  'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Elektrik tamir hizmeti',
+  13, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY), CURRENT_TIMESTAMP(3)
+),
+(
+  '31000000-0000-4000-8000-000000000014',
+  @ADMIN_ID,
+  'Tarim Ilaclama Pompasi - Motorlu', 'tarim-ilaclama-pompasi-motorlu',
+  '10000000-0000-4000-8000-000000000014', NULL,
+  'satilik',
+  'Sanayi Sitesi A Blok', 'Kaman', 'Kirsehir', 'Sanayi',
+  'Calisir durumda motorlu ilaclama pompasi.',
+  12400.00, 'TRY',
+  'KMN-AGR-0014', NULL, 0,
+  'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Tarim ekipmani',
+  14, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 11 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
+),
+(
+  '31000000-0000-4000-8000-000000000015',
+  @ADMIN_ID,
+  'Kiralik 120 m2 Dukkan - Cadde Uzeri', 'kiralik-120m2-dukkan-cadde-uzeri',
+  '10000000-0000-4000-8000-000000000001', NULL,
+  'kiralik',
+  'Carsi Mah. Inonu Cad. No:22', 'Kaman', 'Kirsehir', 'Carsi',
+  'Yaya trafigi yuksek konumda kiralik dukkan.',
+  28000.00, 'TRY',
+  'KMN-KIR-0015', 'Merkezi', 1,
+  'https://images.unsplash.com/photo-1441986300917-64674bd600d8?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Kiralik dukkan',
+  15, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 4 DAY), CURRENT_TIMESTAMP(3)
+),
+(
+  '31000000-0000-4000-8000-000000000016',
+  @CUSTOMER_ID,
+  'Gezen Tavuk Yumurtasi - 30 Lu Koli', 'gezen-tavuk-yumurtasi-30lu-koli',
+  '10000000-0000-4000-8000-000000000005', NULL,
+  'satilik',
+  'Kumes Ciftligi Yolu', 'Kaman', 'Kirsehir', 'Koy Ici',
+  'Gunluk toplanmis gezen tavuk yumurtasi.',
+  290.00, 'TRY',
+  'KMN-KUM-0016', 'Gunluk', 0,
+  'https://images.unsplash.com/photo-1506976785307-8732e854ad03?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Koy yumurtasi',
+  16, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 2 DAY), CURRENT_TIMESTAMP(3)
+),
+(
+  '31000000-0000-4000-8000-000000000017',
+  @ADMIN_ID,
+  'Satilik Tarla - Sulamaya Uygun 8 Donum', 'satilik-tarla-sulamaya-uygun-8-donum',
+  '10000000-0000-4000-8000-000000000015', NULL,
+  'satilik',
+  'Yeniyapan Koyu Mevkii', 'Kaman', 'Kirsehir', 'Yeniyapan',
+  'Yola cephe, verimli toprak yapisina sahip tarla.',
+  1860000.00, 'TRY',
+  'KMN-ARS-0017', NULL, 0,
+  'https://images.unsplash.com/photo-1500382017468-9049fed747ef?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Satilik tarla',
+  17, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 13 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 2 DAY)
+),
+(
+  '31000000-0000-4000-8000-000000000018',
+  @ADMIN_ID,
+  'Vefat Ilani - Ahmet Yildiz', 'vefat-ilani-ahmet-yildiz',
+  '10000000-0000-4000-8000-000000000016', NULL,
+  'duyuru',
+  'Merkez Cami Karsisi', 'Kaman', 'Kirsehir', 'Merkez',
+  'Merhum Ahmet Yildiz icin cenaze duyurusu.',
   0.00, 'TRY',
-  NULL,
-
-  'ILN-IST-000006', NULL, 0,
-
-  60, 50,
-
-  '1+1', JSON_ARRAY('1+1'),
-  1,
-  '5-10',
-
-  '9', 9,
-  14,
-
-  'kombi', JSON_ARRAY('kombi'),
-  'bos', JSON_ARRAY('bos'),
-
-  0, 1,
-  1, 1, 0,
-  0, 0,
-
-  0, 0,
-
-  0, 0, 0,
-  1, 0,
-
-  'https://images.unsplash.com/photo-1494526585095-c41746248156?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
-  NULL,
-  'Beylikdüzü 1+1 (satıldı) örnek görsel',
-
-  5, 0,
-
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 60 DAY),
-  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
+  'KMN-CNZ-0018', 'Duyuru', 0,
+  'https://images.unsplash.com/photo-1470163395405-d2b80e7450ed?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Anma cicekleri',
+  18, 1,
+  DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY), CURRENT_TIMESTAMP(3)
 )
 ON DUPLICATE KEY UPDATE
-  `title`              = VALUES(`title`),
-  `slug`               = VALUES(`slug`),
-  `type`               = VALUES(`type`),
-  `status`             = VALUES(`status`),
+  `user_id`         = VALUES(`user_id`),
+  `title`           = VALUES(`title`),
+  `slug`            = VALUES(`slug`),
+  `category_id`     = VALUES(`category_id`),
+  `sub_category_id` = VALUES(`sub_category_id`),
+  `status`          = VALUES(`status`),
+  `address`         = VALUES(`address`),
+  `district`        = VALUES(`district`),
+  `city`            = VALUES(`city`),
+  `neighborhood`    = VALUES(`neighborhood`),
+  `description`     = VALUES(`description`),
+  `price`           = VALUES(`price`),
+  `currency`        = VALUES(`currency`),
+  `listing_no`      = VALUES(`listing_no`),
+  `badge_text`      = VALUES(`badge_text`),
+  `featured`        = VALUES(`featured`),
+  `image_url`       = VALUES(`image_url`),
+  `alt`             = VALUES(`alt`),
+  `display_order`   = VALUES(`display_order`),
+  `is_active`       = VALUES(`is_active`),
+  `updated_at`      = CURRENT_TIMESTAMP(3);
 
-  `address`            = VALUES(`address`),
-  `district`           = VALUES(`district`),
-  `city`               = VALUES(`city`),
-  `neighborhood`       = VALUES(`neighborhood`),
-
-  `lat`                = VALUES(`lat`),
-  `lng`                = VALUES(`lng`),
-  `description`        = VALUES(`description`),
-
-  `price`              = VALUES(`price`),
-  `currency`           = VALUES(`currency`),
-  `min_price_admin`    = VALUES(`min_price_admin`),
-
-  `listing_no`         = VALUES(`listing_no`),
-  `badge_text`         = VALUES(`badge_text`),
-  `featured`           = VALUES(`featured`),
-
-  `gross_m2`           = VALUES(`gross_m2`),
-  `net_m2`             = VALUES(`net_m2`),
-
-  `rooms`              = VALUES(`rooms`),
-  `rooms_multi`        = VALUES(`rooms_multi`),
-
-  `bedrooms`           = VALUES(`bedrooms`),
-  `building_age`       = VALUES(`building_age`),
-
-  `floor`              = VALUES(`floor`),
-  `floor_no`           = VALUES(`floor_no`),
-  `total_floors`       = VALUES(`total_floors`),
-
-  `heating`            = VALUES(`heating`),
-  `heating_multi`      = VALUES(`heating_multi`),
-
-  `usage_status`       = VALUES(`usage_status`),
-  `usage_status_multi` = VALUES(`usage_status_multi`),
-
-  `furnished`          = VALUES(`furnished`),
-  `in_site`            = VALUES(`in_site`),
-
-  `has_elevator`       = VALUES(`has_elevator`),
-  `has_parking`        = VALUES(`has_parking`),
-  `has_balcony`        = VALUES(`has_balcony`),
-  `has_garden`         = VALUES(`has_garden`),
-  `has_terrace`        = VALUES(`has_terrace`),
-
-  `credit_eligible`    = VALUES(`credit_eligible`),
-  `swap`               = VALUES(`swap`),
-
-  `has_video`          = VALUES(`has_video`),
-  `has_clip`           = VALUES(`has_clip`),
-  `has_virtual_tour`   = VALUES(`has_virtual_tour`),
-  `has_map`            = VALUES(`has_map`),
-  `accessible`         = VALUES(`accessible`),
-
-  `image_url`          = VALUES(`image_url`),
-  `image_asset_id`     = VALUES(`image_asset_id`),
-  `alt`                = VALUES(`alt`),
-
-  `display_order`      = VALUES(`display_order`),
-  `is_active`          = VALUES(`is_active`),
-
-  -- created_at dokunma (ilk oluşturma tarihi kalsın)
-  `updated_at`         = CURRENT_TIMESTAMP(3);
-
--- =============================================================
--- PROPERTY_ASSETS (GALLERY)
--- - asset_id: NULL (storage yok)
--- - url: Unsplash demo
--- - cover: is_cover=1 tekil
--- =============================================================
-INSERT INTO `property_assets`
-(
-  `id`,
-  `property_id`,
-  `asset_id`,
-  `url`,
-  `alt`,
-  `kind`,
-  `mime`,
-  `is_cover`,
-  `display_order`
-)
-VALUES
--- ================= Property 1 (Kadıköy / Moda) =================
-('a1111111-1111-4111-8111-111111111111', '11111111-1111-4111-8111-111111111111', NULL,
- 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Salon / dış cephe (örnek)', 'image', 'image/jpeg', 1, 0),
-('a1111111-1111-4111-8111-111111111112', '11111111-1111-4111-8111-111111111111', NULL,
- 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Mutfak (örnek)', 'image', 'image/jpeg', 0, 1),
-('a1111111-1111-4111-8111-111111111113', '11111111-1111-4111-8111-111111111111', NULL,
- 'https://images.unsplash.com/photo-1505693314120-0d443867891c?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Yatak odası (örnek)', 'image', 'image/jpeg', 0, 2),
-('a1111111-1111-4111-8111-111111111114', '11111111-1111-4111-8111-111111111111', NULL,
- 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Banyo (örnek)', 'image', 'image/jpeg', 0, 3),
-
--- ================= Property 2 (Levent) =================
-('a2222222-2222-4222-8222-222222222221', '22222222-2222-4222-8222-222222222222', NULL,
- 'https://images.unsplash.com/photo-1501183638710-841dd1904471?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Dış cephe / site (örnek)', 'image', 'image/jpeg', 1, 0),
-('a2222222-2222-4222-8222-222222222222', '22222222-2222-4222-8222-222222222222', NULL,
- 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Salon (örnek)', 'image', 'image/jpeg', 0, 1),
-('a2222222-2222-4222-8222-222222222223', '22222222-2222-4222-8222-222222222222', NULL,
- 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Mutfak (örnek)', 'image', 'image/jpeg', 0, 2),
-('a2222222-2222-4222-8222-222222222224', '22222222-2222-4222-8222-222222222222', NULL,
- 'https://images.unsplash.com/photo-1502005097973-6a7082348e28?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Balkon / manzara (örnek)', 'image', 'image/jpeg', 0, 3),
-
--- ================= Property 3 (Mecidiyeköy) =================
-('a3333333-3333-4333-8333-333333333331', '33333333-3333-4333-8333-333333333333', NULL,
- 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Stüdyo yaşam alanı (örnek)', 'image', 'image/jpeg', 1, 0),
-('a3333333-3333-4333-8333-333333333332', '33333333-3333-4333-8333-333333333333', NULL,
- 'https://images.unsplash.com/photo-1505691723518-36a5ac3b2b57?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Yatak alanı (örnek)', 'image', 'image/jpeg', 0, 1),
-('a3333333-3333-4333-8333-333333333333', '33333333-3333-4333-8333-333333333333', NULL,
- 'https://images.unsplash.com/photo-1554995207-c18c203602cb?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Çalışma köşesi (örnek)', 'image', 'image/jpeg', 0, 2),
-
--- ================= Property 4 (Kuzguncuk) =================
-('a4444444-4444-4444-8444-444444444441', '44444444-4444-4444-8444-444444444444', NULL,
- 'https://images.unsplash.com/photo-1460317442991-0ec209397118?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Sokak / mahalle dokusu (örnek)', 'image', 'image/jpeg', 1, 0),
-('a4444444-4444-4444-8444-444444444442', '44444444-4444-4444-8444-444444444444', NULL,
- 'https://images.unsplash.com/photo-1449844908441-8829872d2607?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Dış cephe (örnek)', 'image', 'image/jpeg', 0, 1),
-('a4444444-4444-4444-8444-444444444443', '44444444-4444-4444-8444-444444444444', NULL,
- 'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Salon (örnek)', 'image', 'image/jpeg', 0, 2),
-
--- ================= Property 5 (Ataşehir) =================
-('a5555555-5555-4555-8555-555555555551', '55555555-5555-4555-8555-555555555555', NULL,
- 'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Geniş salon (örnek)', 'image', 'image/jpeg', 1, 0),
-('a5555555-5555-4555-8555-555555555552', '55555555-5555-4555-8555-555555555555', NULL,
- 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Mutfak (örnek)', 'image', 'image/jpeg', 0, 1),
-('a5555555-5555-4555-8555-555555555553', '55555555-5555-4555-8555-555555555555', NULL,
- 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Yatak odası (örnek)', 'image', 'image/jpeg', 0, 2),
-('a5555555-5555-4555-8555-555555555554', '55555555-5555-4555-8555-555555555555', NULL,
- 'https://images.unsplash.com/photo-1502005097973-6a7082348e28?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Balkon (örnek)', 'image', 'image/jpeg', 0, 3),
-
--- ================= Property 6 (Beylikdüzü - sold) =================
-('a6666666-6666-4666-8666-666666666661', '66666666-6666-4666-8666-666666666666', NULL,
- 'https://images.unsplash.com/photo-1494526585095-c41746248156?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'Dış görünüm (örnek)', 'image', 'image/jpeg', 1, 0),
-('a6666666-6666-4666-8666-666666666662', '66666666-6666-4666-8666-666666666666', NULL,
- 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.0.3&q=60&w=2400',
- 'İç mekân (örnek)', 'image', 'image/jpeg', 0, 1)
-ON DUPLICATE KEY UPDATE
-  `property_id`   = VALUES(`property_id`),
-  `asset_id`      = VALUES(`asset_id`),
-  `url`           = VALUES(`url`),
-  `alt`           = VALUES(`alt`),
-  `kind`          = VALUES(`kind`),
-  `mime`          = VALUES(`mime`),
-  `is_cover`      = VALUES(`is_cover`),
-  `display_order` = VALUES(`display_order`),
-  `updated_at`    = CURRENT_TIMESTAMP(3);
+-- Variant values are inserted in 72_property_variant_values_seed.sql
+-- (runs after listing_variants table is created at step 63)
 
 COMMIT;
 

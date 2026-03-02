@@ -165,6 +165,10 @@ export async function repoCreate(b: CreateBody): Promise<RowWithAsset> {
     image_asset_id: b.image_asset_id ?? null,
 
     alt: b.alt ?? null,
+    image2_url: (b as any).image2_url ?? null,
+    badgeText:  (b as any).badge_text  ?? null,
+    badgeColor: (b as any).badge_color ?? null,
+    gradient:   (b as any).gradient    ?? null,
     buttonText: b.buttonText ?? null,
     buttonLink: b.buttonLink ?? null,
 
@@ -192,6 +196,10 @@ export async function repoUpdate(id: number, b: UpdateBody): Promise<RowWithAsse
   if (b.image_asset_id !== undefined) set.image_asset_id = b.image_asset_id ?? null;
 
   if (b.alt !== undefined) set.alt = b.alt ?? null;
+  if ((b as any).image2_url !== undefined) set.image2_url = (b as any).image2_url ?? null;
+  if ((b as any).badge_text  !== undefined) set.badgeText  = (b as any).badge_text  ?? null;
+  if ((b as any).badge_color !== undefined) set.badgeColor = (b as any).badge_color ?? null;
+  if ((b as any).gradient    !== undefined) set.gradient   = (b as any).gradient    ?? null;
   if (b.buttonText !== undefined) set.buttonText = b.buttonText ?? null;
   if (b.buttonLink !== undefined) set.buttonLink = b.buttonLink ?? null;
 

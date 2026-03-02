@@ -34,10 +34,18 @@ export const categories = mysqlTable(
 
     icon: varchar("icon", { length: 100 }),
 
+    has_cart: tinyint("has_cart").notNull().default(1).$type<boolean>(),
+
     /** aktif/öne çıkarılmış ve sıralama */
     is_active: tinyint("is_active").notNull().default(1).$type<boolean>(),
     is_featured: tinyint("is_featured").notNull().default(0).$type<boolean>(),
+    /** 1 = bu kategoride ilan verme abonelik/limit gerektirmez (ör. Cenaze İlanları) */
+    is_unlimited: tinyint("is_unlimited").notNull().default(0).$type<boolean>(),
     display_order: int("display_order").notNull().default(0),
+
+    /** Kategorinin iletişim numaraları (ilan detayı / kategori sayfasında gösterilir) */
+    whatsapp_number: varchar("whatsapp_number", { length: 50 }),
+    phone_number: varchar("phone_number", { length: 50 }),
 
     created_at: datetime("created_at", { fsp: 3 })
       .notNull()

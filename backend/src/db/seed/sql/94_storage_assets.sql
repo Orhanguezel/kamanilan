@@ -1,42 +1,161 @@
--- =========================
--- STORAGE ASSETS (schema)
--- =========================
-CREATE TABLE IF NOT EXISTS storage_assets (
-  id         CHAR(36)        NOT NULL,
-  user_id    CHAR(36)        DEFAULT NULL,
+-- 94_storage_assets.sql — Kaman İlan local media storage kayıtları
+-- provider=local, bucket=default
+-- path   = LOCAL_STORAGE_ROOT altındaki göreli yol
+-- url    = LOCAL_STORAGE_BASE_URL + '/' + path
 
-  name       VARCHAR(255)    NOT NULL,
-  bucket     VARCHAR(64)     NOT NULL,
-  path       VARCHAR(512)    NOT NULL,
-  folder     VARCHAR(255)    DEFAULT NULL,
+SET NAMES utf8mb4;
+SET time_zone = '+00:00';
 
-  mime       VARCHAR(127)    NOT NULL,
-  size       BIGINT UNSIGNED NOT NULL,
-
-  width      INT UNSIGNED    DEFAULT NULL,
-  height     INT UNSIGNED    DEFAULT NULL,
-
-  url        TEXT            DEFAULT NULL,       -- Provider absolute URL (Cloudinary secure_url)
-  hash       VARCHAR(64)     DEFAULT NULL,       -- Opsiyonel
-
-  -- Provider alanları
-  provider               VARCHAR(16)  NOT NULL DEFAULT 'cloudinary',
-  provider_public_id     VARCHAR(255) DEFAULT NULL,  -- "folder/name"
-  provider_resource_type VARCHAR(16)  DEFAULT NULL,  -- image | video | raw
-  provider_format        VARCHAR(32)  DEFAULT NULL,
-  provider_version       INT UNSIGNED DEFAULT NULL,
-  etag                   VARCHAR(64)  DEFAULT NULL,
-
-  metadata   JSON            DEFAULT NULL,
-
-  created_at DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  updated_at DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-
-  PRIMARY KEY (id),
-
-  UNIQUE KEY uniq_bucket_path (bucket, path),
-  KEY idx_storage_bucket (bucket),
-  KEY idx_storage_folder (folder),
-  KEY idx_storage_created (created_at),
-  KEY idx_provider_pubid (provider_public_id)
+CREATE TABLE IF NOT EXISTS `storage_assets` (
+  `id`         CHAR(36)        NOT NULL,
+  `user_id`    CHAR(36)        DEFAULT NULL,
+  `name`       VARCHAR(255)    NOT NULL,
+  `bucket`     VARCHAR(64)     NOT NULL,
+  `path`       VARCHAR(512)    NOT NULL,
+  `folder`     VARCHAR(255)    DEFAULT NULL,
+  `mime`       VARCHAR(127)    NOT NULL,
+  `size`       BIGINT UNSIGNED NOT NULL,
+  `width`      INT UNSIGNED    DEFAULT NULL,
+  `height`     INT UNSIGNED    DEFAULT NULL,
+  `url`        TEXT            DEFAULT NULL,
+  `hash`       VARCHAR(64)     DEFAULT NULL,
+  `provider`               VARCHAR(16)  NOT NULL DEFAULT 'cloudinary',
+  `provider_public_id`     VARCHAR(255) DEFAULT NULL,
+  `provider_resource_type` VARCHAR(16)  DEFAULT NULL,
+  `provider_format`        VARCHAR(32)  DEFAULT NULL,
+  `provider_version`       INT UNSIGNED DEFAULT NULL,
+  `etag`                   VARCHAR(64)  DEFAULT NULL,
+  `metadata`   JSON            DEFAULT NULL,
+  `created_at` DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_bucket_path` (`bucket`, `path`),
+  KEY `idx_storage_bucket`  (`bucket`),
+  KEY `idx_storage_folder`  (`folder`),
+  KEY `idx_storage_created` (`created_at`),
+  KEY `idx_provider_pubid`  (`provider_public_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DELETE FROM `storage_assets`;
+
+INSERT INTO `storage_assets`
+  (`id`, `name`, `bucket`, `path`, `folder`, `mime`, `size`, `url`,
+   `provider`, `provider_public_id`, `provider_resource_type`, `provider_format`)
+VALUES
+('00009400-0000-4000-8000-000000000001','apple-touch-icon.png','default','media/apple/apple-touch-icon.png','media/apple','image/png',3466,'/uploads/media/apple/apple-touch-icon.png','local','media/apple/apple-touch-icon.png','image','png'),
+('00009400-0000-4000-8000-000000000002','address.png','default','media/assets/icons/address.png','media/assets/icons','image/png',9297,'/uploads/media/assets/icons/address.png','local','media/assets/icons/address.png','image','png'),
+('00009400-0000-4000-8000-000000000003','arrow_down.png','default','media/assets/icons/arrow_down.png','media/assets/icons','image/png',1323,'/uploads/media/assets/icons/arrow_down.png','local','media/assets/icons/arrow_down.png','image','png'),
+('00009400-0000-4000-8000-000000000004','arrow_forword.png','default','media/assets/icons/arrow_forword.png','media/assets/icons','image/png',1049,'/uploads/media/assets/icons/arrow_forword.png','local','media/assets/icons/arrow_forword.png','image','png'),
+('00009400-0000-4000-8000-000000000005','attach.png','default','media/assets/icons/attach.png','media/assets/icons','image/png',1521,'/uploads/media/assets/icons/attach.png','local','media/assets/icons/attach.png','image','png'),
+('00009400-0000-4000-8000-000000000006','available.png','default','media/assets/icons/available.png','media/assets/icons','image/png',1274,'/uploads/media/assets/icons/available.png','local','media/assets/icons/available.png','image','png'),
+('00009400-0000-4000-8000-000000000007','box_open.png','default','media/assets/icons/box_open.png','media/assets/icons','image/png',1698,'/uploads/media/assets/icons/box_open.png','local','media/assets/icons/box_open.png','image','png'),
+('00009400-0000-4000-8000-000000000008','box.png','default','media/assets/icons/box.png','media/assets/icons','image/png',1010,'/uploads/media/assets/icons/box.png','local','media/assets/icons/box.png','image','png'),
+('00009400-0000-4000-8000-000000000009','call.png','default','media/assets/icons/call.png','media/assets/icons','image/png',1154,'/uploads/media/assets/icons/call.png','local','media/assets/icons/call.png','image','png'),
+('00009400-0000-4000-8000-000000000010','cart.png','default','media/assets/icons/cart.png','media/assets/icons','image/png',2054,'/uploads/media/assets/icons/cart.png','local','media/assets/icons/cart.png','image','png'),
+('00009400-0000-4000-8000-000000000011','ChatGPT Image 13 Şub 2026 07_01_23.png','default','media/assets/icons/ChatGPT Image 13 Şub 2026 07_01_23.png','media/assets/icons','image/png',399664,'/uploads/media/assets/icons/ChatGPT Image 13 Şub 2026 07_01_23.png','local','media/assets/icons/ChatGPT Image 13 Şub 2026 07_01_23.png','image','png'),
+('00009400-0000-4000-8000-000000000012','check_circle.png','default','media/assets/icons/check_circle.png','media/assets/icons','image/png',2407,'/uploads/media/assets/icons/check_circle.png','local','media/assets/icons/check_circle.png','image','png'),
+('00009400-0000-4000-8000-000000000013','compare.png','default','media/assets/icons/compare.png','media/assets/icons','image/png',668,'/uploads/media/assets/icons/compare.png','local','media/assets/icons/compare.png','image','png'),
+('00009400-0000-4000-8000-000000000014','contact.png','default','media/assets/icons/contact.png','media/assets/icons','image/png',5852,'/uploads/media/assets/icons/contact.png','local','media/assets/icons/contact.png','image','png'),
+('00009400-0000-4000-8000-000000000015','delete.png','default','media/assets/icons/delete.png','media/assets/icons','image/png',393,'/uploads/media/assets/icons/delete.png','local','media/assets/icons/delete.png','image','png'),
+('00009400-0000-4000-8000-000000000016','delete_round.png','default','media/assets/icons/delete_round.png','media/assets/icons','image/png',1113,'/uploads/media/assets/icons/delete_round.png','local','media/assets/icons/delete_round.png','image','png'),
+('00009400-0000-4000-8000-000000000017','delivery.png','default','media/assets/icons/delivery.png','media/assets/icons','image/png',1114,'/uploads/media/assets/icons/delivery.png','local','media/assets/icons/delivery.png','image','png'),
+('00009400-0000-4000-8000-000000000018','dislike.png','default','media/assets/icons/dislike.png','media/assets/icons','image/png',8923,'/uploads/media/assets/icons/dislike.png','local','media/assets/icons/dislike.png','image','png'),
+('00009400-0000-4000-8000-000000000019','d_location.png','default','media/assets/icons/d_location.png','media/assets/icons','image/png',1625498,'/uploads/media/assets/icons/d_location.png','local','media/assets/icons/d_location.png','image','png'),
+('00009400-0000-4000-8000-000000000020','dots.png','default','media/assets/icons/dots.png','media/assets/icons','image/png',5588,'/uploads/media/assets/icons/dots.png','local','media/assets/icons/dots.png','image','png'),
+('00009400-0000-4000-8000-000000000021','edit.png','default','media/assets/icons/edit.png','media/assets/icons','image/png',1472,'/uploads/media/assets/icons/edit.png','local','media/assets/icons/edit.png','image','png'),
+('00009400-0000-4000-8000-000000000022','email.png','default','media/assets/icons/email.png','media/assets/icons','image/png',993,'/uploads/media/assets/icons/email.png','local','media/assets/icons/email.png','image','png'),
+('00009400-0000-4000-8000-000000000023','emoji.png','default','media/assets/icons/emoji.png','media/assets/icons','image/png',677,'/uploads/media/assets/icons/emoji.png','local','media/assets/icons/emoji.png','image','png'),
+('00009400-0000-4000-8000-000000000024','eye.png','default','media/assets/icons/eye.png','media/assets/icons','image/png',4818,'/uploads/media/assets/icons/eye.png','local','media/assets/icons/eye.png','image','png'),
+('00009400-0000-4000-8000-000000000025','eye_see.png','default','media/assets/icons/eye_see.png','media/assets/icons','image/png',986,'/uploads/media/assets/icons/eye_see.png','local','media/assets/icons/eye_see.png','image','png'),
+('00009400-0000-4000-8000-000000000026','facebook.png','default','media/assets/icons/facebook.png','media/assets/icons','image/png',14788,'/uploads/media/assets/icons/facebook.png','local','media/assets/icons/facebook.png','image','png'),
+('00009400-0000-4000-8000-000000000027','favorit_outline.png','default','media/assets/icons/favorit_outline.png','media/assets/icons','image/png',805,'/uploads/media/assets/icons/favorit_outline.png','local','media/assets/icons/favorit_outline.png','image','png'),
+('00009400-0000-4000-8000-000000000028','fi_check.png','default','media/assets/icons/fi_check.png','media/assets/icons','image/png',441,'/uploads/media/assets/icons/fi_check.png','local','media/assets/icons/fi_check.png','image','png'),
+('00009400-0000-4000-8000-000000000029','file.png','default','media/assets/icons/file.png','media/assets/icons','image/png',2472,'/uploads/media/assets/icons/file.png','local','media/assets/icons/file.png','image','png'),
+('00009400-0000-4000-8000-000000000030','filter.png','default','media/assets/icons/filter.png','media/assets/icons','image/png',1215,'/uploads/media/assets/icons/filter.png','local','media/assets/icons/filter.png','image','png'),
+('00009400-0000-4000-8000-000000000031','flash.png','default','media/assets/icons/flash.png','media/assets/icons','image/png',12227,'/uploads/media/assets/icons/flash.png','local','media/assets/icons/flash.png','image','png'),
+('00009400-0000-4000-8000-000000000032','fsale.png','default','media/assets/icons/fsale.png','media/assets/icons','image/png',3778,'/uploads/media/assets/icons/fsale.png','local','media/assets/icons/fsale.png','image','png'),
+('00009400-0000-4000-8000-000000000033','gmail.png','default','media/assets/icons/gmail.png','media/assets/icons','image/png',12142,'/uploads/media/assets/icons/gmail.png','local','media/assets/icons/gmail.png','image','png'),
+('00009400-0000-4000-8000-000000000034','google.png','default','media/assets/icons/google.png','media/assets/icons','image/png',20865,'/uploads/media/assets/icons/google.png','local','media/assets/icons/google.png','image','png'),
+('00009400-0000-4000-8000-000000000035','heart.png','default','media/assets/icons/heart.png','media/assets/icons','image/png',13066,'/uploads/media/assets/icons/heart.png','local','media/assets/icons/heart.png','image','png'),
+('00009400-0000-4000-8000-000000000036','h_location.png','default','media/assets/icons/h_location.png','media/assets/icons','image/png',13300,'/uploads/media/assets/icons/h_location.png','local','media/assets/icons/h_location.png','image','png'),
+('00009400-0000-4000-8000-000000000037','home.png','default','media/assets/icons/home.png','media/assets/icons','image/png',1398,'/uploads/media/assets/icons/home.png','local','media/assets/icons/home.png','image','png'),
+('00009400-0000-4000-8000-000000000038','instagram.png','default','media/assets/icons/instagram.png','media/assets/icons','image/png',5590,'/uploads/media/assets/icons/instagram.png','local','media/assets/icons/instagram.png','image','png'),
+('00009400-0000-4000-8000-000000000039','language.png','default','media/assets/icons/language.png','media/assets/icons','image/png',2800,'/uploads/media/assets/icons/language.png','local','media/assets/icons/language.png','image','png'),
+('00009400-0000-4000-8000-000000000040','like.png','default','media/assets/icons/like.png','media/assets/icons','image/png',11451,'/uploads/media/assets/icons/like.png','local','media/assets/icons/like.png','image','png'),
+('00009400-0000-4000-8000-000000000041','linkedin.png','default','media/assets/icons/linkedin.png','media/assets/icons','image/png',798,'/uploads/media/assets/icons/linkedin.png','local','media/assets/icons/linkedin.png','image','png'),
+('00009400-0000-4000-8000-000000000042','location.png','default','media/assets/icons/location.png','media/assets/icons','image/png',373,'/uploads/media/assets/icons/location.png','local','media/assets/icons/location.png','image','png'),
+('00009400-0000-4000-8000-000000000043','login.png','default','media/assets/icons/login.png','media/assets/icons','image/png',9431,'/uploads/media/assets/icons/login.png','local','media/assets/icons/login.png','image','png'),
+('00009400-0000-4000-8000-000000000044','logout.png','default','media/assets/icons/logout.png','media/assets/icons','image/png',1042,'/uploads/media/assets/icons/logout.png','local','media/assets/icons/logout.png','image','png'),
+('00009400-0000-4000-8000-000000000045','message.png','default','media/assets/icons/message.png','media/assets/icons','image/png',1884,'/uploads/media/assets/icons/message.png','local','media/assets/icons/message.png','image','png'),
+('00009400-0000-4000-8000-000000000046','message_send.png','default','media/assets/icons/message_send.png','media/assets/icons','image/png',2970,'/uploads/media/assets/icons/message_send.png','local','media/assets/icons/message_send.png','image','png'),
+('00009400-0000-4000-8000-000000000047','money.png','default','media/assets/icons/money.png','media/assets/icons','image/png',4263,'/uploads/media/assets/icons/money.png','local','media/assets/icons/money.png','image','png'),
+('00009400-0000-4000-8000-000000000048','my_orders.png','default','media/assets/icons/my_orders.png','media/assets/icons','image/png',7443,'/uploads/media/assets/icons/my_orders.png','local','media/assets/icons/my_orders.png','image','png'),
+('00009400-0000-4000-8000-000000000049','notification.png','default','media/assets/icons/notification.png','media/assets/icons','image/png',1210,'/uploads/media/assets/icons/notification.png','local','media/assets/icons/notification.png','image','png'),
+('00009400-0000-4000-8000-000000000050','office.png','default','media/assets/icons/office.png','media/assets/icons','image/png',349,'/uploads/media/assets/icons/office.png','local','media/assets/icons/office.png','image','png'),
+('00009400-0000-4000-8000-000000000051','order.png','default','media/assets/icons/order.png','media/assets/icons','image/png',1911,'/uploads/media/assets/icons/order.png','local','media/assets/icons/order.png','image','png'),
+('00009400-0000-4000-8000-000000000052','others.png','default','media/assets/icons/others.png','media/assets/icons','image/png',1025,'/uploads/media/assets/icons/others.png','local','media/assets/icons/others.png','image','png'),
+('00009400-0000-4000-8000-000000000053','password.png','default','media/assets/icons/password.png','media/assets/icons','image/png',963,'/uploads/media/assets/icons/password.png','local','media/assets/icons/password.png','image','png'),
+('00009400-0000-4000-8000-000000000054','payment.png','default','media/assets/icons/payment.png','media/assets/icons','image/png',1647,'/uploads/media/assets/icons/payment.png','local','media/assets/icons/payment.png','image','png'),
+('00009400-0000-4000-8000-000000000055','person.png','default','media/assets/icons/person.png','media/assets/icons','image/png',3198,'/uploads/media/assets/icons/person.png','local','media/assets/icons/person.png','image','png'),
+('00009400-0000-4000-8000-000000000056','privacy_policy.png','default','media/assets/icons/privacy_policy.png','media/assets/icons','image/png',2754,'/uploads/media/assets/icons/privacy_policy.png','local','media/assets/icons/privacy_policy.png','image','png'),
+('00009400-0000-4000-8000-000000000057','product.png','default','media/assets/icons/product.png','media/assets/icons','image/png',8176,'/uploads/media/assets/icons/product.png','local','media/assets/icons/product.png','image','png'),
+('00009400-0000-4000-8000-000000000058','recive.png','default','media/assets/icons/recive.png','media/assets/icons','image/png',1269,'/uploads/media/assets/icons/recive.png','local','media/assets/icons/recive.png','image','png'),
+('00009400-0000-4000-8000-000000000059','resolve.png','default','media/assets/icons/resolve.png','media/assets/icons','image/png',35953,'/uploads/media/assets/icons/resolve.png','local','media/assets/icons/resolve.png','image','png'),
+('00009400-0000-4000-8000-000000000060','search.png','default','media/assets/icons/search.png','media/assets/icons','image/png',2180,'/uploads/media/assets/icons/search.png','local','media/assets/icons/search.png','image','png'),
+('00009400-0000-4000-8000-000000000061','settings.png','default','media/assets/icons/settings.png','media/assets/icons','image/png',2168,'/uploads/media/assets/icons/settings.png','local','media/assets/icons/settings.png','image','png'),
+('00009400-0000-4000-8000-000000000062','share.png','default','media/assets/icons/share.png','media/assets/icons','image/png',9330,'/uploads/media/assets/icons/share.png','local','media/assets/icons/share.png','image','png'),
+('00009400-0000-4000-8000-000000000063','s_location.png','default','media/assets/icons/s_location.png','media/assets/icons','image/png',13103,'/uploads/media/assets/icons/s_location.png','local','media/assets/icons/s_location.png','image','png'),
+('00009400-0000-4000-8000-000000000064','spain.jpg','default','media/assets/icons/spain.jpg','media/assets/icons','image/webp',15808,'/uploads/media/assets/icons/spain.jpg','local','media/assets/icons/spain.jpg','image','jpg'),
+('00009400-0000-4000-8000-000000000065','suport_ticket.png','default','media/assets/icons/suport_ticket.png','media/assets/icons','image/png',4064,'/uploads/media/assets/icons/suport_ticket.png','local','media/assets/icons/suport_ticket.png','image','png'),
+('00009400-0000-4000-8000-000000000066','support_ai.png','default','media/assets/icons/support_ai.png','media/assets/icons','image/png',1178505,'/uploads/media/assets/icons/support_ai.png','local','media/assets/icons/support_ai.png','image','png'),
+('00009400-0000-4000-8000-000000000067','theme.png','default','media/assets/icons/theme.png','media/assets/icons','image/png',6774,'/uploads/media/assets/icons/theme.png','local','media/assets/icons/theme.png','image','png'),
+('00009400-0000-4000-8000-000000000068','track_order.png','default','media/assets/icons/track_order.png','media/assets/icons','image/png',702,'/uploads/media/assets/icons/track_order.png','local','media/assets/icons/track_order.png','image','png'),
+('00009400-0000-4000-8000-000000000069','trams_condition.png','default','media/assets/icons/trams_condition.png','media/assets/icons','image/png',3164,'/uploads/media/assets/icons/trams_condition.png','local','media/assets/icons/trams_condition.png','image','png'),
+('00009400-0000-4000-8000-000000000070','translate.png','default','media/assets/icons/translate.png','media/assets/icons','image/png',17210,'/uploads/media/assets/icons/translate.png','local','media/assets/icons/translate.png','image','png'),
+('00009400-0000-4000-8000-000000000071','twitter.png','default','media/assets/icons/twitter.png','media/assets/icons','image/png',1078,'/uploads/media/assets/icons/twitter.png','local','media/assets/icons/twitter.png','image','png'),
+('00009400-0000-4000-8000-000000000072','us_flag.png','default','media/assets/icons/us_flag.png','media/assets/icons','image/png',2732,'/uploads/media/assets/icons/us_flag.png','local','media/assets/icons/us_flag.png','image','png'),
+('00009400-0000-4000-8000-000000000073','wallet.png','default','media/assets/icons/wallet.png','media/assets/icons','image/png',2910,'/uploads/media/assets/icons/wallet.png','local','media/assets/icons/wallet.png','image','png'),
+('00009400-0000-4000-8000-000000000074','warning.png','default','media/assets/icons/warning.png','media/assets/icons','image/png',3151,'/uploads/media/assets/icons/warning.png','local','media/assets/icons/warning.png','image','png'),
+('00009400-0000-4000-8000-000000000075','warning_rt.png','default','media/assets/icons/warning_rt.png','media/assets/icons','image/png',2817,'/uploads/media/assets/icons/warning_rt.png','local','media/assets/icons/warning_rt.png','image','png'),
+('00009400-0000-4000-8000-000000000076','whatsapp.png','default','media/assets/icons/whatsapp.png','media/assets/icons','image/png',47505,'/uploads/media/assets/icons/whatsapp.png','local','media/assets/icons/whatsapp.png','image','png'),
+('00009400-0000-4000-8000-000000000077','wishlist.png','default','media/assets/icons/wishlist.png','media/assets/icons','image/png',4431,'/uploads/media/assets/icons/wishlist.png','local','media/assets/icons/wishlist.png','image','png'),
+('00009400-0000-4000-8000-000000000078','withdraw.png','default','media/assets/icons/withdraw.png','media/assets/icons','image/png',1083,'/uploads/media/assets/icons/withdraw.png','local','media/assets/icons/withdraw.png','image','png'),
+('00009400-0000-4000-8000-000000000079','contuct.png','default','media/assets/images/contuct.png','media/assets/images','image/png',15539,'/uploads/media/assets/images/contuct.png','local','media/assets/images/contuct.png','image','png'),
+('00009400-0000-4000-8000-000000000080','featured.png','default','media/assets/images/featured.png','media/assets/images','image/png',1872,'/uploads/media/assets/images/featured.png','local','media/assets/images/featured.png','image','png'),
+('00009400-0000-4000-8000-000000000081','home.png','default','media/assets/images/home.png','media/assets/images','image/png',20048,'/uploads/media/assets/images/home.png','local','media/assets/images/home.png','image','png'),
+('00009400-0000-4000-8000-000000000082','lightLogo.png','default','media/assets/images/lightLogo.png','media/assets/images','image/png',24665,'/uploads/media/assets/images/lightLogo.png','local','media/assets/images/lightLogo.png','image','png'),
+('00009400-0000-4000-8000-000000000083','marker.png','default','media/assets/images/marker.png','media/assets/images','image/png',5853,'/uploads/media/assets/images/marker.png','local','media/assets/images/marker.png','image','png'),
+('00009400-0000-4000-8000-000000000084','no_data.png','default','media/assets/images/no_data.png','media/assets/images','image/png',33941,'/uploads/media/assets/images/no_data.png','local','media/assets/images/no_data.png','image','png'),
+('00009400-0000-4000-8000-000000000085','noImage.png','default','media/assets/images/noImage.png','media/assets/images','image/png',1264,'/uploads/media/assets/images/noImage.png','local','media/assets/images/noImage.png','image','png'),
+('00009400-0000-4000-8000-000000000086','no_person.jpg','default','media/assets/images/no_person.jpg','media/assets/images','image/jpeg',27288,'/uploads/media/assets/images/no_person.jpg','local','media/assets/images/no_person.jpg','image','jpg'),
+('00009400-0000-4000-8000-000000000087','office.png','default','media/assets/images/office.png','media/assets/images','image/png',19730,'/uploads/media/assets/images/office.png','local','media/assets/images/office.png','image','png'),
+('00009400-0000-4000-8000-000000000088','profile.png','default','media/assets/images/profile.png','media/assets/images','image/png',15628,'/uploads/media/assets/images/profile.png','local','media/assets/images/profile.png','image','png'),
+('00009400-0000-4000-8000-000000000089','sing_in.jpg','default','media/assets/images/sing_in.jpg','media/assets/images','image/jpeg',2215811,'/uploads/media/assets/images/sing_in.jpg','local','media/assets/images/sing_in.jpg','image','jpg'),
+('00009400-0000-4000-8000-000000000090','sing_up.jpg','default','media/assets/images/sing_up.jpg','media/assets/images','image/jpeg',278039,'/uploads/media/assets/images/sing_up.jpg','local','media/assets/images/sing_up.jpg','image','jpg'),
+('00009400-0000-4000-8000-000000000091','sp_one.png','default','media/assets/images/sp_one.png','media/assets/images','image/png',92478,'/uploads/media/assets/images/sp_one.png','local','media/assets/images/sp_one.png','image','png'),
+('00009400-0000-4000-8000-000000000092','sp_two.png','default','media/assets/images/sp_two.png','media/assets/images','image/png',105568,'/uploads/media/assets/images/sp_two.png','local','media/assets/images/sp_two.png','image','png'),
+('00009400-0000-4000-8000-000000000093','successful.png','default','media/assets/images/successful.png','media/assets/images','image/png',110034,'/uploads/media/assets/images/successful.png','local','media/assets/images/successful.png','image','png'),
+('00009400-0000-4000-8000-000000000094','favicon.ico','default','media/favicon/favicon.ico','media/favicon','image/vnd.microsoft.icon',1922,'/uploads/media/favicon/favicon.ico','local','media/favicon/favicon.ico','image','ico'),
+('00009400-0000-4000-8000-000000000095','favicon.svg','default','media/favicon/favicon.svg','media/favicon','image/svg+xml',1290,'/uploads/media/favicon/favicon.svg','local','media/favicon/favicon.svg','image','svg'),
+('00009400-0000-4000-8000-000000000096','banner-illustration.png','default','media/images/banner-illustration.png','media/images','image/png',92478,'/uploads/media/images/banner-illustration.png','local','media/images/banner-illustration.png','image','png'),
+('00009400-0000-4000-8000-000000000097','maintenance.svg','default','media/images/maintenance.svg','media/images','image/svg+xml',4177,'/uploads/media/images/maintenance.svg','local','media/images/maintenance.svg','image','svg'),
+('00009400-0000-4000-8000-000000000098','en.json','default','media/locales/en.json','media/locales','application/json',23728,'/uploads/media/locales/en.json','local','media/locales/en.json','raw','json'),
+('00009400-0000-4000-8000-000000000099','tr.json','default','media/locales/tr.json','media/locales','application/json',24961,'/uploads/media/locales/tr.json','local','media/locales/tr.json','raw','json'),
+('00009400-0000-4000-8000-000000000100','logo-horizontal-dark.svg','default','media/logo/logo-horizontal-dark.svg','media/logo','image/svg+xml',2734,'/uploads/media/logo/logo-horizontal-dark.svg','local','media/logo/logo-horizontal-dark.svg','image','svg'),
+('00009400-0000-4000-8000-000000000101','logo-horizontal.svg','default','media/logo/logo-horizontal.svg','media/logo','image/svg+xml',3755,'/uploads/site-media/ChatGPT_Image_1_Mar_2026_13_10_41.png','local','media/logo/logo-horizontal.svg','image','svg'),
+('00009400-0000-4000-8000-000000000102','logo-icon-192.png','default','media/logo/logo-icon-192.png','media/logo','image/png',3797,'/uploads/media/logo/logo-icon-192.png','local','media/logo/logo-icon-192.png','image','png'),
+('00009400-0000-4000-8000-000000000103','logo-icon-512.png','default','media/logo/logo-icon-512.png','media/logo','image/png',10972,'/uploads/media/logo/logo-icon-512.png','local','media/logo/logo-icon-512.png','image','png'),
+('00009400-0000-4000-8000-000000000104','logo-icon.svg','default','media/logo/logo-icon.svg','media/logo','image/svg+xml',2504,'/uploads/media/logo/logo-icon.svg','local','media/logo/logo-icon.svg','image','svg'),
+('00009400-0000-4000-8000-000000000105','logo-icon-transparent.png','default','media/logo/logo-icon-transparent.png','media/logo','image/png',8072,'/uploads/media/logo/logo-icon-transparent.png','local','media/logo/logo-icon-transparent.png','image','png'),
+('00009400-0000-4000-8000-000000000106','logo-preview.html','default','media/logo/logo-preview.html','media/logo','text/html',17512,'/uploads/media/logo/logo-preview.html','local','media/logo/logo-preview.html','raw','html'),
+('00009400-0000-4000-8000-000000000107','og-image.png','default','media/logo/og-image.png','media/logo','image/png',19103,'/uploads/media/logo/og-image.png','local','media/logo/og-image.png','image','png');
+
+-- ── SLIDER ARKAPLAN GÖRSELLERİ (external / Unsplash) ──────────────────────
+INSERT INTO `storage_assets`
+  (`id`, `name`, `bucket`, `path`, `folder`, `mime`, `size`, `url`,
+   `provider`, `provider_public_id`, `provider_resource_type`, `provider_format`)
+VALUES
+('00009700-0000-4000-8000-000000000001','slide-kaman-cevizi.jpg','default','slides/slide-kaman-cevizi.jpg','slides','image/jpeg',0,'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80','external','slides/slide-kaman-cevizi.jpg','image','jpg'),
+('00009700-0000-4000-8000-000000000002','slide-emlak-kira.jpg','default','slides/slide-emlak-kira.jpg','slides','image/jpeg',0,'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&h=600&fit=crop&auto=format&q=80','external','slides/slide-emlak-kira.jpg','image','jpg'),
+('00009700-0000-4000-8000-000000000003','slide-ucretsiz-ilan.jpg','default','slides/slide-ucretsiz-ilan.jpg','slides','image/jpeg',0,'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80','external','slides/slide-ucretsiz-ilan.jpg','image','jpg'),
+('00009700-0000-4000-8000-000000000004','slide-hayvan-tarim.jpg','default','slides/slide-hayvan-tarim.jpg','slides','image/jpeg',0,'https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=1200&h=600&fit=crop&auto=format&q=80','external','slides/slide-hayvan-tarim.jpg','image','jpg');

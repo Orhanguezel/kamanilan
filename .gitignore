@@ -1,3 +1,7 @@
+# Nested repos / temp directories
+prime-frontend-nextjs/
+backend/uploads/
+
 # Logs
 logs
 *.log

@@ -36,7 +36,7 @@ VALUES
   '11111111-1111-1111-1111-111111111111',
   '00000000-0000-0000-0000-000000000000',
   'Hoş geldiniz!',
-  'Hesabınız başarıyla oluşturuldu. İyi alışverişler!',
+  'Hesabınız başarıyla oluşturuldu. İlan yönetimine başlayabilirsiniz.',
   'system',
   0,
   NOW()
@@ -44,8 +44,8 @@ VALUES
 (
   '22222222-2222-2222-2222-222222222222',
   '00000000-0000-0000-0000-000000000000',
-  'İlk sipariş fırsatı',
-  'İlk siparişinizde ekstra indirim kazandınız. Sepette kupon kullanmayı unutmayın.',
+  'İlk ilanınızı yayınlayın',
+  'İlk ilanınızı tamamlayarak vitrinde görünürlüğünüzü artırabilirsiniz.',
   'custom',
   0,
   NOW()

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background circle -->
+  <circle cx="200" cy="140" r="110" fill="#1e293b" opacity="0.5"/>
+  <circle cx="200" cy="140" r="90" fill="#1e293b" opacity="0.8"/>
+
+  <!-- Server rack -->
+  <rect x="155" y="75" width="90" height="130" rx="8" fill="#334155" stroke="#475569" stroke-width="2"/>
+  <rect x="165" y="85" width="70" height="18" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <rect x="165" y="110" width="70" height="18" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <rect x="165" y="135" width="70" height="18" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <rect x="165" y="160" width="70" height="18" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+
+  <!-- Server LEDs - blinking effect -->
+  <circle cx="175" cy="94" r="3" fill="#f59e0b">
+    <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="184" cy="94" r="3" fill="#f59e0b">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="175" cy="119" r="3" fill="#3b82f6">
+    <animate attributeName="opacity" values="1;0.4;1" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="184" cy="119" r="3" fill="#3b82f6"/>
+  <circle cx="175" cy="144" r="3" fill="#f59e0b">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="184" cy="144" r="3" fill="#64748b"/>
+  <circle cx="175" cy="169" r="3" fill="#64748b"/>
+  <circle cx="184" cy="169" r="3" fill="#64748b"/>
+
+  <!-- Wrench -->
+  <g transform="translate(260, 60) rotate(30)">
+    <rect x="-4" y="0" width="8" height="45" rx="4" fill="#94a3b8"/>
+    <circle cx="0" cy="0" r="14" fill="none" stroke="#94a3b8" stroke-width="7"/>
+    <rect x="-4" y="-7" width="8" height="14" fill="#1e293b"/>
+  </g>
+
+  <!-- Gear -->
+  <g transform="translate(130, 75)">
+    <circle cx="0" cy="0" r="16" fill="#475569" stroke="#64748b" stroke-width="2">
+      <animateTransform attributeName="transform" type="rotate" values="0;360" dur="8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="6" fill="#1e293b"/>
+    <!-- Gear teeth -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="0;360" dur="8s" repeatCount="indefinite"/>
+      <rect x="-3" y="-22" width="6" height="10" rx="2" fill="#475569"/>
+      <rect x="-3" y="12" width="6" height="10" rx="2" fill="#475569"/>
+      <rect x="-22" y="-3" width="10" height="6" rx="2" fill="#475569"/>
+      <rect x="12" y="-3" width="10" height="6" rx="2" fill="#475569"/>
+      <rect x="8" y="-18" width="6" height="10" rx="2" fill="#475569" transform="rotate(45)"/>
+      <rect x="-14" y="8" width="6" height="10" rx="2" fill="#475569" transform="rotate(45)"/>
+      <rect x="8" y="8" width="6" height="10" rx="2" fill="#475569" transform="rotate(-45)"/>
+      <rect x="-14" y="-18" width="6" height="10" rx="2" fill="#475569" transform="rotate(-45)"/>
+    </g>
+  </g>
+
+  <!-- Progress bar -->
+  <rect x="130" y="220" width="140" height="8" rx="4" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <rect x="130" y="220" width="70" height="8" rx="4" fill="url(#progressGradient)">
+    <animate attributeName="width" values="20;100;60;140;20" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Gradient defs -->
+  <defs>
+    <linearGradient id="progressGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Small floating dots -->
+  <circle cx="110" cy="170" r="2" fill="#3b82f6" opacity="0.5">
+    <animate attributeName="cy" values="170;160;170" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="290" cy="130" r="2" fill="#8b5cf6" opacity="0.5">
+    <animate attributeName="cy" values="130;120;130" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="270" cy="190" r="1.5" fill="#3b82f6" opacity="0.4">
+    <animate attributeName="cy" values="190;182;190" dur="3.5s" repeatCount="indefinite"/>
+  </circle>
+</svg>

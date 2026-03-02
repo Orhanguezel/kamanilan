@@ -37,6 +37,7 @@ export const listFaqsAdmin: RouteHandler<{ Querystring: FaqListQuery }> = async 
     is_active: q.is_active, // 0/1/string gelse de repository boolean'a çeviriyor
     q: q.q,
     slug: q.slug,
+    locale: q.locale,
     category: q.category,
   });
 
@@ -72,6 +73,7 @@ export const createFaqAdmin: RouteHandler<{ Body: UpsertFaqBody }> = async (req,
       question: b.question.trim(),
       answer: b.answer, // düz metin/HTML
       slug: b.slug.trim(),
+      locale: (b.locale ?? "tr").trim(),
       category: typeof b.category === "string" ? b.category.trim() : b.category ?? null,
       is_active: typeof b.is_active === "undefined" ? true : toBool(b.is_active), // 👈 boolean
       display_order: typeof b.display_order === "number" ? b.display_order : 0,
@@ -102,6 +104,7 @@ export const updateFaqAdmin: RouteHandler<{ Params: { id: string }; Body: PatchF
       question: typeof b.question === "string" ? b.question.trim() : undefined,
       answer: typeof b.answer === "string" ? b.answer : undefined,
       slug: typeof b.slug === "string" ? b.slug.trim() : undefined,
+      locale: typeof b.locale !== "undefined" ? (b.locale ?? "tr").trim() : undefined,
       category: typeof b.category !== "undefined" ? (b.category ?? null) : undefined,
       is_active: typeof b.is_active !== "undefined" ? toBool(b.is_active) : undefined, // 👈 boolean
       display_order: typeof b.display_order === "number" ? b.display_order : undefined,

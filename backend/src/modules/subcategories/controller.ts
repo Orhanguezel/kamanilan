@@ -41,7 +41,7 @@ function parseOrder(q: Record<string, unknown>) {
   if (combined) {
     const [c, d] = combined.split(".");
     if (c && (c in ORDER_WHITELIST)) col = c as keyof typeof ORDER_WHITELIST;
-    if (d === "asc" || "desc") dir = (d as "asc" | "desc");
+    if (d === "asc" || d === "desc") dir = d;
   } else {
     if (sort && (sort in ORDER_WHITELIST))
       col = sort as keyof typeof ORDER_WHITELIST;
@@ -172,6 +172,7 @@ export function buildInsertPayload(input: SubCategoryCreateInput) {
     image_url: (nullIfEmpty(input.image_url) as string | null) ?? null,
     alt: (nullIfEmpty(input.alt) as string | null) ?? null,
     icon: (nullIfEmpty(input.icon) as string | null) ?? null,
+    has_cart: input.has_cart === undefined ? true : toBool(input.has_cart),
     is_active: input.is_active === undefined ? true : toBool(input.is_active),
     is_featured:
       input.is_featured === undefined ? false : toBool(input.is_featured),
@@ -196,6 +197,7 @@ export function buildUpdatePayload(patch: SubCategoryUpdateInput) {
     set.alt = nullIfEmpty(patch.alt) as string | null;
   if (patch.icon !== undefined) set.icon = nullIfEmpty(patch.icon) as string | null;
 
+  if (patch.has_cart !== undefined) set.has_cart = toBool(patch.has_cart);
   if (patch.is_active !== undefined) set.is_active = toBool(patch.is_active);
   if (patch.is_featured !== undefined)
     set.is_featured = toBool(patch.is_featured);

@@ -20,6 +20,8 @@ export const customPageListQuerySchema = z.object({
   is_published: boolLike.optional(),
   q: z.string().optional(),
   slug: z.string().optional(),
+  locale: z.string().max(10).optional(),
+  module_key: z.string().min(1).max(64).optional(),
   select: z.string().optional(),
 });
 export type CustomPageListQuery = z.infer<typeof customPageListQuerySchema>;
@@ -33,6 +35,7 @@ export const upsertCustomPageBodySchema = z.object({
     .trim(),
   /** düz HTML (repo.packContent ile {"html": "..."}’a sarılır) */
   content: z.string().min(1),
+  module_key: z.string().min(1).max(64).trim().optional().default("about"),
 
   /** Görsel alanları (standart) */
   image_url: z.string().url().nullable().optional(),
@@ -43,7 +46,7 @@ export const upsertCustomPageBodySchema = z.object({
   meta_description: z.string().max(500).nullable().optional(),
   is_published: boolLike.optional().default(false),
 
-  /** DB’de sütun yok; gönderilirse controller’da yoksayılır */
+  /** İsteğe bağlı locale; gönderilmezse "tr" */
   locale: z.string().max(10).nullable().optional(),
 });
 export type UpsertCustomPageBody = z.infer<typeof upsertCustomPageBodySchema>;

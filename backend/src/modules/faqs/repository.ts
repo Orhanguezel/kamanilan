@@ -16,6 +16,7 @@ export type ListParams = {
   is_active?: boolean | 0 | 1 | "0" | "1" | "true" | "false";
   q?: string;
   slug?: string;
+  locale?: string;
   category?: string;
 };
 
@@ -53,6 +54,9 @@ export async function listFaqs(params: ListParams) {
 
     if (params.slug && params.slug.trim()) {
       filters.push(eq(faqs.slug, params.slug.trim()));
+    }
+    if (params.locale && params.locale.trim()) {
+      filters.push(eq(faqs.locale, params.locale.trim()));
     }
     if (params.category && params.category.trim()) {
       filters.push(eq(faqs.category, params.category.trim()));
@@ -102,8 +106,12 @@ export async function getFaqById(id: string) {
   return rows[0] ?? null;
 }
 
-export async function getFaqBySlug(slug: string) {
-  const rows = await db.select().from(faqs).where(eq(faqs.slug, slug)).limit(1);
+export async function getFaqBySlug(slug: string, locale = "tr") {
+  const rows = await db
+    .select()
+    .from(faqs)
+    .where(and(eq(faqs.slug, slug), eq(faqs.locale, locale)))
+    .limit(1);
   return rows[0] ?? null;
 }
 

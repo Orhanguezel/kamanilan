@@ -32,23 +32,23 @@ INSERT INTO `contact_messages`
 (`id`,`name`,`email`,`phone`,`subject`,`message`,`status`,`is_resolved`,`admin_note`,`ip`,`user_agent`,`website`,`created_at`,`updated_at`)
 VALUES
 (UUID(),
- 'Ahmet Yılmaz','ahmet@example.com','+90 532 000 00 01','Mezar taşı teklifi',
- 'Merhaba, tek kişilik mermer mezar için fiyat ve teslim süresi alabilir miyim?',
+ 'Ahmet Yılmaz','ahmet@example.com','+90 532 000 00 01','Satılık daire ilanı hakkında',
+ 'Merhaba, Kadıköy bölgesindeki satılık daire ilanınız için detaylı bilgi alabilir miyim?',
  'new',0,NULL,'203.0.113.11','Mozilla/5.0','', '2024-01-02 10:00:00.000','2024-01-02 10:00:00.000'),
 
 (UUID(),
- 'Ayşe Demir','ayse@example.com','+90 555 111 11 22','Aile mezarı hakkında',
- 'Aile mezarı ölçü ve granit seçenekleri hakkında bilgi rica ederim.',
- 'in_progress',0,'Teklif hazırla ve ölçü istedi.','198.51.100.5','Mozilla/5.0',NULL,'2024-01-03 12:30:00.000','2024-01-03 12:45:00.000'),
+ 'Ayşe Demir','ayse@example.com','+90 555 111 11 22','Kiralık ev randevu talebi',
+ 'Beşiktaş kiralık ilanı için hafta sonu yerinde görme randevusu oluşturabilir miyiz?',
+ 'in_progress',0,'Müşteri için cumartesi 14:00 randevusu planlandı.','198.51.100.5','Mozilla/5.0',NULL,'2024-01-03 12:30:00.000','2024-01-03 12:45:00.000'),
 
 (UUID(),
- 'Mehmet Kara','mehmet@example.com','+90 542 222 22 33','Bakım hizmeti',
- 'Mevcut mezarın temizlik ve bakım ücretleri nedir?',
- 'closed',1,'Bilgi verildi, kapanış yapıldı.','192.0.2.44','Mozilla/5.0',NULL,'2024-01-04 09:15:00.000','2024-01-04 10:00:00.000'),
+ 'Mehmet Kara','mehmet@example.com','+90 542 222 22 33','Tapu süreci danışmanlığı',
+ 'Satın alma sonrası tapu devri için gereken evraklar hakkında destek rica ederim.',
+ 'closed',1,'Evrak listesi paylaşıldı, süreç tamamlandı.','192.0.2.44','Mozilla/5.0',NULL,'2024-01-04 09:15:00.000','2024-01-04 10:00:00.000'),
 
 (UUID(),
- 'Elif Koç','elif@example.com','+90 530 333 33 44','Özel tasarım mezar',
- 'Modern tasarım granit mezar için görsel ve fiyat bilgisi rica ediyorum.',
+ 'Elif Koç','elif@example.com','+90 530 333 33 44','İlan güncelleme talebi',
+ 'Yayındaki ilanımın fiyat ve açıklama kısmını güncellemek istiyorum.',
  'new',0,NULL,NULL,NULL,NULL,'2024-01-05 14:20:00.000','2024-01-05 14:20:00.000')
 ON DUPLICATE KEY UPDATE
  `name`=VALUES(`name`),

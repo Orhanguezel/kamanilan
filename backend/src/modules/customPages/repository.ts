@@ -21,6 +21,8 @@ export type ListParams = {
   is_published?: boolean | 0 | 1 | "0" | "1" | "true" | "false";
   q?: string;
   slug?: string;
+  locale?: string;
+  module_key?: string;
 };
 
 const to01 = (v: ListParams["is_published"]): 0 | 1 | undefined => {
@@ -90,6 +92,12 @@ export async function listCustomPages(params: ListParams) {
   if (params.slug && params.slug.trim()) {
     filters.push(eq(customPages.slug, params.slug.trim()));
   }
+  if (params.locale && params.locale.trim()) {
+    filters.push(eq(customPages.locale, params.locale.trim()));
+  }
+  if (params.module_key && params.module_key.trim()) {
+    filters.push(eq(customPages.module_key, params.module_key.trim()));
+  }
 
   if (params.q && params.q.trim()) {
     const s = `%${params.q.trim()}%`;
@@ -148,7 +156,7 @@ export async function getCustomPageById(id: string) {
 }
 
 /** get by slug (JOIN) */
-export async function getCustomPageBySlug(slug: string) {
+export async function getCustomPageBySlug(slug: string, locale = "tr") {
   const rows = await db
     .select({
       cp: customPages,
@@ -158,7 +166,7 @@ export async function getCustomPageBySlug(slug: string) {
     })
     .from(customPages)
     .leftJoin(storageAssets, eq(customPages.storage_asset_id, storageAssets.id))
-    .where(eq(customPages.slug, slug))
+    .where(and(eq(customPages.slug, slug), eq(customPages.locale, locale)))
     .limit(1);
   return rows[0] ? mapView(rows[0]) : null;
 }

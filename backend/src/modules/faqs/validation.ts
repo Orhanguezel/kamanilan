@@ -17,6 +17,7 @@ export const faqListQuerySchema = z.object({
   is_active: boolLike.optional(),
   q: z.string().optional(),
   slug: z.string().optional(),
+  locale: z.string().max(10).optional(),
   category: z.string().optional(),
   select: z.string().optional(),
 });
@@ -36,7 +37,7 @@ export const upsertFaqBodySchema = z.object({
   is_active: boolLike.optional().default(true),
   display_order: z.coerce.number().int().min(0).optional(),
 
-  /** DB’de olmayan alan; gönderilirse controller’da yoksayılır */
+  /** İsteğe bağlı locale; gönderilmezse "tr" */
   locale: z.string().max(10).nullable().optional(),
 });
 export type UpsertFaqBody = z.infer<typeof upsertFaqBodySchema>;

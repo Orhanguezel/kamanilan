@@ -31,6 +31,27 @@ import { registerSlider } from "@/modules/slider/router";
 import { registerMail } from "@/modules/mail/router";
 import { registerNotifications } from "@/modules/notifications/router";
 import { registerFaqs } from '@/modules/faqs/router';
+import { registerChat } from "@/modules/chat/router";
+import { registerAiChat } from "@/modules/ai_chat/router";
+import { registerTheme } from "@/modules/theme/router";
+import { registerFlashSale } from '@/modules/flashSale/router';
+import { registerUnits } from '@/modules/units/router';
+import { registerVariants } from '@/modules/variants/router';
+import { registerListingBrands } from '@/modules/listingBrands/router';
+import { registerListingTags } from '@/modules/listingTags/router';
+import { registerBanners } from '@/modules/banner/router';
+import { registerMyListings } from '@/modules/myListings/router';
+import { registerPopups } from '@/modules/popups/router';
+import { registerAnnouncements } from '@/modules/announcements/router';
+import { registerArticles } from '@/modules/articles/router';
+import { registerNews } from '@/modules/news/router';
+import { registerMenuItems } from '@/modules/menuItems/router';
+import { registerFooterSections } from '@/modules/footerSections/router';
+import { registerCartItems } from '@/modules/cart/router';
+import { registerOrders } from '@/modules/orders/router';
+import { registerSeller } from '@/modules/seller/router';
+import { registerSubscription } from '@/modules/subscription/router';
+import { registerIntegrationSettings } from '@/modules/integrationSettings/router';
 
 // Admin modüller
 import { registerCustomPagesAdmin } from "@/modules/customPages/admin.routes";
@@ -45,6 +66,26 @@ import { registerCategoriesAdmin } from '@/modules/categories/admin.routes';
 import { registerSubCategoriesAdmin } from '@/modules/subcategories/admin.routes';
 import { registerDbAdmin } from "@/modules/db_admin/admin.routes";
 import { registerFaqsAdmin } from '@/modules/faqs/admin.routes';
+import { registerThemeAdmin } from '@/modules/theme/admin.routes';
+import { registerFlashSaleAdmin } from '@/modules/flashSale/admin.routes';
+import { registerUnitsAdmin } from '@/modules/units/admin.routes';
+import { registerVariantsAdmin } from '@/modules/variants/admin.routes';
+import { registerListingBrandsAdmin } from '@/modules/listingBrands/admin.routes';
+import { registerListingTagsAdmin } from '@/modules/listingTags/admin.routes';
+import { registerBannersAdmin } from '@/modules/banner/admin.routes';
+import { registerPopupsAdmin } from '@/modules/popups/admin.routes';
+import { registerAnnouncementsAdmin } from '@/modules/announcements/admin.routes';
+import { registerArticlesAdmin } from '@/modules/articles/admin.routes';
+import { registerDashboardAdmin } from '@/modules/dashboard/admin.routes';
+import { registerMenuItemsAdmin } from '@/modules/menuItems/admin.routes';
+import { registerFooterSectionsAdmin } from '@/modules/footerSections/admin.routes';
+import { registerCartAdmin } from '@/modules/cart/admin.routes';
+import { registerSubscriptionAdmin } from '@/modules/subscription/admin.routes';
+import { registerIntegrationSettingsAdmin } from '@/modules/integrationSettings/admin.routes';
+import { registerNewsAggregatorAdmin } from '@/modules/newsAggregator/admin.routes';
+
+// Haber toplayıcı cron
+import { startNewsAggregatorCron } from '@/modules/newsAggregator/cron';
 
 // Storage config (site_settings + env) — localBaseUrl için kullanacağız
 import { getStorageSettings } from "@/modules/siteSettings/service";
@@ -187,6 +228,23 @@ export async function createApp() {
     await api.register(registerSubCategoriesAdmin, { prefix: "/admin" });
     await api.register(registerDbAdmin, { prefix: "/admin" });
     await api.register(registerFaqsAdmin, { prefix: "/admin" });
+    await api.register(registerThemeAdmin, { prefix: "/admin" });
+    await api.register(registerFlashSaleAdmin, { prefix: '/admin' });
+    await api.register(registerUnitsAdmin, { prefix: '/admin' });
+    await api.register(registerVariantsAdmin, { prefix: '/admin' });
+    await api.register(registerListingBrandsAdmin, { prefix: '/admin' });
+    await api.register(registerListingTagsAdmin, { prefix: '/admin' });
+    await api.register(registerBannersAdmin, { prefix: '/admin' });
+    await api.register(registerPopupsAdmin,  { prefix: '/admin' });
+    await api.register(registerAnnouncementsAdmin, { prefix: '/admin' });
+    await api.register(registerArticlesAdmin, { prefix: '/admin' });
+    await api.register(registerDashboardAdmin, { prefix: '/admin' });
+    await api.register(registerMenuItemsAdmin, { prefix: '/admin' });
+    await api.register(registerFooterSectionsAdmin, { prefix: '/admin' });
+    await api.register(registerCartAdmin, { prefix: '/admin' });
+    await api.register(registerSubscriptionAdmin, { prefix: '/admin' });
+    await api.register(registerIntegrationSettingsAdmin, { prefix: '/admin' });
+    await api.register(registerNewsAggregatorAdmin, { prefix: '/admin' });
 
     // --- Public modüller → /api/...
     await registerAuth(api);
@@ -203,11 +261,35 @@ export async function createApp() {
     await registerMail(api);
     await registerNotifications(api);
     await registerProperties(api);
+    await registerChat(api);
+    await registerAiChat(api);
     await registerFaqs(api);
-
+    await registerTheme(api);
+    await registerFlashSale(api);
+    await registerUnits(api);
+    await registerVariants(api);
+    await registerListingBrands(api);
+    await registerListingTags(api);
+    await registerBanners(api);
+    await registerMyListings(api);
+    await registerPopups(api);
+    await registerAnnouncements(api);
+    await registerArticles(api);
+    await registerNews(api);
+    await registerMenuItems(api);
+    await registerFooterSections(api);
+    await registerCartItems(api);
+    await registerOrders(api);
+    await registerSeller(api);
+    await registerSubscription(api);
+    await registerIntegrationSettings(api);
 
   }, { prefix: "/api" });
 
   registerErrorHandlers(app);
+
+  // Haber toplayıcı cron'unu başlat
+  startNewsAggregatorCron();
+
   return app;
 }

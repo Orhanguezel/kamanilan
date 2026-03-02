@@ -2,6 +2,7 @@
 // FILE: src/modules/properties/admin.routes.ts
 // =============================================================
 import type { FastifyInstance } from "fastify";
+import { makeAdminPermissionGuard } from '@/common/middleware/permissions';
 import {
   listPropertiesAdmin,
   getPropertyAdmin,
@@ -14,11 +15,13 @@ import {
 const BASE = "/properties";
 
 export async function registerPropertiesAdmin(app: FastifyInstance) {
-  app.get(`${BASE}`, { config: { auth: true } }, listPropertiesAdmin);
-  app.get(`${BASE}/:id`, { config: { auth: true } }, getPropertyAdmin);
-  app.get(`${BASE}/by-slug/:slug`, { config: { auth: true } }, getPropertyBySlugAdmin);
+  const guard = makeAdminPermissionGuard('admin.properties') as any;
 
-  app.post(`${BASE}`, { config: { auth: true } }, createPropertyAdmin);
-  app.patch(`${BASE}/:id`, { config: { auth: true } }, updatePropertyAdmin);
-  app.delete(`${BASE}/:id`, { config: { auth: true } }, removePropertyAdmin);
+  app.get(`${BASE}`, { preHandler: guard }, listPropertiesAdmin);
+  app.get(`${BASE}/:id`, { preHandler: guard }, getPropertyAdmin);
+  app.get(`${BASE}/by-slug/:slug`, { preHandler: guard }, getPropertyBySlugAdmin);
+
+  app.post(`${BASE}`, { preHandler: guard }, createPropertyAdmin);
+  app.patch(`${BASE}/:id`, { preHandler: guard }, updatePropertyAdmin);
+  app.delete(`${BASE}/:id`, { preHandler: guard }, removePropertyAdmin);
 }

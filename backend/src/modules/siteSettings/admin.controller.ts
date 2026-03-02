@@ -15,6 +15,32 @@ function parseDbValue(s: string): unknown {
 function stringifyValue(v: JsonLike): string {
   return JSON.stringify(v);
 }
+
+function normalizeAppLocalesValue(v: unknown): Array<{ code: string; label?: string; is_active?: boolean; is_default?: boolean }> {
+  const raw = typeof v === 'string' ? parseDbValue(v) : v;
+  const source = Array.isArray(raw)
+    ? raw
+    : (raw && typeof raw === 'object' && Array.isArray((raw as any).locales) ? (raw as any).locales : []);
+
+  const out: Array<{ code: string; label?: string; is_active?: boolean; is_default?: boolean }> = [];
+  for (const item of source as any[]) {
+    const code = String(item?.code ?? item ?? '').trim().toLowerCase();
+    if (!code) continue;
+    out.push({
+      code,
+      label: typeof item?.label === 'string' ? item.label : undefined,
+      is_active: typeof item?.is_active === 'boolean' ? item.is_active : true,
+      is_default: typeof item?.is_default === 'boolean' ? item.is_default : undefined,
+    });
+  }
+  return out;
+}
+
+function normalizeDefaultLocaleValue(v: unknown): string {
+  if (typeof v === 'string') return v.trim().toLowerCase();
+  if (v == null) return '';
+  return String(v).trim().toLowerCase();
+}
 function rowToDto(r: typeof siteSettings.$inferSelect) {
   return {
     id: r.id,
@@ -77,6 +103,20 @@ export const adminGetSiteSettingByKey: RouteHandler = async (req, reply) => {
   const rows = await db.select().from(siteSettings).where(eq(siteSettings.key, key)).limit(1);
   if (!rows.length) return reply.code(404).send({ error: { message: 'not_found' } });
   return reply.send(rowToDto(rows[0]));
+};
+
+/** GET /admin/site_settings/app-locales */
+export const adminGetAppLocales: RouteHandler = async (_req, reply) => {
+  const rows = await db.select().from(siteSettings).where(eq(siteSettings.key, 'app_locales')).limit(1);
+  if (!rows.length) return reply.send([]);
+  return reply.send(normalizeAppLocalesValue(rows[0].value));
+};
+
+/** GET /admin/site_settings/default-locale */
+export const adminGetDefaultLocale: RouteHandler = async (_req, reply) => {
+  const rows = await db.select().from(siteSettings).where(eq(siteSettings.key, 'default_locale')).limit(1);
+  if (!rows.length) return reply.send('tr');
+  return reply.send(normalizeDefaultLocaleValue(parseDbValue(rows[0].value)) || 'tr');
 };
 
 /** POST /admin/site_settings  body: { key, value }  (create/update - upsert) */

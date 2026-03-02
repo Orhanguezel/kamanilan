@@ -36,6 +36,13 @@ export const createSchema = z.object({
   image_url: z.string().url().optional().nullable(),
   image_asset_id: z.string().uuid().optional().nullable(),
   alt: z.string().max(255).optional().nullable(),
+
+  image2_url: z.string().url().optional().nullable(),
+
+  badge_text:  z.string().max(100).optional().nullable(),
+  badge_color: z.string().max(100).optional().nullable(),
+  gradient:    z.string().optional().nullable(),
+
   buttonText: z.string().max(100).optional().nullable(),
   buttonLink: z.string().max(255).optional().nullable(),
 

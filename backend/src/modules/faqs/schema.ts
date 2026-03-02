@@ -27,6 +27,7 @@ export const faqs = mysqlTable(
     /** düz HTML veya düz metin */
     answer: longtext("answer").notNull(),
     slug: varchar("slug", { length: 255 }).notNull(),
+    locale: varchar("locale", { length: 10 }).notNull().default("tr"),
     // NULL olabilir (SQL'de DEFAULT NULL)
     category: varchar("category", { length: 255 }),
 
@@ -44,7 +45,8 @@ export const faqs = mysqlTable(
       .$onUpdateFn(() => new Date()),
   },
   (t) => [
-    uniqueIndex("ux_faqs_slug").on(t.slug),
+    uniqueIndex("ux_faqs_slug_locale").on(t.slug, t.locale),
+    index("faqs_locale_idx").on(t.locale),
     index("faqs_active_idx").on(t.is_active),
     index("faqs_order_idx").on(t.display_order),
     index("faqs_created_idx").on(t.created_at),

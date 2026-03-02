@@ -5,18 +5,10 @@ import type { RouteHandler } from "fastify";
 import { randomUUID } from "crypto";
 import { db } from "@/db/client";
 import { categories } from "./schema";
+import { properties } from "../proporties/schema";
 import { and, asc, desc, eq, sql } from "drizzle-orm";
 import type { CategoryCreateInput, CategoryUpdateInput } from "./validation";
-
-const nullIfEmpty = (v: unknown) => (v === "" ? null : v);
-
-// FE’den gelen her türü -> boolean
-function toBool(v: unknown): boolean {
-  if (typeof v === "boolean") return v;
-  if (typeof v === "number") return v !== 0;
-  const s = String(v).toLowerCase();
-  return s === "1" || s === "true";
-}
+import { toBool, nullIfEmpty } from "@/modules/_shared/normalizers";
 
 const ORDER_WHITELIST = {
   display_order: categories.display_order,
@@ -118,6 +110,24 @@ export const getCategoryBySlug: RouteHandler<{ Params: { slug: string } }> = asy
   return reply.send(rows[0]);
 };
 
+/** GET /categories/counts — aktif ilan sayısını kategori bazında döner */
+export const getCategoryCounts: RouteHandler = async (_req, reply) => {
+  const rows = await db
+    .select({
+      category_id: properties.category_id,
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(properties)
+    .where(eq(properties.is_active, 1))
+    .groupBy(properties.category_id);
+
+  return reply.send(
+    rows
+      .filter((r) => r.category_id !== null)
+      .map((r) => ({ category_id: r.category_id!, count: Number(r.count) }))
+  );
+};
+
 /** Ortak payload yardımcıları (admin controller da kullanıyor) */
 export function buildInsertPayload(input: CategoryCreateInput) {
   const id = input.id ?? randomUUID();
@@ -134,11 +144,17 @@ export function buildInsertPayload(input: CategoryCreateInput) {
     icon: (nullIfEmpty(input.icon) as string | null) ?? null,
 
     // boolean kolonlar
+    has_cart: input.has_cart === undefined ? true : toBool(input.has_cart),
     is_active: input.is_active === undefined ? true : toBool(input.is_active),
     is_featured:
       input.is_featured === undefined ? false : toBool(input.is_featured),
+    is_unlimited:
+      input.is_unlimited === undefined ? false : toBool(input.is_unlimited),
 
     display_order: input.display_order ?? 0,
+
+    whatsapp_number: (nullIfEmpty(input.whatsapp_number) as string | null) ?? null,
+    phone_number: (nullIfEmpty(input.phone_number) as string | null) ?? null,
   };
 }
 
@@ -157,11 +173,18 @@ export function buildUpdatePayload(patch: CategoryUpdateInput) {
     set.alt = nullIfEmpty(patch.alt) as string | null;
   if (patch.icon !== undefined) set.icon = nullIfEmpty(patch.icon) as string | null;
 
+  if (patch.has_cart !== undefined) set.has_cart = toBool(patch.has_cart);
   if (patch.is_active !== undefined) set.is_active = toBool(patch.is_active);
-  if (patch.is_featured !== undefined)
-    set.is_featured = toBool(patch.is_featured);
+  if (patch.is_featured !== undefined) set.is_featured = toBool(patch.is_featured);
+  if (patch.is_unlimited !== undefined) set.is_unlimited = toBool(patch.is_unlimited);
 
   if (patch.display_order !== undefined)
     set.display_order = Number(patch.display_order) || 0;
+
+  if (patch.whatsapp_number !== undefined)
+    set.whatsapp_number = nullIfEmpty(patch.whatsapp_number) as string | null;
+  if (patch.phone_number !== undefined)
+    set.phone_number = nullIfEmpty(patch.phone_number) as string | null;
+
   return set;
 }

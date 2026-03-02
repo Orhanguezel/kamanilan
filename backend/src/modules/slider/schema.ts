@@ -33,6 +33,15 @@ export const slider = mysqlTable(
     image_asset_id: char("image_asset_id", { length: 36 }),
 
     alt: varchar("alt", { length: 255 }),
+
+    /** Ön plan görseli (sağ sütun) */
+    image2_url: text("image2_url"),
+
+    // Tema alanları — admin panelden düzenlenebilir
+    badgeText:  varchar("badge_text",  { length: 100 }),
+    badgeColor: varchar("badge_color", { length: 100 }),
+    gradient:   text("gradient"),
+
     buttonText: varchar("button_text", { length: 100 }),
     buttonLink: varchar("button_link", { length: 255 }),
 

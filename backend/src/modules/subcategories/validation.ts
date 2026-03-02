@@ -29,6 +29,8 @@ export const subCategoryCreateSchema = z
     alt: emptyToNull(z.string().max(255).optional().nullable()),
     icon: emptyToNull(z.string().max(100).optional().nullable()),
 
+    has_cart: boolLike.optional(),
+
     is_active: boolLike.optional(),
     is_featured: boolLike.optional(),
     display_order: z.coerce.number().int().min(0).optional(),

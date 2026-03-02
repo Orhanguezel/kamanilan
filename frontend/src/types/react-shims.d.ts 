@@ -1,3 +1,0 @@
-// src/types/react-shims.d.ts  (opsiyonel)
-/// <reference types="react" />
-/// <reference types="react-dom" />

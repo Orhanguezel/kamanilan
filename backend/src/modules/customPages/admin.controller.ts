@@ -44,6 +44,8 @@ export const listPagesAdmin: RouteHandler<{ Querystring: CustomPageListQuery }> 
     is_published: q.is_published,
     q: q.q,
     slug: q.slug,
+    locale: q.locale,
+    module_key: q.module_key,
   });
 
   reply.header("x-total-count", String(total ?? 0));
@@ -77,6 +79,8 @@ export const createPageAdmin: RouteHandler<{ Body: UpsertCustomPageBody }> = asy
       id: randomUUID(),
       title: b.title.trim(),
       slug: b.slug.trim(),
+      locale: (b.locale ?? "tr").trim(),
+      module_key: (b.module_key ?? "about").trim(),
       content: packContent(b.content),
 
       image_url: b.image_url ?? null,
@@ -113,6 +117,8 @@ export const updatePageAdmin: RouteHandler<{ Params: { id: string }; Body: Patch
     const patched = await updateCustomPage(req.params.id, {
       title: typeof b.title === "string" ? b.title.trim() : undefined,
       slug: typeof b.slug === "string" ? b.slug.trim() : undefined,
+      locale: typeof b.locale !== "undefined" ? (b.locale ?? "tr").trim() : undefined,
+      module_key: typeof b.module_key !== "undefined" ? (b.module_key ?? "about").trim() : undefined,
       content: typeof b.content === "string" ? packContent(b.content) : undefined,
 
       image_url: typeof b.image_url !== "undefined" ? (b.image_url ?? null) : undefined,

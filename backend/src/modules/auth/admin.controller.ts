@@ -27,7 +27,7 @@ const toNum = (v: unknown): number =>
 /** Zod şemaları */
 const listQuery = z.object({
   q: z.string().optional(),
-  role: z.enum(["admin", "moderator", "user"]).optional(),
+  role: z.enum(["admin", "moderator", "seller", "user"]).optional(),
   is_active: z.coerce.boolean().optional(),
   limit: z.coerce.number().int().min(1).max(200).default(50),
   offset: z.coerce.number().int().min(0).max(1_000_000).default(0),
@@ -51,7 +51,7 @@ const setActiveBody = z.object({
 });
 
 const setRolesBody = z.object({
-  roles: z.array(z.enum(["admin", "moderator", "user"])).default([]),
+  roles: z.array(z.enum(["admin", "moderator", "seller", "user"])).default([]),
 });
 
 const setPasswordBody = z.object({

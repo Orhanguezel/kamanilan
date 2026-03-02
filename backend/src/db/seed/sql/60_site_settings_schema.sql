@@ -1,4 +1,4 @@
-/* site_settings_schema.sql  (X Emlak) */
+/* site_settings_schema.sql  — Kaman İlan */
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
@@ -16,36 +16,69 @@ CREATE TABLE `site_settings` (
   KEY `site_settings_key_idx` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --no-drop ile çalıştırıldığında var olan verileri sıfırla
+DELETE FROM `site_settings`;
+
 -- =============================================================
--- BRAND / UI / ROUTES
+-- BRAND / UI
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'brand_name',             '"X Emlak"', NOW(3), NOW(3)),
-(UUID(), 'brand_tagline',          '"güvenilir gayrimenkul danışmanlığı"', NOW(3), NOW(3)),
-(UUID(), 'ui_theme',               '{"color":"slate","primaryHex":"#1e293b","darkMode":false,"navbarHeight":96}', NOW(3), NOW(3)),
-(UUID(), 'site_version',           '"1.0.0"', NOW(3), NOW(3)),
-(UUID(), 'admin_path',             '"/adminkontrol"', NOW(3), NOW(3));
+(UUID(), 'brand_name',         '"Kaman İlan"',                    NOW(3), NOW(3)),
+(UUID(), 'brand_display_name', '"KamanİLAN"',                     NOW(3), NOW(3)),
+(UUID(), 'brand_logo_text',    '"Kaman İlan"',                    NOW(3), NOW(3)),
+(UUID(), 'brand_subtitle',     '"Kırşehir · Kaman"',              NOW(3), NOW(3)),
+(UUID(), 'brand_tagline',      '"Kaman\'da her şey burada"',      NOW(3), NOW(3)),
+(UUID(), 'topbar_location',    '"Kırşehir – Kaman İlçesi"',       NOW(3), NOW(3)),
+(UUID(), 'topbar_slogan',      '"Türkiye\'nin Ceviz Başkenti"',   NOW(3), NOW(3)),
+(UUID(), 'ui_theme',           '{"primaryHex":"#1B4332","darkMode":"light","radius":"0.375rem"}', NOW(3), NOW(3)),
+(UUID(), 'site_version',       '"1.0.0"',                         NOW(3), NOW(3)),
+(UUID(), 'admin_path',         '"/admin"',                        NOW(3), NOW(3));
+
+-- =============================================================
+-- BRAND MEDIA (storage_assets URLs)
+-- Logolar, favicon, og-image — /uploads/media/... yolları
+-- =============================================================
+INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
+(UUID(), 'brand_logo',              '"/uploads/site-media/ChatGPT_Image_1_Mar_2026_13_10_41.png"',        NOW(3), NOW(3)),
+(UUID(), 'brand_logo_dark',         '"/uploads/media/logo/logo-horizontal-dark.svg"',   NOW(3), NOW(3)),
+(UUID(), 'brand_logo_icon',         '"/uploads/media/logo/logo-icon.svg"',              NOW(3), NOW(3)),
+(UUID(), 'brand_logo_icon_transparent', '"/uploads/media/logo/logo-icon-transparent.png"', NOW(3), NOW(3)),
+(UUID(), 'brand_logo_icon_192',     '"/uploads/media/logo/logo-icon-192.png"',          NOW(3), NOW(3)),
+(UUID(), 'brand_logo_icon_512',     '"/uploads/media/logo/logo-icon-512.png"',          NOW(3), NOW(3)),
+(UUID(), 'brand_og_image',          '"/uploads/media/logo/og-image.png"',               NOW(3), NOW(3));
+
+-- =============================================================
+-- SITE MEDIA (Logo & Favicon tab uses these keys)
+-- =============================================================
+INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
+(UUID(), 'site_logo',             '{"url":"/uploads/site-media/ChatGPT_Image_1_Mar_2026_13_10_41.png"}',      NOW(3), NOW(3)),
+(UUID(), 'site_logo_dark',        '{"url":"/uploads/media/logo/logo-horizontal-dark.svg"}', NOW(3), NOW(3)),
+(UUID(), 'site_logo_light',       '{"url":"/uploads/site-media/ChatGPT_Image_1_Mar_2026_13_10_41.png"}',      NOW(3), NOW(3)),
+(UUID(), 'site_favicon',          '{"url":"/uploads/media/favicon/favicon.svg"}',           NOW(3), NOW(3)),
+(UUID(), 'site_apple_touch_icon', '{"url":"/uploads/media/apple/apple-touch-icon.png"}',   NOW(3), NOW(3)),
+(UUID(), 'site_app_icon_512',     '{"url":"/uploads/media/logo/logo-icon-512.png"}',       NOW(3), NOW(3)),
+(UUID(), 'site_og_default_image', '{"url":"/uploads/media/logo/og-image.png"}',            NOW(3), NOW(3));
 
 -- =============================================================
 -- CONTACT
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'contact_phone_display',  '"+49 000 000000"', NOW(3), NOW(3)),
-(UUID(), 'contact_phone_tel',      '"+49000000000"', NOW(3), NOW(3)),
-(UUID(), 'contact_email',          '"info@xemlak.com"', NOW(3), NOW(3)),
-(UUID(), 'contact_to_email',       '"info@xemlak.com"', NOW(3), NOW(3)),
-(UUID(), 'contact_address',        '"Örnek Mah. Örnek Cad. No:1, 41460 Grevenbroich, Almanya"', NOW(3), NOW(3)),
-(UUID(), 'contact_whatsapp_link',  '"https://wa.me/49000000000"', NOW(3), NOW(3));
+(UUID(), 'contact_phone_display',  '"0312 000 00 00"', NOW(3), NOW(3)),
+(UUID(), 'contact_phone_tel',      '"03120000000"', NOW(3), NOW(3)),
+(UUID(), 'contact_email',          '"info@kamanilan.com"', NOW(3), NOW(3)),
+(UUID(), 'contact_to_email',       '"info@kamanilan.com"', NOW(3), NOW(3)),
+(UUID(), 'contact_address',        '"Kaman, Kırşehir, Türkiye"', NOW(3), NOW(3)),
+(UUID(), 'contact_whatsapp_link',  '"https://wa.me/903120000000"', NOW(3), NOW(3));
 
 -- =============================================================
 -- STORAGE / UPLOAD CONFIG
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
 (UUID(), 'storage_driver',             '"local"', NOW(3), NOW(3)),
-(UUID(), 'storage_local_root',         '"/www/wwwroot/xemlak/uploads"', NOW(3), NOW(3)),
-(UUID(), 'storage_local_base_url',     '"http://localhost:8085/uploads"', NOW(3), NOW(3)),
-(UUID(), 'storage_cdn_public_base',    '"https://cdn.xemlak.com"', NOW(3), NOW(3)),
-(UUID(), 'storage_public_api_base',    '"https://xemlak.com/api"', NOW(3), NOW(3)),
+(UUID(), 'storage_local_root',         '"/www/wwwroot/kamanilan/uploads"', NOW(3), NOW(3)),
+(UUID(), 'storage_local_base_url',     '"/uploads"', NOW(3), NOW(3)),
+(UUID(), 'storage_cdn_public_base',    '"https://cdn.kamanilan.com"', NOW(3), NOW(3)),
+(UUID(), 'storage_public_api_base',    '"https://kamanilan.com/api"', NOW(3), NOW(3)),
 (UUID(), 'cloudinary_cloud_name',      '""', NOW(3), NOW(3)),
 (UUID(), 'cloudinary_api_key',         '""', NOW(3), NOW(3)),
 (UUID(), 'cloudinary_api_secret',      '"__SET_IN_ENV__"', NOW(3), NOW(3)),
@@ -58,22 +91,21 @@ INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUE
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
 (UUID(), 'smtp_host',        '"smtp.example.com"', NOW(3), NOW(3)),
 (UUID(), 'smtp_port',        '587', NOW(3), NOW(3)),
-(UUID(), 'smtp_username',    '"info@xemlak.com"', NOW(3), NOW(3)),
+(UUID(), 'smtp_username',    '"info@kamanilan.com"', NOW(3), NOW(3)),
 (UUID(), 'smtp_password',    '"__SET_IN_ENV__"', NOW(3), NOW(3)),
-(UUID(), 'smtp_from_email',  '"info@xemlak.com"', NOW(3), NOW(3)),
-(UUID(), 'smtp_from_name',   '"X Emlak"', NOW(3), NOW(3)),
+(UUID(), 'smtp_from_email',  '"info@kamanilan.com"', NOW(3), NOW(3)),
+(UUID(), 'smtp_from_name',   '"Kaman İlan"', NOW(3), NOW(3)),
 (UUID(), 'smtp_ssl',         'false', NOW(3), NOW(3));
 
 -- =============================================================
--- HEADER METİNLER
+-- HEADER
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'header_info_text',       '"Portföy ve danışmanlık için"', NOW(3), NOW(3)),
-(UUID(), 'header_cta_label',       '"İLETİŞİME GEÇ"', NOW(3), NOW(3));
+(UUID(), 'header_info_text',  '"Kaman\'da ilan vermek ücretsiz"', NOW(3), NOW(3)),
+(UUID(), 'header_cta_label',  '"İLAN VER"', NOW(3), NOW(3));
 
 -- =============================================================
--- HEADER MENU (site_settings tabanlı)
--- (Hizmetler yok, ücretsiz değerleme yok)
+-- HEADER MENU
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
 (
@@ -81,70 +113,194 @@ INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUE
   'header_menu',
   '[
     {"title":"ANASAYFA","path":"/","pageKey":"home","type":"link"},
-    {"title":"EMLAKLAR","path":"/emlaklar","pageKey":"properties","type":"link"},
+    {"title":"İLANLAR","path":"/ilanlar","pageKey":"listings","type":"link"},
+    {"title":"KATEGORİLER","path":"/kategoriler","pageKey":"kategoriler","type":"link"},
     {"title":"KURUMSAL","path":"#","pageKey":"kurumsal","type":"dropdown","itemsKey":"menu_kurumsal"},
     {"title":"İLETİŞİM","path":"/iletisim","pageKey":"contact","type":"link"}
   ]',
   NOW(3),
   NOW(3)
-)
-ON DUPLICATE KEY UPDATE
-  `value` = VALUES(`value`),
-  `updated_at` = CURRENT_TIMESTAMP(3);
+);
 
 -- =============================================================
 -- FOOTER
--- (Services içinden "Ücretsiz Ön Değerleme" kaldırıldı)
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'footer_keywords',    '["Gayrimenkul Danışmanlığı","Satılık Daire","Kiralık Daire","Satılık Arsa","Ticari Gayrimenkul","Emsal Analizi","Güvenli Alım Satım"]', NOW(3), NOW(3)),
-(UUID(), 'footer_services',    '["Satış Danışmanlığı","Kiralama Danışmanlığı","Pazarlama ve İlan Yönetimi"]', NOW(3), NOW(3)),
-(UUID(), 'footer_quick_links', '[{"title":"Anasayfa","path":"/","pageKey":"home"},{"title":"Emlaklar","path":"/emlaklar","pageKey":"properties"},{"title":"Hakkımızda","path":"/hakkimizda","pageKey":"about"},{"title":"İletişim","path":"/iletisim","pageKey":"contact"}]', NOW(3), NOW(3));
+(UUID(), 'footer_keywords',    '["Ücretsiz İlan","Satılık","Kiralık","Takas","Hayvan İlanları","Araç İlanları","Kaman İlanları","Kırşehir"]', NOW(3), NOW(3)),
+(UUID(), 'footer_services',    '["Ücretsiz İlan Ver","İlan Ara","Kategorilere Göz At"]', NOW(3), NOW(3)),
+(UUID(), 'footer_quick_links', '[{"title":"Anasayfa","path":"/","pageKey":"home"},{"title":"İlanlar","path":"/ilanlar","pageKey":"listings"},{"title":"Kategoriler","path":"/kategoriler","pageKey":"kategoriler"},{"title":"Hakkımızda","path":"/hakkimizda","pageKey":"about"},{"title":"İletişim","path":"/iletisim","pageKey":"contact"}]', NOW(3), NOW(3));
 
 -- =============================================================
 -- MENU (Header dropdown içerikleri)
--- (Diğer hizmetler menüsü kaldırıldı)
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
 (
   UUID(),
   'menu_kurumsal',
-  '[{"title":"HAKKIMIZDA","path":"/hakkimizda","pageKey":"about"},{"title":"MİSYONUMUZ - VİZYONUMUZ","path":"/misyon-vizyon","pageKey":"mission"},{"title":"KALİTE POLİTİKAMIZ","path":"/kalite-politikamiz","pageKey":"quality"},{"title":"S.S.S.","path":"/sss","pageKey":"faq"}]',
+  '[{"title":"HAKKIMIZDA","path":"/hakkimizda","pageKey":"about"},{"title":"S.S.S.","path":"/sss","pageKey":"faq"},{"title":"İLETİŞİM","path":"/iletisim","pageKey":"contact"}]',
   NOW(3),
   NOW(3)
-)
-ON DUPLICATE KEY UPDATE
-  `value` = VALUES(`value`),
-  `updated_at` = CURRENT_TIMESTAMP(3);
+);
 
 -- =============================================================
 -- SEO GLOBAL / DEFAULTS
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'seo_defaults',       '{"canonicalBase":"https://xemlak.com","siteName":"X Emlak | Gayrimenkul Danışmanlığı","ogLocale":"tr_TR","author":"X Emlak","themeColor":"#1e293b","twitterCard":"summary_large_image","robots":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1","googlebot":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}', NOW(3), NOW(3)),
-(UUID(), 'seo_social_same_as', '["https://www.instagram.com/xemlak","https://www.facebook.com/xemlak"]', NOW(3), NOW(3)),
-(UUID(), 'seo_app_icons',      '{"appleTouchIcon":"/apple-touch-icon.png","favicon32":"/favicon-32x32.png","favicon16":"/favicon-16x16.png"}', NOW(3), NOW(3)),
+(UUID(), 'seo_defaults',
+ '{"canonicalBase":"https://kamanilan.com","siteName":"Kaman İlan | Kaman\'da Her Şey Burada","description":"Kaman\'da satılık, kiralık, takas ilanları. Emlak, hayvan, araç, yiyecek ve daha fazlası. Ücretsiz ilan ver, kolayca ara.","ogLocale":"tr_TR","author":"Kaman İlan","themeColor":"#2D6A4F","twitterCard":"summary_large_image","robots":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1","googlebot":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}',
+ NOW(3), NOW(3)),
+(UUID(), 'public_base_url', '"http://localhost:3000"', NOW(3), NOW(3)),
+(UUID(), 'site_title', '"Kaman İlan"', NOW(3), NOW(3)),
+(UUID(), 'company_brand', '{"name":"Kaman İlan","shortName":"Kaman İlan"}', NOW(3), NOW(3)),
+(UUID(), 'socials', '{"instagram":"https://www.instagram.com/kamanilan","facebook":"https://www.facebook.com/kamanilan","twitter":"https://www.twitter.com/kamanilan"}', NOW(3), NOW(3)),
+(UUID(), 'social_facebook_url',  '"https://www.facebook.com/kamanilan"',  NOW(3), NOW(3)),
+(UUID(), 'social_instagram_url', '"https://www.instagram.com/kamanilan"', NOW(3), NOW(3)),
+(UUID(), 'social_twitter_url',   '"https://www.twitter.com/kamanilan"',   NOW(3), NOW(3)),
+(UUID(), 'seo_social_same_as', '["https://www.instagram.com/kamanilan","https://www.facebook.com/kamanilan"]', NOW(3), NOW(3)),
+(UUID(), 'seo_app_icons',
+ '{"appleTouchIcon":"/uploads/media/apple/apple-touch-icon.png","favicon":"/uploads/media/favicon/favicon.ico","faviconSvg":"/uploads/media/favicon/favicon.svg","logoIcon192":"/uploads/media/logo/logo-icon-192.png","logoIcon512":"/uploads/media/logo/logo-icon-512.png"}',
+ NOW(3), NOW(3)),
 (UUID(), 'seo_amp_google_client_id_api', '"googleanalytics"', NOW(3), NOW(3));
 
 -- =============================================================
--- SEO SAYFA BAZLI (X Emlak)
--- (Ücretsiz değerleme referansları kaldırıldı)
+-- SEO SAYFA BAZLI
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'seo_pages_home',       '{"title":"X Emlak | Satılık & Kiralık Gayrimenkuller","description":"X Emlak ile satılık/kiralık konut, arsa ve ticari gayrimenkulleri inceleyin. Şeffaf süreç, doğru fiyatlama ve profesyonel danışmanlık.","keywords":"x emlak, satılık daire, kiralık daire, satılık arsa, ticari gayrimenkul, gayrimenkul danışmanlığı","ogImage":"/og/home.jpg"}', NOW(3), NOW(3)),
-(UUID(), 'seo_pages_properties', '{"title":"Emlaklar | X Emlak Portföy","description":"Konut, arsa ve ticari portföyümüzü keşfedin. Detaylı bilgiler, konum ve filtreleme ile size uygun gayrimenkulü bulun.","keywords":"emlaklar, portföy, satılık, kiralık, konut, arsa, ticari","ogImage":"/og/properties.jpg"}', NOW(3), NOW(3)),
-(UUID(), 'seo_pages_contact',    '{"title":"İletişim | X Emlak","description":"X Emlak ile iletişime geçin. Satış ve kiralama için hızlı geri dönüş.","keywords":"x emlak iletişim, gayrimenkul danışmanlığı","ogImage":"/og/contact.jpg"}', NOW(3), NOW(3)),
-(UUID(), 'seo_pages_about',      '{"title":"Hakkımızda | X Emlak","description":"X Emlak: şeffaf süreç yönetimi, doğru fiyatlama ve profesyonel pazarlama ile güvenilir gayrimenkul danışmanlığı.","keywords":"x emlak hakkında, emlak danışmanlığı, şeffaf süreç, doğru fiyatlama","ogImage":"/og/about.jpg"}', NOW(3), NOW(3)),
-(UUID(), 'seo_pages_property_detail', '{"titleTemplate":"{{title}} | X Emlak","descriptionTemplate":"{{title}} ilan detayı. X Emlak portföyünde satılık/kiralık gayrimenkulleri inceleyin.","keywordsTemplate":"x emlak, ilan detayı, {{title}}, satılık, kiralık, gayrimenkul","ogImage":"/og/property.jpg"}', NOW(3), NOW(3));
+(UUID(), 'seo_pages_home',
+ '{"title":"Kaman İlan | Kaman\'da Her Şey Burada","description":"Kaman\'da satılık, kiralık, takas ilanları. Emlak, hayvan, araç, yiyecek ve daha fazlası. Ücretsiz ilan ver, kolayca ara.","keywords":"kaman ilan, kaman satılık, kaman kiralık, kaman emlak, kaman hayvan, kaman araç, kırşehir ilan","ogImage":"/uploads/media/logo/og-image.png"}',
+ NOW(3), NOW(3)),
+(UUID(), 'seo_pages_listings',
+ '{"title":"İlanlar | Kaman İlan","description":"Kaman\'daki tüm ilanları inceleyin. Emlak, hayvan, araç, yiyecek kategorilerinde filtreli arama.","keywords":"kaman ilanlar, satılık, kiralık, takas, kaman, kırşehir","ogImage":"/uploads/media/logo/og-image.png"}',
+ NOW(3), NOW(3)),
+(UUID(), 'seo_pages_contact',
+ '{"title":"İletişim | Kaman İlan","description":"Kaman İlan ile iletişime geçin. Sorularınız için bize ulaşın.","keywords":"kaman ilan iletişim, kaman","ogImage":"/uploads/media/logo/og-image.png"}',
+ NOW(3), NOW(3)),
+(UUID(), 'seo_pages_about',
+ '{"title":"Hakkımızda | Kaman İlan","description":"Kaman İlan hakkında bilgi edinin. Kaman ve Kırşehir\'in ücretsiz ilan platformu.","keywords":"kaman ilan hakkında, kaman ilan sitesi","ogImage":"/uploads/media/logo/og-image.png"}',
+ NOW(3), NOW(3)),
+(UUID(), 'seo_pages_listing_detail',
+ '{"titleTemplate":"{{title}} | Kaman İlan","descriptionTemplate":"{{title}} ilanı. Kaman İlan\'da satılık, kiralık ve takas ilanlarını inceleyin.","keywordsTemplate":"kaman ilan, {{title}}, satılık, kiralık, takas","ogImage":"/uploads/media/logo/og-image.png"}',
+ NOW(3), NOW(3));
 
 -- =============================================================
--- JSON-LD (RealEstateAgent / LocalBusiness)
+-- JSON-LD (LocalBusiness)
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'seo_local_business', '{"@context":"https://schema.org","@type":"RealEstateAgent","name":"X Emlak","description":"Satış ve kiralamada şeffaf süreç ve profesyonel gayrimenkul danışmanlığı","url":"https://xemlak.com","telephone":"+49-000-000000","address":{"@type":"PostalAddress","addressLocality":"Grevenbroich","addressCountry":"DE"},"geo":{"@type":"GeoCoordinates","latitude":51.090,"longitude":6.582},"sameAs":["https://www.instagram.com/xemlak","https://www.facebook.com/xemlak"],"priceRange":"$$","serviceArea":{"@type":"GeoCircle","geoMidpoint":{"@type":"GeoCoordinates","latitude":51.090,"longitude":6.582},"geoRadius":50000}}', NOW(3), NOW(3));
+(UUID(), 'seo_local_business',
+ '{"@context":"https://schema.org","@type":"LocalBusiness","name":"Kaman İlan","description":"Kaman ve çevresinde ücretsiz ilan verme ve arama platformu","url":"https://kamanilan.com","telephone":"+90-312-000-0000","address":{"@type":"PostalAddress","addressLocality":"Kaman","addressRegion":"Kırşehir","addressCountry":"TR"},"geo":{"@type":"GeoCoordinates","latitude":39.3553,"longitude":33.7239},"sameAs":["https://www.instagram.com/kamanilan","https://www.facebook.com/kamanilan"]}',
+ NOW(3), NOW(3));
 
 -- =============================================================
--- SEO (örnek ekstra)
+-- HOMEPAGE SECTIONS
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'seo_contact_title', '"İletişim - X Emlak"', NOW(3), NOW(3));
+(UUID(), 'homepage_sections',
+ '[{"key":"hero","enabled":true,"order":1,"label":"Hero Bölümü"},{"key":"categories","enabled":true,"order":2,"label":"Tüm Kategoriler"},{"key":"featured","enabled":true,"order":3,"label":"Öne Çıkan İlanlar"},{"key":"recent","enabled":true,"order":4,"label":"Son İlanlar"}]',
+ NOW(3), NOW(3));
+
+-- =============================================================
+-- CTA
+-- =============================================================
+INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
+(UUID(), 'cta_post_listing_title',    '"Ücretsiz İlan Ver"', NOW(3), NOW(3)),
+(UUID(), 'cta_post_listing_subtitle', '"Kaman\'da ilanınızı saniyeler içinde yayınlayın"', NOW(3), NOW(3)),
+(UUID(), 'cta_post_listing_path',     '"/ilan-ver"', NOW(3), NOW(3));
+
+-- =============================================================
+-- ADMIN UI BRANDING
+-- =============================================================
+INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
+(
+  UUID(),
+  'ui_admin_config',
+  '{
+    "default_locale":"tr",
+    "theme":{"mode":"light","preset":"soft-pop","font":"inter"},
+    "layout":{"sidebar_variant":"inset","sidebar_collapsible":"icon","navbar_style":"sticky","content_layout":"full-width"},
+    "branding":{
+      "app_name":"Kaman İlan Admin Panel",
+      "app_copyright":"Kaman İlan",
+      "html_lang":"tr",
+      "theme_color":"#2D6A4F",
+      "favicon":"/uploads/media/favicon/favicon.ico",
+      "favicon_svg":"/uploads/media/favicon/favicon.svg",
+      "apple_touch_icon":"/uploads/media/apple/apple-touch-icon.png",
+      "logo":"/uploads/site-media/ChatGPT_Image_1_Mar_2026_13_10_41.png",
+      "logo_dark":"/uploads/media/logo/logo-horizontal-dark.svg",
+      "logo_icon":"/uploads/media/logo/logo-icon.svg",
+      "meta":{
+        "title":"Kaman İlan Admin Panel",
+        "description":"Kaman İlan yönetim paneli",
+        "og_url":"https://kamanilan.com/admin",
+        "og_title":"Kaman İlan Admin Panel",
+        "og_description":"Kaman İlan yönetim paneli ile ilan yönetimi",
+        "og_image":"/uploads/media/logo/og-image.png",
+        "twitter_card":"summary_large_image"
+      }
+    }
+  }',
+  NOW(3),
+  NOW(3)
+),
+(
+  UUID(),
+  'ui_admin',
+  '{
+    "app_name":"Kaman İlan Admin Panel",
+    "app_version":"v1.0.0",
+    "developer_branding":{"name":"Kaman İlan","url":"https://kamanilan.com","full_name":"Kaman İlan"},
+    "nav":{
+      "labels":{
+        "general":"Genel / Yönetim",
+        "content":"İçerik Yönetimi",
+        "marketing":"Pazarlama",
+        "communication":"İletişim & CRM",
+        "system":"Sistem & Ayarlar"
+      },
+      "items":{
+        "dashboard":"Özet",
+        "site_settings":"Site Ayarları",
+        "theme_management":"Tema Kontrolü",
+        "custom_pages":"Özel Sayfalar",
+        "categories":"Kategoriler",
+        "subcategories":"Alt Kategoriler",
+        "products":"İlanlar",
+        "sellers":"Satıcılar",
+        "flash_sale":"Flash Sale",
+        "sliders":"Slider",
+        "faqs":"S.S.S.",
+        "contacts":"İletişim Mesajları",
+        "reviews":"Yorumlar",
+        "campaign_settings":"Kampanya Ayarları",
+        "mail":"E-Posta",
+        "users":"Kullanıcılar",
+        "storage":"Dosya Yöneticisi",
+        "db":"Veritabanı"
+      }
+    },
+    "common":{
+      "actions":{
+        "create":"Oluştur",
+        "edit":"Düzenle",
+        "delete":"Sil",
+        "save":"Kaydet",
+        "cancel":"İptal",
+        "refresh":"Yenile",
+        "search":"Ara",
+        "filter":"Filtrele",
+        "close":"Kapat",
+        "back":"Geri",
+        "confirm":"Onayla"
+      },
+      "states":{
+        "loading":"Yükleniyor...",
+        "error":"İşlem başarısız.",
+        "empty":"Veri bulunamadı.",
+        "updating":"Güncelleniyor...",
+        "saving":"Kaydediliyor..."
+      }
+    }
+  }',
+  NOW(3),
+  NOW(3)
+);

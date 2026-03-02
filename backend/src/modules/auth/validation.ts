@@ -16,6 +16,7 @@ export const signupBody = z.object({
         .object({
           full_name: z.string().trim().min(2).max(100).optional(),
           phone: z.string().trim().min(6).max(50).optional(),
+          role: z.enum(['seller']).optional(),
         })
         .partial()
         .optional(),
@@ -48,7 +49,7 @@ export const adminListQuery = z.object({
 export const adminRoleBody = z.object({
   user_id: z.string().uuid().optional(),
   email: z.string().email().optional(),
-  role: z.enum(['admin', 'moderator', 'user']),
+  role: z.enum(['admin', 'moderator', 'seller', 'user']),
 }).refine(v => v.user_id || v.email, { message: 'user_id_or_email_required' });
 
 export const adminMakeByEmailBody = z.object({

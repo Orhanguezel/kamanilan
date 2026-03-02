@@ -3,11 +3,12 @@ import { db } from "@/db/client";
 import { userRoles } from "./schema";
 import { eq } from "drizzle-orm";
 
-export type RoleName = "admin" | "moderator" | "user";
+export type RoleName = "admin" | "moderator" | "seller" | "user";
 
 const ROLE_WEIGHT: Record<RoleName, number> = {
   admin: 3,
   moderator: 2,
+  seller: 1.5,
   user: 1,
 };
 

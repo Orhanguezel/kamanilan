@@ -26,6 +26,8 @@ export const customPages = mysqlTable(
     id: char("id", { length: 36 }).primaryKey().notNull(),
     title: varchar("title", { length: 255 }).notNull(),
     slug: varchar("slug", { length: 255 }).notNull(),
+    locale: varchar("locale", { length: 10 }).notNull().default("tr"),
+    module_key: varchar("module_key", { length: 64 }).notNull().default("about"),
 
     // JSON string: {"html":"..."} — LONGTEXT
     content: longtext("content").notNull(),
@@ -48,7 +50,9 @@ export const customPages = mysqlTable(
       .$onUpdateFn(() => new Date()),
   },
   (t) => [
-    uniqueIndex("ux_custom_pages_slug").on(t.slug),
+    uniqueIndex("ux_custom_pages_slug_locale").on(t.slug, t.locale),
+    index("custom_pages_locale_idx").on(t.locale),
+    index("custom_pages_module_key_idx").on(t.module_key),
     index("custom_pages_created_idx").on(t.created_at),
     index("custom_pages_updated_idx").on(t.updated_at),
     index("custom_pages_is_published_idx").on(t.is_published),

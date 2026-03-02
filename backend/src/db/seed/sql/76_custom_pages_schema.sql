@@ -1,5 +1,5 @@
 -- =============================================================
--- FILE: 076_custom_pages.sql  (X EMLAK • Drizzle şemayla birebir)
+-- FILE: 076_custom_pages.sql  (KAMAN ILAN • Drizzle şemayla birebir)
 -- =============================================================
 
 DROP TABLE IF EXISTS `custom_pages`;
@@ -8,6 +8,8 @@ CREATE TABLE `custom_pages` (
   `id`               CHAR(36)      NOT NULL,
   `title`            VARCHAR(255)  NOT NULL,
   `slug`             VARCHAR(255)  NOT NULL,
+  `locale`           VARCHAR(10)   NOT NULL DEFAULT 'tr',
+  `module_key`       VARCHAR(64)   NOT NULL DEFAULT 'about',
 
   -- JSON-string: {"html":"..."}
   `content`          LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL
@@ -26,7 +28,9 @@ CREATE TABLE `custom_pages` (
   `updated_at`       DATETIME(3)   NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `ux_custom_pages_slug`          (`slug`),
+  UNIQUE KEY `ux_custom_pages_slug_locale`   (`slug`,`locale`),
+  KEY        `custom_pages_locale_idx`       (`locale`),
+  KEY        `custom_pages_module_key_idx`   (`module_key`),
   KEY        `custom_pages_created_idx`      (`created_at`),
   KEY        `custom_pages_updated_idx`      (`updated_at`),
   KEY        `custom_pages_is_published_idx` (`is_published`),
@@ -34,7 +38,7 @@ CREATE TABLE `custom_pages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =============================================================
--- SEED (X Emlak sayfaları) – storage alanları opsiyonel, NULL geçiyoruz
+-- SEED (Kaman İlan sayfaları) – storage alanları opsiyonel, NULL geçiyoruz
 -- =============================================================
 
 INSERT INTO `custom_pages`
@@ -53,25 +57,25 @@ VALUES
   JSON_OBJECT('html',
     CONCAT(
       '<section class="container mx-auto px-4 py-8">',
-        '<h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">X Emlak Hakkında</h1>',
+        '<h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Kaman İlan Hakkında</h1>',
         '<p class="text-slate-700 leading-relaxed mb-6">',
-          '<strong>X Emlak</strong>, alım-satım ve kiralama süreçlerinde müşterilerine ',
-          '<strong>şeffaf, güvenilir ve hızlı</strong> hizmet sunmayı hedefleyen bir gayrimenkul danışmanlığıdır.',
-          ' Bölgenizin dinamiklerini bilen ekibimizle; konut, arsa ve ticari gayrimenkul kategorilerinde ',
+          '<strong>Kaman İlan</strong>, alım-satım ve kiralama süreçlerinde müşterilerine ',
+          '<strong>şeffaf, güvenilir ve hızlı</strong> hizmet sunmayı hedefleyen bir ilan platformudur.',
+          ' Bölgenizin dinamiklerini bilen ekibimizle; emlak, hayvan, araç ve köy ürünleri kategorilerinde ',
           '<em>doğru fiyatlama</em>, <em>pazarlama</em> ve <em>işlem yönetimi</em> sağlıyoruz.',
         '</p>',
         '<div class="grid md:grid-cols-2 gap-6">',
           '<div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">',
             '<h2 class="text-xl font-semibold text-slate-900 mb-3">Ne Yapıyoruz?</h2>',
             '<ul class="space-y-2 text-slate-700">',
-              '<li>• Gayrimenkul değerleme ve piyasa analizi</li>',
+              '<li>• İlan performans analizi ve emsal analizi</li>',
               '<li>• Profesyonel ilan sunumu ve hedefli pazarlama</li>',
               '<li>• Alıcı/kiracı aday yönetimi ve randevu organizasyonu</li>',
               '<li>• Sözleşme, tapu ve işlem takibi</li>',
             '</ul>',
           '</div>',
           '<div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">',
-            '<h2 class="text-xl font-semibold text-slate-900 mb-3">Neden X Emlak?</h2>',
+            '<h2 class="text-xl font-semibold text-slate-900 mb-3">Neden Kaman İlan?</h2>',
             '<ul class="space-y-2 text-slate-700">',
               '<li>• Şeffaf süreç ve düzenli bilgilendirme</li>',
               '<li>• Müşteri odaklı danışmanlık yaklaşımı</li>',
@@ -82,16 +86,16 @@ VALUES
         '</div>',
         '<div class="mt-8 bg-slate-50 border border-slate-200 rounded-xl p-6">',
           '<p class="text-slate-700 m-0">',
-            '<strong>Hedefimiz:</strong> Gayrimenkulünüz için en doğru stratejiyi belirlemek ve ',
-            'satış/kiralama sürecini güvenle tamamlamaktır.',
+            '<strong>Hedefimiz:</strong> İlanınız için en doğru stratejiyi belirlemek ve ',
+            'ilan yayını ve iletişim sürecini güvenle tamamlamaktır.',
           '</p>',
         '</div>',
       '</section>'
     )
   ),
-  'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1400&q=80', NULL, 'X Emlak - Hakkımızda',
-  'Hakkımızda - X Emlak | Güvenilir Gayrimenkul Danışmanlığı',
-  'X Emlak: konut, arsa ve ticari gayrimenkulde şeffaf süreç, doğru fiyatlama ve profesyonel pazarlama ile alım-satım ve kiralama danışmanlığı.',
+  'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1400&q=80', NULL, 'Kaman İlan - Hakkımızda',
+  'Hakkımızda - Kaman İlan | Güvenilir İlan Platformu',
+  'Kaman İlan: emlak, hayvan, araç ve köy ürünleri kategorilerinde şeffaf süreç, doğru fiyatlama ve güçlü ilan yönetimi sunar.',
   1,
   NOW(3), NOW(3)
 ),
@@ -108,7 +112,7 @@ VALUES
       '<section class="container mx-auto px-4 py-8">',
         '<h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Misyonumuz - Vizyonumuz</h1>',
         '<p class="text-slate-700 mb-8">',
-          'X Emlak olarak gayrimenkul süreçlerini daha <strong>anlaşılır</strong>, daha <strong>güvenli</strong> ve ',
+          'Kaman İlan olarak ilan süreçlerini daha <strong>anlaşılır</strong>, daha <strong>güvenli</strong> ve ',
           'daha <strong>verimli</strong> hale getirmek için çalışıyoruz.',
         '</p>',
         '<div class="grid grid-cols-1 gap-8">',
@@ -123,7 +127,7 @@ VALUES
                 '<em>doğru fiyatlama</em>, <em>doğru pazarlama</em> ve <em>doğru iletişim</em> ile süreci yönetmek.',
               '</p>',
               '<p>',
-                'Her portföyü veri odaklı analiz ederek, mülkün potansiyelini doğru anlatmak ve işlem sürecini ',
+                'Her ilanı veri odaklı analiz ederek, ilanın potansiyelini doğru anlatmak ve iletişim sürecini ',
                 '<strong>hızlı, düzenli ve güvenli</strong> şekilde sonuçlandırmak.',
               '</p>',
             '</div>',
@@ -135,11 +139,11 @@ VALUES
             '</div>',
             '<div class="space-y-4 text-slate-700">',
               '<p>',
-                '<strong>Bölgesinde örnek gösterilen</strong> bir gayrimenkul danışmanlığı markası olmak; ',
+                '<strong>Bölgesinde örnek gösterilen</strong> bir ilan platformu markası olmak; ',
                 'müşteri deneyimini teknoloji ve disiplinli süreç yönetimiyle güçlendirmek.',
               '</p>',
               '<p>',
-                'Gayrimenkul piyasasında <em>güven</em> ve <em>şeffaflık</em> standartlarını yükselterek, ',
+                'İlan ekosisteminde <em>güven</em> ve <em>şeffaflık</em> standartlarını yükselterek, ',
                 'uzun vadeli müşteri ilişkileri kurmak.',
               '</p>',
             '</div>',
@@ -166,9 +170,9 @@ VALUES
       '</section>'
     )
   ),
-  'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1400&q=80', NULL, 'X Emlak - Misyon Vizyon',
-  'Misyonumuz ve Vizyonumuz - X Emlak | Şeffaf Gayrimenkul Süreci',
-  'X Emlak misyonu: doğru fiyatlama, profesyonel pazarlama, güvenli süreç. Vizyon: bölgede örnek gösterilen, müşteri deneyimi güçlü gayrimenkul markası.',
+  'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1400&q=80', NULL, 'Kaman İlan - Misyon Vizyon',
+  'Misyonumuz ve Vizyonumuz - Kaman İlan | Şeffaf İlan Süreci',
+  'Kaman İlan misyonu: doğru fiyatlama, profesyonel pazarlama, güvenli süreç. Vizyon: bölgede örnek gösterilen, müşteri deneyimi güçlü ilan markası.',
   1,
   NOW(3), NOW(3)
 ),
@@ -185,7 +189,7 @@ VALUES
       '<section class="container mx-auto px-4 py-8">',
         '<h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Kalite Politikamız</h1>',
         '<p class="text-slate-700 mb-8">',
-          'X Emlak olarak hizmet kalitemizi; <strong>şeffaflık</strong>, <strong>doğru bilgi</strong> ve ',
+          'Kaman İlan olarak hizmet kalitemizi; <strong>şeffaflık</strong>, <strong>doğru bilgi</strong> ve ',
           '<strong>düzenli süreç yönetimi</strong> üzerine kurarız.',
         '</p>',
         '<div class="bg-gradient-to-br from-slate-50 to-blue-50 p-8 rounded-xl border-l-4 border-blue-600 shadow-sm mb-8">',
@@ -237,9 +241,9 @@ VALUES
       '</section>'
     )
   ),
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80', NULL, 'X Emlak - Kalite Politikası',
-  'Kalite Politikamız - X Emlak | Şeffaf ve Veri Temelli Hizmet',
-  'X Emlak kalite politikası: doğru fiyatlama, güvenilir ilan sunumu, düzenli süreç yönetimi ve müşteri memnuniyeti odaklı danışmanlık.',
+  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80', NULL, 'Kaman İlan - Kalite Politikası',
+  'Kalite Politikamız - Kaman İlan | Şeffaf ve Veri Temelli Hizmet',
+  'Kaman İlan kalite politikası: doğru fiyatlama, güvenilir ilan sunumu, düzenli süreç yönetimi ve müşteri memnuniyeti odaklı danışmanlık.',
   1,
   NOW(3), NOW(3)
 ),
@@ -249,7 +253,7 @@ VALUES
 -- =============================================================
 (
   UUID(),
-  'Yeni Yıl Ev Sahibi Kampanyası',
+  'Yeni Yıl İlan Vitrini Kampanyası',
   'yeni-yil-kampanyasi',
   JSON_OBJECT('html', CONCAT(
     '<div class="min-h-screen bg-slate-50 py-8">',
@@ -257,7 +261,7 @@ VALUES
     '    <a href="/" class="inline-flex items-center gap-2 mb-6 border border-slate-900 text-slate-900 rounded-md px-3 py-2 hover:bg-slate-100 transition">&#8592; Ana Sayfaya Dön</a>',
     '    <article class="bg-white rounded-lg shadow-sm overflow-hidden border border-slate-200">',
     '      <div class="relative h-64 md:h-80">',
-    '        <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Yeni Yıl Ev Sahibi Kampanyası" class="w-full h-full object-cover" />',
+    '        <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Yeni Yıl İlan Vitrini Kampanyası" class="w-full h-full object-cover" />',
     '        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>',
     '        <div class="absolute bottom-4 left-4 text-white"><span class="bg-blue-600 px-3 py-1 rounded-full text-sm font-semibold">Kampanya</span></div>',
     '      </div>',
@@ -266,17 +270,17 @@ VALUES
     '          <div class="flex items-center gap-2"><span>📅</span><span>Ocak 2026</span></div>',
     '          <div class="flex items-center gap-2"><span>🏷️</span><span>Gayrimenkul</span></div>',
     '        </div>',
-    '        <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Yeni Yıl Ev Sahibi Kampanyası</h1>',
+    '        <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Yeni Yıl İlan Vitrini Kampanyası</h1>',
     '        <div class="prose max-w-none space-y-6">',
     '          <div class="bg-blue-50 border-l-4 border-blue-600 p-6 rounded">',
     '            <h2 class="text-xl font-semibold text-blue-800 mb-3">🎁 Seçili Portföylerde Özel Danışmanlık Desteği</h2>',
-    '            <p class="text-slate-700 leading-relaxed">Yeni yıl dönemi boyunca, seçili portföylerde satış/kiralama sürecine özel ilan hazırlığı ve hedefli pazarlama desteği sunuyoruz. Kampanya koşulları portföye göre değişebilir.</p>',
+    '            <p class="text-slate-700 leading-relaxed">Yeni yıl dönemi boyunca, seçili ilanlarda satış/kiralama sürecine özel ilan hazırlığı ve hedefli pazarlama desteği sunuyoruz. Kampanya koşulları ilan tipine göre değişebilir.</p>',
     '          </div>',
     '          <div class="grid md:grid-cols-2 gap-6">',
     '            <div class="bg-white border border-slate-200 p-6 rounded-lg">',
     '              <h3 class="text-lg font-semibold text-slate-900 mb-4">Kapsam</h3>',
     '              <ul class="space-y-2 text-slate-700">',
-    '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-600 rounded-full"></span>Portföy analizi & doğru fiyatlama</li>',
+    '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-600 rounded-full"></span>İlan analizi & doğru fiyatlama</li>',
     '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-600 rounded-full"></span>İlan metni ve görsel sunum önerileri</li>',
     '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-600 rounded-full"></span>Hedef kitleye yönelik pazarlama planı</li>',
     '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-600 rounded-full"></span>Görüşme ve teklif yönetimi</li>',
@@ -286,17 +290,17 @@ VALUES
     '              <h3 class="text-lg font-semibold text-slate-900 mb-4">Şartlar</h3>',
     '              <ul class="space-y-2 text-slate-700">',
     '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-slate-900 rounded-full"></span>Kampanya dönemi boyunca geçerlidir</li>',
-    '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-slate-900 rounded-full"></span>Seçili portföylerde uygulanır</li>',
+    '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-slate-900 rounded-full"></span>Seçili ilanlarda uygulanır</li>',
     '                <li class="flex items-center gap-2"><span class="w-2 h-2 bg-slate-900 rounded-full"></span>Detaylar için iletişime geçiniz</li>',
     '              </ul>',
     '            </div>',
     '          </div>',
     '          <div class="bg-slate-100 p-6 rounded-lg">',
     '            <h3 class="text-xl font-semibold text-slate-900 mb-4">🕐 Kampanya Süresi</h3>',
-    '            <p class="text-slate-700 leading-relaxed mb-4">Kampanya <strong>Ocak 2026</strong> boyunca geçerlidir. Portföyünüz için uygunluk ve detaylı bilgi için bizimle iletişime geçin.</p>',
+    '            <p class="text-slate-700 leading-relaxed mb-4">Kampanya <strong>Ocak 2026</strong> boyunca geçerlidir. İlanlarınız için uygunluk ve detaylı bilgi için bizimle iletişime geçin.</p>',
     '            <div class="flex flex-col sm:flex-row gap-3">',
     '              <a href="/iletisim" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">İletişim Formu</a>',
-    '              <a href="/emlaklar" class="inline-flex items-center justify-center border border-blue-600 text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-md">Emlakları Görüntüle</a>',
+    '              <a href="/ilanlar" class="inline-flex items-center justify-center border border-blue-600 text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-md">İlanları Görüntüle</a>',
     '            </div>',
     '          </div>',
     '          <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-lg">',
@@ -311,9 +315,9 @@ VALUES
   )),
   'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1400&q=80',
   NULL,
-  'Yeni Yıl Ev Sahibi Kampanyası',
-  'Yeni Yıl Ev Sahibi Kampanyası - X Emlak',
-  'Ocak 2026 boyunca seçili portföylerde özel danışmanlık ve hedefli pazarlama desteği. Detaylar için iletişime geçin.',
+  'Yeni Yıl İlan Vitrini Kampanyası',
+  'Yeni Yıl İlan Vitrini Kampanyası - Kaman İlan',
+  'Ocak 2026 boyunca seçili ilanlarda özel danışmanlık ve hedefli pazarlama desteği. Detaylar için iletişime geçin.',
   1,
   NOW(3), NOW(3)
 )
@@ -328,3 +332,8 @@ ON DUPLICATE KEY UPDATE
   `meta_description` = VALUES(`meta_description`),
   `is_published`     = VALUES(`is_published`),
   `updated_at`       = VALUES(`updated_at`);
+
+-- module_key backfill for seeded pages
+UPDATE `custom_pages` SET `module_key` = 'about' WHERE `slug` IN ('hakkimizda', 'misyon-vizyon');
+UPDATE `custom_pages` SET `module_key` = 'quality' WHERE `slug` IN ('kalite-politikamiz');
+UPDATE `custom_pages` SET `module_key` = 'campaign' WHERE `slug` IN ('yeni-yil-kampanyasi');

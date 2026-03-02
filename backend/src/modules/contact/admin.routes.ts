@@ -1,19 +1,14 @@
 // =============================================================
 // FILE: src/modules/contact/admin.routes.ts
 // =============================================================
-import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import type { FastifyInstance } from "fastify";
 import { makeAdminController } from "./admin.controller";
-import { requireAuth } from "@/common/middleware/auth";
-import { requireAdmin } from "@/common/middleware/roles";
+import { makeAdminPermissionGuard } from '@/common/middleware/permissions';
 
 export async function registerContactsAdmin(app: FastifyInstance) {
   const BASE = "/contacts";
   const c = makeAdminController(app);
-
-  const adminGuard = async (req: FastifyRequest, reply: FastifyReply) => {
-    await requireAuth(req, reply);
-    await requireAdmin(req, reply);
-  };
+  const adminGuard = makeAdminPermissionGuard('admin.contacts');
 
   // GET /contacts
   app.get<{ Querystring: Record<string, any> }>(

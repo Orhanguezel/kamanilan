@@ -15,14 +15,16 @@ type SlideData = {
   title: string;
   description: string;
   image: string;
+  image2?: string;
   alt?: string;
+  badgeText?: string;
+  badgeColor?: string;
+  gradient?: string;
   buttonText: string;
   buttonLink: string;
   isActive: boolean;
   order: number;
   priority?: "low" | "medium" | "high";
-  showOnMobile?: boolean;
-  showOnDesktop?: boolean;
 };
 
 const rowToPublic = (row: RowWithAsset): SlideData => {
@@ -33,14 +35,16 @@ const rowToPublic = (row: RowWithAsset): SlideData => {
     title: a.name,
     description: a.description ?? "",
     image: url,
+    image2: a.image2_url ?? undefined,
     alt: a.alt ?? undefined,
+    badgeText:  a.badgeText  ?? undefined,
+    badgeColor: a.badgeColor ?? undefined,
+    gradient:   a.gradient   ?? undefined,
     buttonText: a.buttonText ?? "İncele",
     buttonLink: a.buttonLink ?? "",
     isActive: !!a.is_active,
     order: a.display_order ?? 0,
     priority: a.featured ? "high" : "medium",
-    showOnMobile: true,
-    showOnDesktop: true,
   };
 };
 

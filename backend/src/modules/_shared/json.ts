@@ -2,6 +2,15 @@
 export const packJson = (v: unknown) => JSON.stringify(v);
 export const unpackArray = (s?: string | null): string[] =>
   !s ? [] : (JSON.parse(s) as string[]);
+export const parseJsonArrayString = (s?: string | null): string[] => {
+  if (!s) return [];
+  try {
+    const parsed = JSON.parse(s);
+    return Array.isArray(parsed) ? parsed.map((x) => String(x)) : [];
+  } catch {
+    return [];
+  }
+};
 export const extractHtmlFromJson = (s?: string | null): string => {
   if (!s) return "";
   try {

@@ -18,6 +18,7 @@ export const listFaqsPublic: RouteHandler<{ Querystring: FaqListQuery }> = async
     offset: q.offset,
     q: q.q,
     slug: q.slug,
+    locale: q.locale ?? "tr",
     category: q.category,
     is_active: true, // 👈 public: zorunlu
   });

@@ -1,7 +1,7 @@
 // =============================================================
 // FILE: src/modules/review/admin.routes.ts (ADMIN)
 // =============================================================
-import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import type { FastifyInstance } from "fastify";
 import {
   listReviewsAdmin,
   getReviewAdmin,
@@ -9,17 +9,12 @@ import {
   updateReviewAdmin,
   removeReviewAdmin,
 } from "./admin.controller";
-import { requireAuth } from "@/common/middleware/auth";
-import { requireAdmin } from "@/common/middleware/roles";
+import { makeAdminPermissionGuard } from '@/common/middleware/permissions';
 
 const BASE = "/reviews";
 
 export async function registerReviewsAdmin(app: FastifyInstance) {
-  // Admin guard (aynı contact modülündeki gibi)
-  const adminGuard = async (req: FastifyRequest, reply: FastifyReply) => {
-    await requireAuth(req, reply);
-    await requireAdmin(req, reply);
-  };
+  const adminGuard = makeAdminPermissionGuard('admin.reviews');
 
   // LIST
   app.get<{ Querystring: Record<string, any> }>(

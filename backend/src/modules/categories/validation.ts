@@ -28,9 +28,15 @@ const baseCategorySchema = z
 
     icon: emptyToNull(z.string().max(100).optional().nullable()),
 
+    has_cart: boolLike.optional(),
+
     is_active: boolLike.optional(),
     is_featured: boolLike.optional(),
+    is_unlimited: boolLike.optional(),
     display_order: z.coerce.number().int().min(0).optional(),
+
+    whatsapp_number: emptyToNull(z.string().max(50).optional().nullable()),
+    phone_number: emptyToNull(z.string().max(50).optional().nullable()),
 
     // FE’den gelebilecek ama DB’de olmayan alanları tolere et
     seo_title: emptyToNull(z.string().max(255).optional().nullable()),

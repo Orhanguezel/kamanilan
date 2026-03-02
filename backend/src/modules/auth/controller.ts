@@ -33,9 +33,10 @@ import {
   notifications,
   type NotificationInsert,
 } from "@/modules/notifications/schema";
+import { assignDefaultPlan } from "@/modules/subscription/service";
 import { z } from "zod";
 
-export type Role = "admin" | "moderator" | "user";
+export type Role = "admin" | "moderator" | "seller" | "user";
 
 interface JWTPayload {
   sub: string;
@@ -303,6 +304,7 @@ export function makeAuthController(app: FastifyInstance) {
           (typeof meta["phone"] === "string"
             ? (meta["phone"] as string)
             : undefined)) || undefined;
+      const requestedRole = meta["role"] === "seller" ? "seller" : "user";
 
       const exists = await db
         .select({ id: users.id })
@@ -326,17 +328,23 @@ export function makeAuthController(app: FastifyInstance) {
         email_verified: 0,
       });
 
-      // rol: allowlist'te ise admin, değilse user
+      // rol: allowlist'te ise admin, aksi halde request edilen rol (seller/user)
       const isAdmin = adminEmails.has(email.toLowerCase());
+      const assignedRole: Role = isAdmin ? "admin" : requestedRole;
       await db.insert(userRoles).values({
         id: randomUUID(),
         user_id: id,
-        role: isAdmin ? "admin" : "user",
+        role: assignedRole,
       });
 
       await ensureProfileRow(id, {
         full_name: full_name ?? null,
         phone: phone ?? null,
+      });
+
+      // ✅ Default abonelik planı ata (async, hata kritik değil)
+      void assignDefaultPlan(id).catch((err) => {
+        req.log?.error?.(err, "assign_plan_failed");
       });
 
       // ✅ Welcome mail (async, hata kritik değil)
@@ -357,7 +365,7 @@ export function makeAuthController(app: FastifyInstance) {
           .where(eq(users.id, id))
           .limit(1)
       )[0]!;
-      const role: Role = isAdmin ? "admin" : "user";
+      const role: Role = assignedRole;
       const { access, refresh } = await issueTokens(app, u, role);
 
       setAccessCookie(reply, access);

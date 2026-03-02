@@ -16,7 +16,7 @@ export const userRoles = mysqlTable(
   {
     id: char("id", { length: 36 }).primaryKey().notNull(),
     user_id: char("user_id", { length: 36 }).notNull(),
-    role: mysqlEnum("role", ["admin", "moderator", "user"])
+    role: mysqlEnum("role", ["admin", "moderator", "seller", "user"])
       .notNull()
       .default("user"),
     created_at: datetime("created_at", { fsp: 3 })

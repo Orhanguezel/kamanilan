@@ -6,11 +6,13 @@ import {
   listCategories,
   getCategoryById,
   getCategoryBySlug,
+  getCategoryCounts,
 } from "./controller";
 
 export async function registerCategories(app: FastifyInstance) {
   // PUBLIC READ
   app.get("/categories", { config: { public: true } }, listCategories);
+  app.get("/categories/counts", { config: { public: true } }, getCategoryCounts);
   app.get<{ Params: { id: string } }>(
     "/categories/:id",
     { config: { public: true } },

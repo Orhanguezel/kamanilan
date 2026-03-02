@@ -40,6 +40,10 @@ const toAdminView = (row: any) => {
     image_effective_url: row.asset_url ?? a.image_url ?? null,
 
     alt: a.alt ?? null,
+    image2_url: a.image2_url ?? null,
+    badge_text: a.badgeText ?? null,
+    badge_color: a.badgeColor ?? null,
+    gradient: a.gradient ?? null,
     buttonText: a.buttonText ?? null,
     buttonLink: a.buttonLink ?? null,
 

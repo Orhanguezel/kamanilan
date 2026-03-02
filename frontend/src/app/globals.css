@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ══════════════════════════════════════════════════════════════════════
+     LAYER 1 — Ham Palet · Kaman İlan · Ceviz Bahçesi Yeşil
+     Bu değişkenleri doğrudan kullanma; aşağıdaki semantik tokenları kullan.
+     Format: H S% L%  →  Kullanım: hsl(var(--token))
+     ══════════════════════════════════════════════════════════════════════ */
+  :root {
+    --col-forest:    153 42% 18%;   /* #1B4332  Orman Yeşili        */
+    --col-walnut:    153 39% 30%;   /* #2D6A4F  Ceviz Bahçesi Yeşil */
+    --col-midgreen:  155 38% 41%;   /* #40916C  Orta Yeşil          */
+    --col-vivid:     151 39% 52%;   /* #52B788  Canlı Yeşil         */
+    --col-amber:      30 64% 53%;   /* #D4873C  Altın Amber (CTA)   */
+    --col-cream:     120 33% 98%;   /* #F8FBF8  Açık Beyaz-Yeşil    */
+    --col-krem:      135 27% 93%;   /* #E8F2EB  Açık Yeşil Krem     */
+    --col-teal:      168 19% 40%;   /* #52796F  Mat Deniz Yeşili    */
+    --col-border:    148 19% 83%;   /* #C8DDD0  Açık Yeşil Kenarlık */
+    --col-text:      134 29% 14%;   /* #1A2E1E  Koyu Yeşil Metin    */
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     LAYER 2 — Semantik Tokenlar (Tailwind/shadcn uyumlu)
+     Renk kuralı: 80% neutral · 10% primary (yeşil) · 10% accent (amber)
+     ══════════════════════════════════════════════════════════════════════ */
+  :root {
+    --background:           var(--col-cream);
+    --foreground:           var(--col-text);
+
+    --card:                 var(--col-cream);
+    --card-foreground:      var(--col-text);
+
+    --popover:              var(--col-cream);
+    --popover-foreground:   var(--col-text);
+
+    /* Primary: Orman Yeşili — kısıtlı kullan (%10) */
+    --primary:              var(--col-forest);
+    --primary-foreground:   var(--col-cream);
+
+    /* Secondary: Orta Yeşil */
+    --secondary:            var(--col-midgreen);
+    --secondary-foreground: var(--col-cream);
+
+    /* Muted: Açık Yeşil Krem */
+    --muted:                var(--col-krem);
+    --muted-foreground:     var(--col-teal);
+
+    /* Accent: Altın Amber — yalnızca CTA (%10) */
+    --accent:               var(--col-amber);
+    --accent-foreground:    var(--col-text);
+
+    --destructive:          0 84.2% 60.2%;
+    --destructive-foreground: var(--col-cream);
+
+    --border:               var(--col-border);
+    --input:                var(--col-border);
+    --ring:                 var(--col-forest);
+    --radius:               0.375rem;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     LAYER 3 — Komponent Tokenları
+     ══════════════════════════════════════════════════════════════════════ */
+  :root {
+    --nav-bg:    var(--col-walnut);  /* Navbar  = ceviz bahçesi yeşili */
+    --nav-fg:    var(--col-cream);
+    --footer-bg: var(--col-forest);  /* Footer  = orman yeşili         */
+    --footer-fg: var(--col-krem);
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     DARK MODE
+     ══════════════════════════════════════════════════════════════════════ */
+  .dark {
+    --background:           134 40% 8%;
+    --foreground:           var(--col-krem);
+
+    --card:                 153 42% 12%;
+    --card-foreground:      var(--col-krem);
+
+    --popover:              153 42% 12%;
+    --popover-foreground:   var(--col-krem);
+
+    --primary:              var(--col-amber);   /* dark'ta parlak amber */
+    --primary-foreground:   var(--col-text);
+
+    --secondary:            var(--col-forest);
+    --secondary-foreground: var(--col-krem);
+
+    --muted:                153 42% 14%;
+    --muted-foreground:     148 20% 65%;
+
+    --accent:               var(--col-amber);
+    --accent-foreground:    var(--col-text);
+
+    --destructive:          0 62.8% 30.6%;
+    --destructive-foreground: var(--col-cream);
+
+    --border:               153 30% 22%;
+    --input:                153 30% 22%;
+    --ring:                 var(--col-amber);
+
+    --nav-bg:               134 40% 8%;
+    --nav-fg:               var(--col-krem);
+    --footer-bg:            134 45% 5%;
+    --footer-fg:            var(--col-krem);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: clip;
+    font-family: var(--font-nunito), Nunito, system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Filter sidebar: thin scrollbar, visible on hover */
+  .filter-sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .filter-sidebar-scroll:hover {
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  .filter-sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+  .filter-sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .filter-sidebar-scroll::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 4px;
+  }
+  .filter-sidebar-scroll:hover::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+  }
+
+  /* Font helper */
+  .font-playfair {
+    font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ============================================================
+   cols-grid  — tema tarafından kontrol edilen responsive grid
+   Kullanım: className="cols-grid gap-4"
+             style={{ "--sm": 1, "--md": 2, "--lg": 3 }}
+   ============================================================ */
+@layer utilities {
+  .cols-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--sm, 1), minmax(0, 1fr));
+  }
+  @media (min-width: 640px) {
+    .cols-grid {
+      grid-template-columns: repeat(var(--sm, 1), minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 768px) {
+    .cols-grid {
+      grid-template-columns: repeat(var(--md, 2), minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .cols-grid {
+      grid-template-columns: repeat(var(--lg, 3), minmax(0, 1fr));
+    }
+  }
+}

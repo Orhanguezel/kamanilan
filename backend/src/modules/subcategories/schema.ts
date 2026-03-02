@@ -24,6 +24,8 @@ export const subCategories = mysqlTable(
     alt: varchar("alt", { length: 255 }),
     icon: varchar("icon", { length: 100 }),
 
+    has_cart: tinyint("has_cart").notNull().default(1).$type<boolean>(),
+
     is_active: tinyint("is_active").notNull().default(1).$type<boolean>(),
     is_featured: tinyint("is_featured").notNull().default(0).$type<boolean>(),
     display_order: int("display_order").notNull().default(0),

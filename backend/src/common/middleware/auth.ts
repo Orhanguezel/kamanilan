@@ -32,9 +32,13 @@ export async function requireAuth(req: FastifyRequest, reply: FastifyReply) {
     const cookieToken = cookies.access_token ?? cookies.accessToken;
 
     if (cookieToken) {
-      const payload = (await req.server.jwt.verify(cookieToken)) as JwtUser;
-      (req as unknown as { user: JwtUser }).user = payload;
-      return;
+      try {
+        const payload = (await req.server.jwt.verify(cookieToken)) as JwtUser;
+        (req as unknown as { user: JwtUser }).user = payload;
+        return;
+      } catch {
+        // Cookie token expired or invalid — fall through to check Bearer header
+      }
     }
 
     const auth = req.headers.authorization;

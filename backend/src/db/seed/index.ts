@@ -81,45 +81,98 @@ function getAdminVars() {
   return { email, id, passwordHash };
 }
 
+/** müşteri (normal user) değişkenlerini ENV'den oku + bcrypt üret */
+function getCustomerVars() {
+  const email = (process.env.CUSTOMER_EMAIL || 'musteri@kamanilan.com').trim();
+  const id = (process.env.CUSTOMER_ID || 'a1b2c3d4-e5f6-7890-abcd-ef1234567890').trim();
+  const plainPassword = process.env.CUSTOMER_PASSWORD || 'Musteri@2026!';
+  const passwordHash = bcrypt.hashSync(plainPassword, 12);
+  return { email, id, passwordHash };
+}
+
+/** satıcı (seller) değişkenlerini ENV'den oku + bcrypt üret */
+function getSellerVars() {
+  const email = (process.env.SELLER_EMAIL || 'satici@kamanilan.com').trim();
+  const id = (process.env.SELLER_ID || 'b2c3d4e5-f6a7-8901-bcde-f23456789012').trim();
+  const plainPassword = process.env.SELLER_PASSWORD || 'Kamanilan@2026!';
+  const passwordHash = bcrypt.hashSync(plainPassword, 12);
+  return { email, id, passwordHash };
+}
+
+/** Iyzico değişkenlerini ENV'den oku */
+function getIyzicoVars() {
+  const apiKey    = (process.env.IYZICO_API_KEY    || '').trim();
+  const secretKey = (process.env.IYZICO_SECRET_KEY || '').trim();
+  const testMode  = process.env.IYZICO_TEST_MODE !== 'false'; // default: sandbox
+  const baseUrl   = testMode
+    ? 'https://sandbox-api.iyzipay.com'
+    : 'https://api.iyzipay.com';
+  const isTestMode = testMode ? 1 : 0;
+  return { apiKey, secretKey, baseUrl, isTestMode };
+}
+
 /** SQL string güvenli tek tırnak escape */
 function sqlStr(v: string) {
   return v.replaceAll("'", "''");
 }
 
-/** Dosyayı oku, temizle, admin değişkenleri enjekte et ve opsiyonel yer tutucu değiştir */
-function prepareSqlForRun(rawSql: string, admin: { email: string; id: string; passwordHash: string }) {
-  // Dosyadaki comment/boşluk temizliği
+/** Dosyayı oku, temizle, tüm değişkenleri enjekte et */
+function prepareSqlForRun(
+  rawSql: string,
+  admin: { email: string; id: string; passwordHash: string },
+  customer: { email: string; id: string; passwordHash: string },
+  seller: { email: string; id: string; passwordHash: string },
+  iyzico: { apiKey: string; secretKey: string; baseUrl: string; isTestMode: number },
+) {
   let sql = cleanSql(rawSql);
 
-  // Header ile session değişkenlerini set et (dosyada COALESCE olsa bile önce biz set ediyoruz)
   const header = [
     `SET @ADMIN_EMAIL := '${sqlStr(admin.email)}';`,
     `SET @ADMIN_ID := '${sqlStr(admin.id)}';`,
-    `SET @ADMIN_PASSWORD_HASH := '${sqlStr(admin.passwordHash)}';`
+    `SET @ADMIN_PASSWORD_HASH := '${sqlStr(admin.passwordHash)}';`,
+    `SET @CUSTOMER_EMAIL := '${sqlStr(customer.email)}';`,
+    `SET @CUSTOMER_ID := '${sqlStr(customer.id)}';`,
+    `SET @CUSTOMER_PASSWORD_HASH := '${sqlStr(customer.passwordHash)}';`,
+    `SET @SELLER_EMAIL := '${sqlStr(seller.email)}';`,
+    `SET @SELLER_ID := '${sqlStr(seller.id)}';`,
+    `SET @SELLER_PASSWORD_HASH := '${sqlStr(seller.passwordHash)}';`,
   ].join('\n');
 
-  // Eski yer tutucu kalıplarını da destekle (örn: {{ADMIN_BCRYPT}})
   sql = sql
     .replaceAll('{{ADMIN_BCRYPT}}', admin.passwordHash)
     .replaceAll('{{ADMIN_PASSWORD_HASH}}', admin.passwordHash)
     .replaceAll('{{ADMIN_EMAIL}}', admin.email)
-    .replaceAll('{{ADMIN_ID}}', admin.id);
+    .replaceAll('{{ADMIN_ID}}', admin.id)
+    .replaceAll('{{CUSTOMER_PASSWORD_HASH}}', customer.passwordHash)
+    .replaceAll('{{CUSTOMER_EMAIL}}', customer.email)
+    .replaceAll('{{CUSTOMER_ID}}', customer.id)
+    .replaceAll('{{SELLER_PASSWORD_HASH}}', seller.passwordHash)
+    .replaceAll('{{SELLER_EMAIL}}', seller.email)
+    .replaceAll('{{SELLER_ID}}', seller.id)
+    .replaceAll('{{IYZICO_API_KEY}}', sqlStr(iyzico.apiKey))
+    .replaceAll('{{IYZICO_SECRET_KEY}}', sqlStr(iyzico.secretKey))
+    .replaceAll('{{IYZICO_BASE_URL}}', sqlStr(iyzico.baseUrl))
+    .replaceAll('{{IYZICO_IS_TEST_MODE}}', String(iyzico.isTestMode));
 
-  // En üstte header'ı ekle
   sql = `${header}\n${sql}`;
-
   return sql;
 }
 
-async function runSqlFile(conn: mysql.Connection, absPath: string, adminVars: { email: string; id: string; passwordHash: string }) {
+async function runSqlFile(
+  conn: mysql.Connection,
+  absPath: string,
+  adminVars: { email: string; id: string; passwordHash: string },
+  customerVars: { email: string; id: string; passwordHash: string },
+  sellerVars: { email: string; id: string; passwordHash: string },
+  iyzicoVars: { apiKey: string; secretKey: string; baseUrl: string; isTestMode: number },
+) {
   const name = path.basename(absPath);
   logStep(`⏳ ${name} çalışıyor...`);
   const raw = fs.readFileSync(absPath, 'utf8');
 
-  const sql = prepareSqlForRun(raw, adminVars);
+  const sql = prepareSqlForRun(raw, adminVars, customerVars, sellerVars, iyzicoVars);
   const statements = splitStatements(sql);
 
-  // bağlantı karakter seti & timezone
   await conn.query('SET NAMES utf8mb4;');
   await conn.query("SET time_zone = '+00:00';");
 
@@ -151,8 +204,11 @@ async function main() {
   const conn = await createConnToDb();
 
   try {
-    // 3) Admin değişkenlerini hazırla (tek sefer)
-    const ADMIN = getAdminVars();
+    // 3) Değişkenleri hazırla (tek sefer)
+    const ADMIN    = getAdminVars();
+    const CUSTOMER = getCustomerVars();
+    const SELLER   = getSellerVars();
+    const IYZICO   = getIyzicoVars();
 
     // 4) SQL klasörünü bul (öncelik env, sonra dist/sql, yoksa src/sql)
     const envDir = process.env.SEED_SQL_DIR && process.env.SEED_SQL_DIR.trim();
@@ -170,7 +226,7 @@ async function main() {
         logStep(`⏭️ ${f} atlandı (--only filtresi)`);
         continue;
       }
-      await runSqlFile(conn, abs, ADMIN);
+      await runSqlFile(conn, abs, ADMIN, CUSTOMER, SELLER, IYZICO);
     }
     logStep('🎉 Seed tamamlandı.');
   } finally {

@@ -4,7 +4,7 @@
 
 import { db } from "@/db/client";
 import { siteSettings } from "./schema";
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { env } from "@/core/env";
 
 const SMTP_KEYS = [
@@ -87,6 +87,7 @@ const STORAGE_KEYS = [
 ] as const;
 
 export type StorageDriver = "local" | "cloudinary";
+export const PREFERRED_FALLBACK_LOCALE = "tr";
 
 export type StorageSettings = {
   driver: StorageDriver;
@@ -203,4 +204,35 @@ export async function getStorageSettings(): Promise<StorageSettings> {
     folder,
     unsignedUploadPreset,
   };
+}
+
+function parseSettingString(raw: unknown): string | null {
+  if (raw == null) return null;
+  const s = String(raw).trim();
+  if (!s) return null;
+  try {
+    const parsed = JSON.parse(s);
+    if (typeof parsed === "string") return parsed.trim() || null;
+    return s;
+  } catch {
+    return s;
+  }
+}
+
+export async function getDefaultLocale(
+  fallback: string | null = PREFERRED_FALLBACK_LOCALE,
+): Promise<string> {
+  const fb = (fallback || PREFERRED_FALLBACK_LOCALE).trim().toLowerCase();
+  try {
+    const rows = await db
+      .select({ value: siteSettings.value })
+      .from(siteSettings)
+      .where(eq(siteSettings.key, "default_locale"))
+      .limit(1);
+
+    const v = parseSettingString(rows[0]?.value)?.toLowerCase();
+    return v || fb;
+  } catch {
+    return fb;
+  }
 }

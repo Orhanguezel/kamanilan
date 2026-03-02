@@ -26,6 +26,8 @@ export const listPages: RouteHandler<{ Querystring: CustomPageListQuery }> = asy
     is_published: q.is_published,
     q: q.q,
     slug: q.slug,
+    locale: q.locale ?? "tr",
+    module_key: q.module_key,
   });
 
   reply.header("x-total-count", String(total ?? 0));
