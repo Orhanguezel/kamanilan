@@ -3,12 +3,14 @@
 Bu klasor iki ayri deploy yolunu tutar:
 
 - `deploy/docker-compose.yml`: container tabanli calistirma
-- `.github/workflows/deploy-production.yml`: CI'da build alip sunucuya prebuilt release gonderen production akisi
+- `.github/workflows/deploy-production.yml`: CI'da prebuilt release artifact ureten production akisi
+- `deploy/push-release.sh`: prebuilt artifact'i sunucuya gonderip aktive eden sifir-build deploy komutu
 
 ## Production mimarisi
 
 - Build yalnizca CI'da alinir
-- Sunucuya `tar.gz` release artifact'i gider
+- CI `tar.gz` release artifact'i uretir
+- Aktivasyon OpenClaw/lokal makineden `deploy/push-release.sh` ile yapilir
 - Sunucu release'i `/var/www/kamanilan/releases/<sha>` altina acar
 - `current` symlink yeni release'e doner
 - `.env` dosyalari ve `uploads/` `shared/` altinda kalir

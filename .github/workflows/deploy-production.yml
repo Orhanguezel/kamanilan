@@ -1,4 +1,4 @@
-name: Deploy Production
+name: Build Production Release
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build_release:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -106,29 +106,9 @@ jobs:
           ARCHIVE_PATH="$(./deploy/build-release.sh "$RELEASE_NAME")"
           echo "archive_path=$ARCHIVE_PATH" >> "$GITHUB_OUTPUT"
 
-      - name: Prepare SSH
-        env:
-          SSH_KEY: ${{ secrets.GZL_WEB_SSH_KEY }}
-        run: |
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H "${{ secrets.GZL_WEB_HOST }}" >> ~/.ssh/known_hosts
-
-      - name: Upload release
-        run: |
-          ssh "${{ secrets.GZL_WEB_USER }}@${{ secrets.GZL_WEB_HOST }}" \
-            "mkdir -p '${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp'"
-          scp "${{ steps.package.outputs.archive_path }}" \
-            "${{ secrets.GZL_WEB_USER }}@${{ secrets.GZL_WEB_HOST }}:${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/${RELEASE_NAME}.tar.gz"
-          scp deploy/server/install-release.sh \
-            "${{ secrets.GZL_WEB_USER }}@${{ secrets.GZL_WEB_HOST }}:${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/install-release.sh"
-
-      - name: Activate release
-        run: |
-          ssh "${{ secrets.GZL_WEB_USER }}@${{ secrets.GZL_WEB_HOST }}" \
-            "chmod +x '${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/install-release.sh' && \
-             KEEP_RELEASES=5 '${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/install-release.sh' \
-             '${{ vars.KAMANILAN_DEPLOY_BASE }}' \
-             '${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/${RELEASE_NAME}.tar.gz' \
-             '${RELEASE_NAME}'"
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kamanilan-release-${{ env.RELEASE_NAME }}
+          path: ${{ steps.package.outputs.archive_path }}
+          retention-days: 7

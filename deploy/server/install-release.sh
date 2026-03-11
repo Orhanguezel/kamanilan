@@ -65,7 +65,7 @@ ln -sfn "$SHARED_DIR/uploads" "$RELEASE_DIR/backend/uploads"
 
 ln -sfn "$RELEASE_DIR" "$CURRENT_LINK"
 
-pm2 startOrReload "$CURRENT_LINK/deploy/pm2/ecosystem.production.cjs" --update-env
+pm2 startOrReload "$CURRENT_LINK/deploy/pm2/ecosystem.config.cjs" --update-env
 pm2 save
 
 ls -1dt "$RELEASES_DIR"/* 2>/dev/null | tail -n +"$((KEEP_RELEASES + 1))" | xargs -r rm -rf
