@@ -1,15 +1,18 @@
-// =============================================================
-// FILE: ecosystem.config.cjs
-// Ensotek - admin_panel PM2 config
-// =============================================================
+const path = require('path');
+
+const appRoot = process.env.ADMIN_PANEL_CWD || __dirname;
+const bindHost = process.env.ADMIN_PANEL_HOST || '127.0.0.1';
+const port = process.env.ADMIN_PANEL_PORT || '3022';
+const appName = process.env.ADMIN_PANEL_APP_NAME || 'kamanilan-admin-panel';
 
 module.exports = {
   apps: [
     {
-      name: 'ensotek-admin-panel',
-      cwd: '/var/www/Ensotek/admin_panel',
-      script: '/home/orhan/.bun/bin/bun',
-      args: 'run start -- -p 3022 -H 127.0.0.1',
+      name: appName,
+      cwd: path.resolve(appRoot),
+      script: 'npm',
+      args: `run start -- -p ${port} -H ${bindHost}`,
+      interpreter: 'none',
       exec_mode: 'fork',
       instances: 1,
       watch: false,
@@ -22,12 +25,16 @@ module.exports = {
       listen_timeout: 10000,
       env: {
         NODE_ENV: 'production',
-        PORT: '3022',
-        HOSTNAME: '127.0.0.1',
+        PORT: String(port),
+        HOSTNAME: bindHost,
         NEXT_TELEMETRY_DISABLED: '1',
       },
-      out_file: '/home/orhan/.pm2/logs/ensotek-admin-panel.out.log',
-      error_file: '/home/orhan/.pm2/logs/ensotek-admin-panel.err.log',
+      out_file:
+        process.env.ADMIN_PANEL_OUT_LOG ||
+        `/home/orhan/.pm2/logs/${appName}.out.log`,
+      error_file:
+        process.env.ADMIN_PANEL_ERR_LOG ||
+        `/home/orhan/.pm2/logs/${appName}.err.log`,
       combine_logs: true,
       time: true,
     },

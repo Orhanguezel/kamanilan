@@ -1,11 +1,18 @@
+const path = require("path");
+
+const appRoot = process.env.BACKEND_CWD || __dirname;
+const bindHost = process.env.BACKEND_HOST || "127.0.0.1";
+const port = process.env.BACKEND_PORT || "8085";
+const appName = process.env.BACKEND_APP_NAME || "kamanilan-backend";
+
 module.exports = {
   apps: [
     {
-      name: "emlak-backend",
-      cwd: "/var/www/emlak/backend",
-
-      interpreter: "/root/.bun/bin/bun",
-      script: "dist/index.js",
+      name: appName,
+      cwd: path.resolve(appRoot),
+      interpreter: "none",
+      script: "node",
+      args: "--experimental-specifier-resolution=node dist/index.js",
 
       exec_mode: "fork",
       instances: 1,
@@ -23,15 +30,16 @@ module.exports = {
 
       env: {
         NODE_ENV: "production",
-        HOST: "127.0.0.1",
-        PORT: "8085",
+        HOST: bindHost,
+        PORT: String(port),
       },
 
-      out_file: "/var/log/pm2/emlak-backend.out.log",
-      error_file: "/var/log/pm2/emlak-backend.err.log",
+      out_file:
+        process.env.BACKEND_OUT_LOG || `/home/orhan/.pm2/logs/${appName}.out.log`,
+      error_file:
+        process.env.BACKEND_ERR_LOG || `/home/orhan/.pm2/logs/${appName}.err.log`,
       combine_logs: true,
       time: true,
     },
   ],
 };
-

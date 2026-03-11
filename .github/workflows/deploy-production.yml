@@ -1,0 +1,134 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      NEXT_PUBLIC_DEFAULT_LOCALE: ${{ vars.KAMANILAN_DEFAULT_LOCALE }}
+      NEXT_PUBLIC_APP_ENV: ${{ vars.KAMANILAN_APP_ENV }}
+      NEXT_PUBLIC_REST_API_ENDPOINT: ${{ vars.KAMANILAN_FRONTEND_API_URL }}
+      NEXT_PUBLIC_API_URL: ${{ vars.KAMANILAN_FRONTEND_API_URL }}
+      NEXT_PUBLIC_API_BASE_URL: ${{ vars.KAMANILAN_FRONTEND_API_URL }}
+      NEXT_PUBLIC_MEDIA_URL: ${{ vars.KAMANILAN_FRONTEND_API_URL }}
+      NEXT_PUBLIC_SOCKET_URL: ${{ vars.KAMANILAN_FRONTEND_SOCKET_URL }}
+      PLAYWRIGHT_BASE_URL: ${{ vars.KAMANILAN_FRONTEND_SITE_URL }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.KAMANILAN_FRONTEND_SITE_URL }}
+      NEXT_PUBLIC_GTM_guezelwebdesign: ${{ vars.KAMANILAN_GTM_ID }}
+      NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ vars.KAMANILAN_RECAPTCHA_SITE_KEY }}
+      NEXT_PUBLIC_GA_ID: ${{ vars.KAMANILAN_GA_ID }}
+      NEXT_PUBLIC_GTM_WV5FRN93: ${{ vars.KAMANILAN_GTM_SECONDARY_ID }}
+      ADMIN_NEXT_PUBLIC_DEFAULT_LOCALE: ${{ vars.KAMANILAN_DEFAULT_LOCALE }}
+      ADMIN_NEXT_PUBLIC_APP_ENV: ${{ vars.KAMANILAN_APP_ENV }}
+      ADMIN_NEXT_PUBLIC_API_URL: ${{ vars.KAMANILAN_FRONTEND_API_URL }}
+      ADMIN_NEXT_PUBLIC_API_BASE_URL: ${{ vars.KAMANILAN_FRONTEND_API_URL }}
+      ADMIN_NEXT_PUBLIC_MEDIA_URL: ${{ vars.KAMANILAN_FRONTEND_API_URL }}
+      ADMIN_NEXT_PUBLIC_SOCKET_URL: ${{ vars.KAMANILAN_FRONTEND_SOCKET_URL }}
+      ADMIN_PLAYWRIGHT_BASE_URL: ${{ vars.KAMANILAN_ADMIN_SITE_URL }}
+      ADMIN_NEXT_PUBLIC_SITE_URL: ${{ vars.KAMANILAN_ADMIN_SITE_URL }}
+      ADMIN_NEXT_PUBLIC_GTM_guezelwebdesign: ${{ vars.KAMANILAN_GTM_ID }}
+      ADMIN_NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ vars.KAMANILAN_RECAPTCHA_SITE_KEY }}
+      ADMIN_NEXT_PUBLIC_GA_ID: ${{ vars.KAMANILAN_GA_ID }}
+      ADMIN_NEXT_PUBLIC_GTM_WV5FRN93: ${{ vars.KAMANILAN_GTM_SECONDARY_ID }}
+      RELEASE_NAME: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.2.22"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install --legacy-peer-deps
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_DEFAULT_LOCALE: ${{ env.NEXT_PUBLIC_DEFAULT_LOCALE }}
+          NEXT_PUBLIC_APP_ENV: ${{ env.NEXT_PUBLIC_APP_ENV }}
+          NEXT_PUBLIC_REST_API_ENDPOINT: ${{ env.NEXT_PUBLIC_REST_API_ENDPOINT }}
+          NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ env.NEXT_PUBLIC_API_BASE_URL }}
+          NEXT_PUBLIC_MEDIA_URL: ${{ env.NEXT_PUBLIC_MEDIA_URL }}
+          NEXT_PUBLIC_SOCKET_URL: ${{ env.NEXT_PUBLIC_SOCKET_URL }}
+          PLAYWRIGHT_BASE_URL: ${{ env.PLAYWRIGHT_BASE_URL }}
+          NEXT_PUBLIC_SITE_URL: ${{ env.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_GTM_guezelwebdesign: ${{ env.NEXT_PUBLIC_GTM_guezelwebdesign }}
+          NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+          NEXT_PUBLIC_GA_ID: ${{ env.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_GTM_WV5FRN93: ${{ env.NEXT_PUBLIC_GTM_WV5FRN93 }}
+        run: npm run build
+
+      - name: Install admin dependencies
+        working-directory: admin_panel
+        run: HUSKY=0 npm install --legacy-peer-deps
+
+      - name: Build admin panel
+        working-directory: admin_panel
+        env:
+          NEXT_PUBLIC_DEFAULT_LOCALE: ${{ env.ADMIN_NEXT_PUBLIC_DEFAULT_LOCALE }}
+          NEXT_PUBLIC_APP_ENV: ${{ env.ADMIN_NEXT_PUBLIC_APP_ENV }}
+          NEXT_PUBLIC_API_URL: ${{ env.ADMIN_NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ env.ADMIN_NEXT_PUBLIC_API_BASE_URL }}
+          NEXT_PUBLIC_MEDIA_URL: ${{ env.ADMIN_NEXT_PUBLIC_MEDIA_URL }}
+          NEXT_PUBLIC_SOCKET_URL: ${{ env.ADMIN_NEXT_PUBLIC_SOCKET_URL }}
+          PLAYWRIGHT_BASE_URL: ${{ env.ADMIN_PLAYWRIGHT_BASE_URL }}
+          NEXT_PUBLIC_SITE_URL: ${{ env.ADMIN_NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_GTM_guezelwebdesign: ${{ env.ADMIN_NEXT_PUBLIC_GTM_guezelwebdesign }}
+          NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ env.ADMIN_NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+          NEXT_PUBLIC_GA_ID: ${{ env.ADMIN_NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_GTM_WV5FRN93: ${{ env.ADMIN_NEXT_PUBLIC_GTM_WV5FRN93 }}
+        run: npm run build
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: bun install --frozen-lockfile
+
+      - name: Build backend
+        working-directory: backend
+        run: bun run build
+
+      - name: Package release
+        id: package
+        run: |
+          chmod +x deploy/build-release.sh
+          ARCHIVE_PATH="$(./deploy/build-release.sh "$RELEASE_NAME")"
+          echo "archive_path=$ARCHIVE_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare SSH
+        env:
+          SSH_KEY: ${{ secrets.GZL_WEB_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.GZL_WEB_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload release
+        run: |
+          ssh "${{ secrets.GZL_WEB_USER }}@${{ secrets.GZL_WEB_HOST }}" \
+            "mkdir -p '${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp'"
+          scp "${{ steps.package.outputs.archive_path }}" \
+            "${{ secrets.GZL_WEB_USER }}@${{ secrets.GZL_WEB_HOST }}:${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/${RELEASE_NAME}.tar.gz"
+          scp deploy/server/install-release.sh \
+            "${{ secrets.GZL_WEB_USER }}@${{ secrets.GZL_WEB_HOST }}:${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/install-release.sh"
+
+      - name: Activate release
+        run: |
+          ssh "${{ secrets.GZL_WEB_USER }}@${{ secrets.GZL_WEB_HOST }}" \
+            "chmod +x '${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/install-release.sh' && \
+             KEEP_RELEASES=5 '${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/install-release.sh' \
+             '${{ vars.KAMANILAN_DEPLOY_BASE }}' \
+             '${{ vars.KAMANILAN_DEPLOY_BASE }}/tmp/${RELEASE_NAME}.tar.gz' \
+             '${RELEASE_NAME}'"

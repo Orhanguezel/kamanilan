@@ -1,6 +1,7 @@
 # Nested repos / temp directories
 prime-frontend-nextjs/
 backend/uploads/
+.release/
 
 # Logs
 logs

@@ -1,25 +1,18 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package.json ./
-RUN npm install --legacy-peer-deps
+RUN HUSKY=0 npm install --legacy-peer-deps
 
 FROM deps AS builder
 WORKDIR /app
 COPY . .
-
-ARG NEXT_PUBLIC_REST_API_ENDPOINT=https://kamanilan.com/api
-ARG NEXT_PUBLIC_SITE_URL=https://kamanilan.com
-ARG NEXT_PUBLIC_DEFAULT_LANGUAGE=tr
-ARG NEXT_PUBLIC_AVAILABLE_LANGUAGES=tr,en
-ARG NEXT_IMAGE_HOST=kamanilan.com
-
 RUN npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3003
+ENV PORT=3022
 ENV HOSTNAME=0.0.0.0
 
 RUN addgroup --system --gid 1001 nodejs
@@ -31,6 +24,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-EXPOSE 3003
+EXPOSE 3022
 
 CMD ["node", "server.js"]
