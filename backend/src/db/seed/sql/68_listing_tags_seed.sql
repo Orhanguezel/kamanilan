@@ -14,7 +14,7 @@ VALUES
     'Pazarlik Var',
     'pazarlik-var',
     'Fiyat gorusmeye acik ilanlar',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'genel-satis' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'genel-satis' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     1
@@ -24,7 +24,7 @@ VALUES
     'Acil Satilik',
     'acil-satilik',
     'Hizli devir istenen ilanlar',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'genel-satis' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'genel-satis' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     2
@@ -34,7 +34,7 @@ VALUES
     'Sahibinden',
     'sahibinden',
     'Araci olmadan dogrudan ilani acanlar',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'emlak-kira' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'emlak-kira' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     3
@@ -44,8 +44,8 @@ VALUES
     'Ekspertizli',
     'ekspertizli',
     'Ekspertiz raporu bulunan araclar',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'arac-motosiklet' LIMIT 1),
-    (SELECT `id` FROM `sub_categories` WHERE `slug` = 'otomobil' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'arac-motosiklet' AND ci.locale = 'tr' LIMIT 1),
+    (SELECT si.sub_category_id FROM sub_category_i18n si WHERE si.slug = 'otomobil' AND si.locale = 'tr' LIMIT 1),
     1,
     4
   ),
@@ -54,7 +54,7 @@ VALUES
     'Bakimli',
     'bakimli',
     'Periyodik bakimlari tamamlanmis ilanlar',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'arac-motosiklet' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'arac-motosiklet' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     5
@@ -64,7 +64,7 @@ VALUES
     'Ureticiden',
     'ureticiden',
     'Dogrudan ureticiden satilan urunler',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'kaman-cevizi' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'kaman-cevizi' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     6
@@ -74,7 +74,7 @@ VALUES
     'Veteriner Kontrollu',
     'veteriner-kontrollu',
     'Veteriner denetimi yapilmis hayvan ilanlari',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'hayvan-tarim' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'hayvan-tarim' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     7
@@ -84,7 +84,7 @@ VALUES
     'Organik',
     'organik',
     'Dogal / organik urun ilanlari',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'meyve-sebze' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'meyve-sebze' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     8
@@ -94,7 +94,7 @@ VALUES
     'Gunluk Uretim',
     'gunluk-uretim',
     'Gunluk hazirlanan urun ilanlari',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'sut-yogurt' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'sut-yogurt' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     9
@@ -104,7 +104,7 @@ VALUES
     'Toplu Alima Uygun',
     'toplu-alima-uygun',
     'Toptan ve adetli satisa uygun ilanlar',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'hububat-bakliyat' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'hububat-bakliyat' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     10

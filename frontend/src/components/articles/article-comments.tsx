@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ThumbsUp, MessageSquare, Send, Loader2 } from "lucide-react";
+import { ThumbsUp, MessageSquare, Send, Loader2, Heart, User } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -12,12 +12,10 @@ import {
   useCreateCommentMutation,
   useToggleLikeMutation,
 } from "@/modules/articles/articles.service";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 
 function fmtDate(v: string) {
   const d = new Date(v);
-  return Number.isNaN(d.getTime()) ? v : d.toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" });
+  return Number.isNaN(d.getTime()) ? v : d.toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 /* ─── Like Button ───────────────────────────────────────────── */
@@ -44,18 +42,18 @@ function LikeButton({ slug }: { slug: string }) {
       type="button"
       onClick={handleLike}
       disabled={toggle.isPending}
-      className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+      className={`group flex items-center gap-3 rounded-full border px-6 py-3 text-xs font-mono font-bold uppercase tracking-widest transition-all ${
         likes?.user_liked
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border hover:border-primary hover:text-primary"
+          ? "border-[hsl(var(--col-saffron))] bg-[hsl(var(--col-saffron))] text-[hsl(var(--col-ink))]"
+          : "border-black/5 bg-white text-[hsl(var(--col-ink))] hover:border-[hsl(var(--col-saffron))] hover:bg-[hsl(var(--col-saffron))] shadow-sm"
       }`}
     >
       {toggle.isPending ? (
         <Loader2 className="size-4 animate-spin" />
       ) : (
-        <ThumbsUp className="size-4" />
+        <Heart className={`size-4 transition-transform group-hover:scale-125 ${likes?.user_liked ? 'fill-current' : ''}`} />
       )}
-      <span>{likes?.count ?? 0} Beğeni</span>
+      <span>{likes?.count ?? 0} BEĞENİ</span>
     </button>
   );
 }
@@ -75,7 +73,7 @@ export function ArticleComments({ slug }: { slug: string }) {
     try {
       await createComment.mutateAsync({ content });
       setText("");
-      toast.success("Yorumunuz onay bekliyor.");
+      toast.success("Yorumunuz iletildi.");
     } catch {
       toast.error("Yorum gönderilemedi.");
     }
@@ -84,84 +82,102 @@ export function ArticleComments({ slug }: { slug: string }) {
   const rows = Array.isArray(comments) ? comments : [];
 
   return (
-    <div className="mt-8 space-y-6">
-      {/* Like row */}
-      <div className="flex items-center gap-4 border-t border-border pt-6">
+    <div className="space-y-12">
+      {/* Interaction row */}
+      <div className="flex items-center gap-6">
         <LikeButton slug={slug} />
-        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <div className="flex items-center gap-3 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[hsl(var(--col-ink))] opacity-40">
           <MessageSquare className="size-4" />
-          <span>{rows.length} Yorum</span>
+          <span>{rows.length} YORUM</span>
         </div>
       </div>
 
       {/* Comment form */}
-      <div className="rounded-lg border border-border bg-card p-4">
-        <h3 className="mb-3 text-sm font-bold">Yorum Yap</h3>
+      <div className="rounded-[40px] bg-white border border-black/5 p-8 md:p-12 shadow-3xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[hsl(var(--col-saffron))] opacity-5 blur-3xl pointer-events-none" />
+        
+        <h3 className="font-fraunces text-2xl font-medium text-[hsl(var(--col-ink))] mb-8">Fikrinizi Paylaşın</h3>
 
         {isAuthenticated ? (
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <Textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Yorumunuzu yazın..."
-              rows={3}
-              maxLength={2000}
-              className="resize-none"
-              required
-            />
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{text.length}/2000</span>
-              <Button
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="relative">
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Bu haber hakkında ne düşünüyorsunuz?"
+                rows={4}
+                maxLength={2000}
+                required
+                className="w-full bg-[hsl(var(--col-paper))] border-none rounded-2xl py-6 px-8 focus:ring-2 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm resize-none"
+              />
+              <div className="absolute bottom-4 right-6 text-[10px] font-mono font-bold opacity-30">
+                {text.length}/2000
+              </div>
+            </div>
+            
+            <div className="flex justify-end">
+              <button
                 type="submit"
-                size="sm"
                 disabled={createComment.isPending || !text.trim()}
+                className="btn-editorial bg-[hsl(var(--col-ink))] text-white px-10 group"
               >
-                {createComment.isPending ? (
-                  <Loader2 className="mr-1.5 size-3.5 animate-spin" />
-                ) : (
-                  <Send className="mr-1.5 size-3.5" />
-                )}
-                Gönder
-              </Button>
+                <span>
+                  {createComment.isPending ? "GÖNDERİLİYOR..." : "YORUMU GÖNDER"}
+                  {!createComment.isPending && <Send className="size-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
+                </span>
+              </button>
             </div>
           </form>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            Yorum yapmak için{" "}
-            <Link href="/giris" className="font-semibold text-primary underline-offset-2 hover:underline">
-              giriş yapın
+          <div className="py-10 text-center bg-[hsl(var(--col-paper))] rounded-3xl border border-dashed border-black/10">
+            <p className="text-[hsl(var(--col-walnut))] opacity-60 text-sm mb-6">
+              Tartışmaya katılmak için giriş yapmanız gerekmektedir.
+            </p>
+            <Link href="/giris" className="btn-editorial inline-flex">
+              <span>GİRİŞ YAPIN</span>
             </Link>
-            .
-          </p>
+          </div>
         )}
       </div>
 
       {/* Comments list */}
-      <div className="space-y-4">
+      <div className="space-y-10">
         {isLoading ? (
-          <div className="flex justify-center py-6">
-            <Loader2 className="size-5 animate-spin text-muted-foreground" />
+          <div className="flex justify-center py-12">
+            <Loader2 className="size-8 animate-spin text-[hsl(var(--col-saffron))]" />
           </div>
         ) : rows.length === 0 ? (
-          <p className="py-4 text-center text-sm text-muted-foreground">
-            Henüz yorum yok. İlk yorumu siz yapın!
-          </p>
+          <div className="py-20 text-center">
+            <div className="text-4xl mb-4 opacity-10">🕯️</div>
+            <p className="font-fraunces text-xl text-[hsl(var(--col-ink))] opacity-30 italic">
+              Henüz kimse yorum yapmamış...
+            </p>
+          </div>
         ) : (
-          rows.map((c) => (
-            <div key={c.id} className="flex items-start gap-3">
-              {/* Avatar placeholder */}
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                {(c.author_name?.[0] ?? "?").toUpperCase()}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-semibold">{c.author_name}</span>
-                  <span className="text-[11px] text-muted-foreground">{fmtDate(c.created_at)}</span>
+          <div className="grid gap-8">
+            {rows.map((c) => (
+              <div key={c.id} className="group relative flex gap-6 md:gap-8 items-start p-8 rounded-[32px] bg-white/50 border border-transparent hover:border-black/5 hover:bg-white hover:shadow-2xl transition-all duration-500">
+                {/* Avatar */}
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[hsl(var(--col-ink))] text-white shadow-lg transition-transform group-hover:scale-110">
+                  <User className="h-5 w-5" />
                 </div>
-                <p className="mt-0.5 whitespace-pre-wrap text-sm text-foreground/85">{c.content}</p>
+                
+                <div className="flex-1 space-y-3">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <span className="font-fraunces text-lg font-medium text-[hsl(var(--col-ink))] leading-none">
+                       {c.author_name}
+                    </span>
+                    <span className="font-mono text-[9px] font-bold uppercase tracking-widest opacity-30">
+                       {fmtDate(c.created_at)}
+                    </span>
+                  </div>
+                  <p className="text-[hsl(var(--col-walnut))] leading-relaxed text-sm md:text-base">
+                    {c.content}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>

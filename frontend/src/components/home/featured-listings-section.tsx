@@ -24,8 +24,8 @@ export function FeaturedListingsSection({ config }: Props) {
   const items = data?.items ?? [];
 
   return (
-    <section className="py-10" style={{ background: "hsl(var(--background))" }}>
-      <div className="container mx-auto px-4">
+    <section className="py-24 md:py-32 bg-paper">
+      <div className="container">
         <SectionHeader
           title={config?.label || t("home.featured_title")}
           subtitle={t("home.featured_subtitle")}
@@ -33,15 +33,15 @@ export function FeaturedListingsSection({ config }: Props) {
         />
 
         {isPending ? (
-          <div className={gridCls}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {Array.from({ length: limit }).map((_, i) => (
-              <div key={i} className="aspect-[4/5] animate-pulse rounded-lg bg-muted" />
+              <div key={i} className="aspect-[4/5] animate-pulse rounded-2xl bg-parchment/50" />
             ))}
           </div>
         ) : items.length === 0 ? (
-          <p className="text-center text-muted-foreground">{t("listing.no_listings")}</p>
+          <p className="text-center text-muted-foreground py-20">{t("listing.no_listings")}</p>
         ) : (
-          <div className={gridCls}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {items.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const apiBase =
-  process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "http://localhost:8078/api";
+  process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "https://kamanilan.com/api";
 
 interface SettingRecord {
   key: string;
@@ -11,8 +11,8 @@ interface SettingRecord {
 export async function GET() {
   let brandName = "Kaman İlan";
   let brandTagline = "";
-  let icon192 = "/uploads/media/logo/logo-icon-192.png";
-  let icon512 = "/uploads/media/logo/logo-icon-512.png";
+  let icon192 = "/uploads/media/logo/logo_light.png";
+  let icon512 = "/uploads/media/logo/logo_light.png";
   let themeColor = "#2D6A4F";
 
   try {

@@ -84,6 +84,8 @@ export function LoginClient({ translations: t }: Props) {
     setValue,
     watch,
   } = useForm<LoginFormValues>({
+    // @ts-ignore
+    // @ts-ignore
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",

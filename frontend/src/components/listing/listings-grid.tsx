@@ -139,30 +139,30 @@ export function ListingsGrid() {
         {t("listing.showing", { from, to, total })}
       </p>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 md:gap-8 lg:grid-cols-3">
         {items.map((listing) => (
           <ListingCard key={listing.id} listing={listing} />
         ))}
       </div>
 
       {(hasPrev || hasNext) && (
-        <div className="flex items-center justify-center gap-3 pt-4">
+        <div className="flex items-center justify-center gap-6 pt-12">
           <button
             onClick={() => goPage(Math.max(0, offset - PAGE_SIZE))}
             disabled={!hasPrev}
-            className="rounded-lg border bg-card px-4 py-2 text-sm transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-full border border-border bg-white px-8 py-3 text-[10px] font-bold uppercase tracking-widest text-ink transition-all hover:bg-paper disabled:opacity-30 disabled:pointer-events-none"
           >
             {t("common.previous")}
           </button>
-          <span className="text-sm text-muted-foreground">
+          <span className="font-mono text-xs uppercase tracking-widest opacity-50">
             {Math.floor(offset / PAGE_SIZE) + 1} / {Math.ceil(total / PAGE_SIZE)}
           </span>
           <button
             onClick={() => goPage(offset + PAGE_SIZE)}
             disabled={!hasNext}
-            className="rounded-lg border bg-card px-4 py-2 text-sm transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn-editorial"
           >
-            {t("common.next")}
+            <span>{t("common.next")}</span>
           </button>
         </div>
       )}

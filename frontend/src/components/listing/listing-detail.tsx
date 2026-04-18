@@ -54,15 +54,15 @@ function VariantValueDisplay({ v }: { v: ListingVariantValue }) {
   if (v.value_type === "boolean" && (v.value === "0" || v.value === "false")) return null;
 
   return (
-    <div className="flex justify-between rounded-lg bg-muted/50 px-3 py-2">
-      <span className="text-muted-foreground">
+    <div className="flex justify-between items-center py-3 border-b border-black/5 last:border-0">
+      <span className="text-[10px] font-mono uppercase tracking-widest opacity-40">
         {v.variant_name}
         {v.unit_symbol ? ` (${v.unit_symbol})` : ""}
       </span>
-      <span className="font-medium">
+      <span className="font-medium text-ink">
         {v.value_type === "boolean" ? (
           <span className="inline-flex items-center gap-1">
-            <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
             {displayValue}
           </span>
         ) : (
@@ -90,9 +90,9 @@ function Gallery({ images, title }: GalleryProps) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       {/* Main image */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-muted">
+      <div className="relative aspect-video w-full overflow-hidden rounded-[32px] bg-muted shadow-2xl border border-border">
         <Image
           src={images[active]}
           alt={title}
@@ -105,17 +105,17 @@ function Gallery({ images, title }: GalleryProps) {
           <>
             <button
               onClick={() => setActive((p) => (p - 1 + images.length) % images.length)}
-              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-ink backdrop-blur-md transition-all hover:bg-white shadow-xl"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-6 w-6" />
             </button>
             <button
               onClick={() => setActive((p) => (p + 1) % images.length)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-1.5 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-ink backdrop-blur-md transition-all hover:bg-white shadow-xl"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-6 w-6" />
             </button>
-            <span className="absolute bottom-2 right-2 rounded-full bg-black/50 px-2 py-0.5 text-xs text-white backdrop-blur-sm">
+            <span className="absolute bottom-6 right-6 rounded-full bg-black/60 px-4 py-1.5 text-[10px] font-mono text-white backdrop-blur-md tracking-widest">
               {active + 1} / {images.length}
             </span>
           </>
@@ -124,16 +124,16 @@ function Gallery({ images, title }: GalleryProps) {
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {images.map((img, i) => (
             <button
               key={i}
               onClick={() => setActive(i)}
-              className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
-                i === active ? "border-primary" : "border-transparent opacity-70 hover:opacity-100"
+              className={`relative h-20 w-32 shrink-0 overflow-hidden rounded-2xl border-2 transition-all ${
+                i === active ? "border-saffron opacity-100" : "border-transparent opacity-40 hover:opacity-100"
               }`}
             >
-              <Image src={img} alt={`${title} ${i + 1}`} fill className="object-cover" sizes="96px" />
+              <Image src={img} alt={`${title} ${i + 1}`} fill className="object-cover" sizes="128px" />
             </button>
           ))}
         </div>
@@ -194,38 +194,38 @@ export function ListingDetail({ slug }: ListingDetailProps) {
   const variantValues = listing.variant_values ?? [];
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-6xl">
       {/* Breadcrumb */}
-      <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href={ROUTES.HOME} className="hover:text-foreground">
+      <div className="mb-8 flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] opacity-40">
+        <Link href={ROUTES.HOME} className="hover:text-saffron transition-colors">
           {t("common.home")}
         </Link>
-        <span>/</span>
-        <Link href={ROUTES.LISTINGS} className="hover:text-foreground">
+        <span className="opacity-20">/</span>
+        <Link href={ROUTES.LISTINGS} className="hover:text-saffron transition-colors">
           {t("listing.all_listings")}
         </Link>
-        <span>/</span>
-        <span className="line-clamp-1 text-foreground">{listing.title}</span>
+        <span className="opacity-20">/</span>
+        <span className="line-clamp-1">{listing.title}</span>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="grid gap-12 lg:grid-cols-[1fr_360px]">
         {/* Left: gallery + details */}
-        <div className="space-y-6">
+        <div className="space-y-12">
           <Gallery images={images} title={listing.title} />
 
           {/* Title & badges */}
           <div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-3 mb-4">
               {listing.featured && (
-                <span className="rounded-full bg-amber-500 px-2 py-0.5 text-xs font-medium text-white">
-                  {t("listing.featured")}
+                <span className="bg-saffron text-ink text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg">
+                  ★ {t("listing.featured")}
                 </span>
               )}
-              <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+              <span className="bg-paper border border-border text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
                 {getStatusLabel(listing.status)}
               </span>
             </div>
-            <h1 className="mt-2 text-2xl font-bold text-foreground">{listing.title}</h1>
+            <h1 className="font-fraunces text-3xl md:text-5xl font-medium tracking-tight text-ink leading-tight">{listing.title}</h1>
           </div>
 
           {/* Location */}
@@ -275,14 +275,20 @@ export function ListingDetail({ slug }: ListingDetailProps) {
         </div>
 
         {/* Right: price card + meta */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Price card */}
-          <div className="rounded-xl border bg-card p-5 shadow-sm">
-            <div className="text-3xl font-bold text-primary">
+          <div className="rounded-[32px] bg-ink p-8 shadow-2xl overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-saffron opacity-10 blur-3xl rounded-full" />
+            
+            <div className="font-fraunces text-4xl font-bold text-saffron mb-2 tabular-nums">
               {formatPrice(listing.price, listing.currency)}
             </div>
+            
             {listing.is_negotiable && (
-              <p className="mt-1 text-xs text-muted-foreground">Fiyat pazarlığa açık</p>
+              <div className="flex items-center gap-2 mb-8">
+                 <div className="h-1 w-1 rounded-full bg-saffron" />
+                 <p className="text-[10px] font-mono uppercase tracking-widest text-white/50">Fiyat pazarlığa açık</p>
+              </div>
             )}
 
             {listing.has_cart && (
@@ -291,31 +297,23 @@ export function ListingDetail({ slug }: ListingDetailProps) {
                   addItem(listing);
                   toast.success(t("listing.added_to_cart"));
                 }}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white transition-all hover:opacity-90 active:scale-95"
+                className="w-full h-14 bg-saffron text-ink rounded-full flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-black/30"
               >
                 <ShoppingCart className="h-4 w-4" />
                 {t("listing.add_to_cart")}
               </button>
             )}
 
-            <div className="mt-6 space-y-2 text-sm text-muted-foreground">
+            <div className="mt-10 space-y-4 pt-8 border-t border-white/5">
               {listing.listing_no && (
-                <div className="flex items-center gap-2">
-                  <Hash className="h-4 w-4 shrink-0" />
-                  <span>
-                    {t("listing.listing_no")}: {listing.listing_no}
-                  </span>
+                <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-widest">
+                  <span className="opacity-40">{t("listing.listing_no")}</span>
+                  <span className="text-white/80 font-bold">{listing.listing_no}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 shrink-0" />
-                <span>
-                  {t("listing.published")}: {formatDate(listing.created_at)}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 shrink-0" />
-                <span>{listing.district}</span>
+              <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-widest">
+                <span className="opacity-40">{t("listing.published")}</span>
+                <span className="text-white/80">{formatDate(listing.created_at)}</span>
               </div>
             </div>
 
@@ -326,9 +324,10 @@ export function ListingDetail({ slug }: ListingDetailProps) {
                   navigator.share({ title: listing.title, url: window.location.href });
                 } else {
                   navigator.clipboard.writeText(window.location.href);
+                  toast.success("Link kopyalandı!");
                 }
               }}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border bg-muted px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted/80"
+              className="mt-10 flex w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 py-4 text-[10px] font-mono uppercase tracking-widest text-white/70 transition-all hover:bg-white/10"
             >
               <Share2 className="h-4 w-4" />
               {t("listing.share_listing")}
@@ -338,7 +337,7 @@ export function ListingDetail({ slug }: ListingDetailProps) {
           {/* Back link */}
           <Link
             href={ROUTES.LISTINGS}
-            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            className="flex items-center justify-center gap-2 py-4 rounded-full border border-black/5 text-[10px] font-mono uppercase tracking-widest text-ink opacity-50 hover:opacity-100 transition-all"
           >
             <ChevronLeft className="h-4 w-4" />
             {t("listing.back_to_listings")}

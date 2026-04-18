@@ -1,0 +1,59 @@
+{
+  "title": "Kamanilan",
+  "slug": "kamanilan",
+  "summary": "Real estate listing and property management platform with customer web, admin panel, multi-language support and integrated payment.",
+  "category": "REAL ESTATE",
+  "services": [
+    "Frontend Development",
+    "Backend Development",
+    "Admin Panel"
+  ],
+  "techs": [
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Radix UI",
+    "Tailwind CSS",
+    "Framer Motion",
+    "next-intl",
+    "React Query",
+    "Fastify",
+    "Drizzle ORM",
+    "MySQL",
+    "Bun",
+    "Zod",
+    "Cloudinary",
+    "Nodemailer",
+    "JWT",
+    "Iyzipay",
+    "Google OAuth"
+  ],
+  "features": [
+    "Property listings",
+    "Admin management",
+    "Multi-language support",
+    "Iyzipay payment integration",
+    "Google OAuth",
+    "Email notifications"
+  ],
+  "designHighlights": [
+    "Property-focused UX",
+    "Multi-language routing",
+    "Headless architecture"
+  ],
+  "featured": false,
+  "displayOrder": 20,
+  "clientName": "Own Project",
+  "status": "live",
+  "startDate": "2025-01-01",
+  "completeDate": null,
+  "completionTimeLabel": "Ongoing",
+  "repoUrl": null,
+  "websiteUrl": "https://www.kamanilan.com",
+  "demoUrl": null,
+  "featuredImage": "/assets/imgs/work/projects/kamanilan.png",
+  "featuredImageAlt": "Kamanilan Real Estate Platform",
+  "resumeTitle": "Kamanilan",
+  "resumeSubtitle": "Real Estate Listing Platform",
+  "excludeFromPortfolio": false
+}

@@ -76,27 +76,41 @@ VALUES
 -- ------------------------------------------------------------------
 -- 5. Feature seed
 -- feature_value: "-1" = sınırsız, sayı = limit, "true"/"false"
+--
+-- ACILIS FAZ: Ucretsiz plan sinirsiz + import + XML feed + 20 foto.
+-- Paid planlar seed'de tanimli ama kimseye otomatik atanmaz.
+-- Monetization gununde yalnizca Ucretsiz plan'in feature_value satirlari
+-- guncellenir (bkz. docs/toplu-import-plani.md §8).
 -- ------------------------------------------------------------------
 INSERT INTO subscription_plan_features
   (plan_id, feature_key, feature_value, is_enabled)
 VALUES
-  -- Ücretsiz (id=1)
-  (1, 'max_active_listings',  '2',     1),
-  (1, 'listing_duration_days','30',    1),
-  (1, 'can_add_video',        'false', 1),
-  (1, 'can_feature_listing',  'false', 1),
-  (1, 'can_boost_listing',    'false', 1),
+  -- Ücretsiz (id=1) — LAUNCH DEFAULTS (acilis kampanyasi)
+  (1, 'max_active_listings',    '-1',    1),
+  (1, 'listing_duration_days',  '-1',    1),
+  (1, 'can_add_video',          'true',  1),
+  (1, 'can_feature_listing',    'false', 1),
+  (1, 'can_boost_listing',      'false', 1),
+  (1, 'bulk_import_enabled',    'true',  1),
+  (1, 'xml_feed_enabled',       'true',  1),
+  (1, 'max_photos_per_listing', '20',    1),
 
-  -- Temel (id=2)
-  (2, 'max_active_listings',  '15',    1),
-  (2, 'listing_duration_days','60',    1),
-  (2, 'can_add_video',        'false', 1),
-  (2, 'can_feature_listing',  'false', 1),
-  (2, 'can_boost_listing',    'false', 1),
+  -- Temel (id=2) — monetization sonrasi hedef degerler
+  (2, 'max_active_listings',    '50',    1),
+  (2, 'listing_duration_days',  '60',    1),
+  (2, 'can_add_video',          'false', 1),
+  (2, 'can_feature_listing',    'false', 1),
+  (2, 'can_boost_listing',      'false', 1),
+  (2, 'bulk_import_enabled',    'true',  1),
+  (2, 'xml_feed_enabled',       'false', 1),
+  (2, 'max_photos_per_listing', '15',    1),
 
   -- Pro (id=3)
-  (3, 'max_active_listings',  '-1',    1),
-  (3, 'listing_duration_days','-1',    1),
-  (3, 'can_add_video',        'true',  1),
-  (3, 'can_feature_listing',  'true',  1),
-  (3, 'can_boost_listing',    'true',  1);
+  (3, 'max_active_listings',    '-1',    1),
+  (3, 'listing_duration_days',  '-1',    1),
+  (3, 'can_add_video',          'true',  1),
+  (3, 'can_feature_listing',    'true',  1),
+  (3, 'can_boost_listing',      'true',  1),
+  (3, 'bulk_import_enabled',    'true',  1),
+  (3, 'xml_feed_enabled',       'true',  1),
+  (3, 'max_photos_per_listing', '50',    1);

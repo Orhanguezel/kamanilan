@@ -19,6 +19,7 @@ import { ProductLatestSection } from "./product-latest-section";
 import { PopularProductSection } from "./popular-product-section";
 import { NewsletterSection } from "./newsletter-section";
 import { TopStoresSection } from "./top-stores-section";
+import { SpotlightSection } from "./spotlight-section";
 
 /* ─── section type → bileşen eşlemesi ─────────────────────────────────── */
 
@@ -33,6 +34,7 @@ const SECTION_MAP: Record<string, React.ComponentType<{ config?: SectionConfig }
   announcements:      AnnouncementsSection,
   news_feed:          NewsFeedSection,
   infinite_listings:  InfiniteListingsSection,
+  spotlight:          SpotlightSection,
   // Yeni e-commerce section tipleri (layout_blocks)
   product_featured:        ProductFeaturedSection,
   product_top_selling:     ProductTopSellingSection,
@@ -183,9 +185,10 @@ const COL_SPAN: Record<number, string> = {
 const DEFAULT_SECTIONS: SectionConfig[] = [
   { key: "hero",       enabled: true, order: 1, label: "Hero",            colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
   { key: "categories", enabled: true, order: 2, label: "Tüm Kategoriler", colsLg: 6, colsMd: 3, colsSm: 2, limit: null },
-  { key: "flash_sale", enabled: true, order: 3, label: "Flash Fırsat",    colsLg: 5, colsMd: 3, colsSm: 2, limit: 5   },
-  { key: "featured",   enabled: true, order: 4, label: "Öne Çıkan",       colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },
-  { key: "recent",     enabled: true, order: 5, label: "Son İlanlar",     colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },
+  { key: "spotlight",  enabled: true, order: 3, label: "Özel Vurgu",       colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
+  { key: "flash_sale", enabled: true, order: 4, label: "Flash Fırsat",    colsLg: 5, colsMd: 3, colsSm: 2, limit: 5   },
+  { key: "featured",   enabled: true, order: 5, label: "Öne Çıkan",       colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },
+  { key: "recent",     enabled: true, order: 6, label: "Son İlanlar",     colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },
 ];
 
 /* ─── Ana bileşen ──────────────────────────────────────────────────────── */

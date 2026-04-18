@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { t } from "@/lib/t";
-import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle, ArrowRight } from "lucide-react";
 import {
   useSiteSettingsQuery,
   useMenuItemsQuery,
@@ -88,42 +88,32 @@ export function Footer() {
   const showStaticLinks = sections.length === 0;
 
   return (
-    <footer
-      style={{
-        backgroundColor: "hsl(var(--footer-bg))",
-        color: "hsl(var(--footer-fg))",
-      }}
-    >
-      <div className="container py-10">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="bg-ink text-parchment pt-24 pb-12 border-t border-white/5">
+      <div className="container">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4 mb-20">
 
           {/* ── 1. MARKA ──────────────────────────────────────────── */}
           <div>
-            <Link href={ROUTES.HOME} className="inline-flex flex-col gap-2">
+            <Link href={ROUTES.HOME} className="inline-block transition-transform hover:scale-105 mb-6">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              {brandLogo && <img src={brandLogo} alt={brandName} className="h-28 w-auto object-contain" />}
-              {brandLogoText && (
-                <span className="font-black text-3xl tracking-tight leading-none" style={{ color: "hsl(var(--footer-fg))" }}>
-                  {brandLogoText}
-                </span>
-              )}
+              {brandLogo ? <img src={brandLogo} alt={brandName} className="h-16 w-auto object-contain" /> : <div className="text-3xl font-fraunces font-bold text-saffron">{brandName}</div>}
             </Link>
 
-            <p className="mt-3 text-sm leading-relaxed opacity-65 max-w-[22ch]">
+            <p className="mt-4 text-sm leading-relaxed opacity-60 font-manrope">
               {t("seo.site_description")}
             </p>
 
             {/* ── Sosyal medya ── */}
-            <div className="mt-4 flex gap-2">
+            <div className="mt-8 flex gap-3">
               {facebookUrl && (
                 <a
                   href={facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1877F2] text-white transition-opacity hover:opacity-85"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white transition-all hover:bg-saffron hover:text-ink hover:border-transparent"
                   aria-label="Facebook"
                 >
-                  <IconFacebook className="h-3.5 w-3.5" />
+                  <IconFacebook className="h-4 w-4" />
                 </a>
               )}
               {instagramUrl && (
@@ -131,10 +121,10 @@ export function Footer() {
                   href={instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#833AB4] via-[#E1306C] to-[#F77737] text-white transition-opacity hover:opacity-85"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white transition-all hover:bg-saffron hover:text-ink hover:border-transparent"
                   aria-label="Instagram"
                 >
-                  <IconInstagram className="h-3.5 w-3.5" />
+                  <IconInstagram className="h-4 w-4" />
                 </a>
               )}
               {twitterUrl && (
@@ -142,10 +132,10 @@ export function Footer() {
                   href={twitterUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-black text-white transition-opacity hover:opacity-85"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white transition-all hover:bg-saffron hover:text-ink hover:border-transparent"
                   aria-label="X (Twitter)"
                 >
-                  <IconX className="h-3.5 w-3.5" />
+                  <IconX className="h-4 w-4" />
                 </a>
               )}
             </div>
@@ -158,16 +148,13 @@ export function Footer() {
                 if (items.length === 0) return null;
                 return (
                   <div key={section.id}>
-                    <h4
-                      className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-50"
-                      style={{ color: "hsl(var(--footer-fg))" }}
-                    >
+                    <h4 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
                       {section.title}
                     </h4>
-                    <ul className="space-y-2 text-sm">
+                    <ul className="space-y-4 text-sm">
                       {items.map((item) => (
                         <li key={item.id}>
-                          <Link href={item.url} className="opacity-65 hover:opacity-100 transition-opacity">
+                          <Link href={item.url || "#"} className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">
                             {item.title}
                           </Link>
                         </li>
@@ -179,26 +166,26 @@ export function Footer() {
             : showStaticLinks && (
               <>
                 <div>
-                  <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-50" style={{ color: "hsl(var(--footer-fg))" }}>
+                  <h4 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
                     {t("footer.quick_links")}
                   </h4>
-                  <ul className="space-y-2 text-sm">
-                    <li><Link href={ROUTES.LISTINGS}      className="opacity-65 hover:opacity-100 transition-opacity">{t("nav.listings")}</Link></li>
-                    <li><Link href={ROUTES.CATEGORIES}    className="opacity-65 hover:opacity-100 transition-opacity">{t("nav.categories")}</Link></li>
-                    <li><Link href={ROUTES.POST_LISTING}  className="opacity-65 hover:opacity-100 transition-opacity">{t("footer.post_listing")}</Link></li>
-                    <li><Link href={ROUTES.ANNOUNCEMENTS} className="opacity-65 hover:opacity-100 transition-opacity">Duyurular</Link></li>
-                    <li><Link href={ROUTES.ADVERTISE}     className="opacity-65 hover:opacity-100 transition-opacity">Reklam Ver</Link></li>
+                  <ul className="space-y-4 text-sm">
+                    <li><Link href={ROUTES.LISTINGS}      className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("nav.listings")}</Link></li>
+                    <li><Link href={ROUTES.CATEGORIES}    className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("nav.categories")}</Link></li>
+                    <li><Link href={ROUTES.POST_LISTING}  className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("footer.post_listing")}</Link></li>
+                    <li><Link href={ROUTES.ANNOUNCEMENTS} className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">Duyurular</Link></li>
+                    <li><Link href={ROUTES.ADVERTISE}     className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">Reklam Ver</Link></li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-50" style={{ color: "hsl(var(--footer-fg))" }}>
-                    Yasal
+                  <h4 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
+                    Yasal Bilgiler
                   </h4>
-                  <ul className="space-y-2 text-sm">
-                    <li><Link href={ROUTES.ABOUT}    className="opacity-65 hover:opacity-100 transition-opacity">{t("footer.about_us")}</Link></li>
-                    <li><Link href={ROUTES.CONTACT}  className="opacity-65 hover:opacity-100 transition-opacity">{t("footer.contact_us")}</Link></li>
-                    <li><Link href={ROUTES.TERMS}    className="opacity-65 hover:opacity-100 transition-opacity">{t("footer.terms")}</Link></li>
-                    <li><Link href={ROUTES.PRIVACY}  className="opacity-65 hover:opacity-100 transition-opacity">{t("footer.privacy")}</Link></li>
+                  <ul className="space-y-4 text-sm">
+                    <li><Link href={ROUTES.ABOUT}    className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("footer.about_us")}</Link></li>
+                    <li><Link href={ROUTES.CONTACT}  className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("footer.contact_us")}</Link></li>
+                    <li><Link href={ROUTES.TERMS}    className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("footer.terms")}</Link></li>
+                    <li><Link href={ROUTES.PRIVACY}  className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("footer.privacy")}</Link></li>
                   </ul>
                 </div>
               </>
@@ -206,40 +193,37 @@ export function Footer() {
 
           {/* ── 4. İLETİŞİM (site_settings'den) ──────────────────── */}
           <div>
-            <h4
-              className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-50"
-              style={{ color: "hsl(var(--footer-fg))" }}
-            >
+            <h4 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
               İletişim
             </h4>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-4 text-sm">
               {address && (
-                <li className="flex items-start gap-2">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0" style={{ color: "hsl(var(--accent))" }} />
-                  <span className="opacity-70 leading-snug">{address}</span>
+                <li className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-saffron" />
+                  <span className="opacity-70 leading-relaxed max-w-[200px]">{address}</span>
                 </li>
               )}
               {phoneDisplay && (
-                <li className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 shrink-0" style={{ color: "hsl(var(--accent))" }} />
-                  <a href={`tel:${phoneTel || phoneDisplay}`} className="opacity-70 hover:opacity-100 transition-opacity">
+                <li className="flex items-center gap-3">
+                  <Phone className="h-4 w-4 shrink-0 text-saffron" />
+                  <a href={`tel:${phoneTel || phoneDisplay}`} className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">
                     {phoneDisplay}
                   </a>
                 </li>
               )}
               {email && (
-                <li className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 shrink-0" style={{ color: "hsl(var(--accent))" }} />
-                  <a href={`mailto:${email}`} className="opacity-70 hover:opacity-100 transition-opacity">
+                <li className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 shrink-0 text-saffron" />
+                  <a href={`mailto:${email}`} className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">
                     {email}
                   </a>
                 </li>
               )}
               {whatsapp && (
-                <li className="flex items-center gap-2">
-                  <MessageCircle className="h-4 w-4 shrink-0" style={{ color: "#25D366" }} />
-                  <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
-                    WhatsApp
+                <li className="flex items-center gap-3">
+                  <MessageCircle className="h-4 w-4 shrink-0 text-[#25D366]" />
+                  <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-[#25D366] transition-all">
+                    Destek Hattı (WhatsApp)
                   </a>
                 </li>
               )}
@@ -248,11 +232,21 @@ export function Footer() {
         </div>
 
         {/* ── Alt copyright ─────────────────────────────────────── */}
-        <div
-          className="mt-8 border-t pt-6 text-center text-xs opacity-40"
-          style={{ borderColor: "hsl(var(--footer-fg) / 0.15)" }}
-        >
-          &copy; {year} {brandDisplayName}. {t("footer.all_rights_reserved")}
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-mono uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
+           <div className="flex items-center gap-2">
+              &copy; {year} {brandDisplayName}. {t("footer.all_rights_reserved")}
+           </div>
+           <div className="flex items-center gap-2 group">
+              <span>DESIGNED BY</span>
+              <a 
+                href="https://guezelwebdesign.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-saffron font-bold hover:brightness-125 transition-all flex items-center gap-1"
+              >
+                GWD TASARIM DİZAYN <ArrowRight className="h-3 w-3 -rotate-45" />
+              </a>
+           </div>
         </div>
       </div>
     </footer>

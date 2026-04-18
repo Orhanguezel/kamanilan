@@ -3,7 +3,7 @@
 // Kullanıcıya ait ilanlar (ilan verme) — endpoint handler'ları
 // =============================================================
 import type { RouteHandler } from "fastify";
-import type { JwtUser } from "@/common/middleware/auth";
+import type { JwtUser } from "@vps/shared-backend/middleware/auth";
 import {
   listQuerySchema,
   idParamSchema,

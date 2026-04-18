@@ -4,7 +4,7 @@
 import { db } from "@/db/client";
 import { and, asc, desc, eq, like, sql } from "drizzle-orm";
 import { articles, articleComments, articleLikes, type ArticleRow, type ArticleCommentRow } from "./schema";
-import { storageAssets } from "@/modules/storage/schema";
+import { storageAssets } from "@vps/shared-backend/modules/storage/schema";
 import { publicUrlOf } from "@/modules/_shared/repo-helpers";
 import { randomUUID } from "crypto";
 import type { AdminListQuery, CreateBody, PublicListQuery, UpdateBody, CreateCommentBody } from "./validation";

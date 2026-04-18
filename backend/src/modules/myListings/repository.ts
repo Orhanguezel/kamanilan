@@ -5,7 +5,7 @@
 import { db } from "@/db/client";
 import { and, asc, desc, eq, like, sql } from "drizzle-orm";
 import { properties, rowToPublicView, type PropertyRow } from "@/modules/proporties/schema";
-import { storageAssets } from "@/modules/storage/schema";
+import { storageAssets } from "@vps/shared-backend/modules/storage/schema";
 import { publicUrlOf } from "@/modules/_shared/repo-helpers";
 import { dec6orNull, dec2orNull } from "@/modules/_shared/normalizers";
 import { randomUUID } from "crypto";

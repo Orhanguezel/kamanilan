@@ -1,10 +1,13 @@
 import type { MetadataRoute } from "next";
+import { priorityCities } from "@/lib/cities";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://kamanilan.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.kamanilan.com";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_REST_API_ENDPOINT || "http://localhost:8078/api";
+let API_URL = process.env.NEXT_PUBLIC_REST_API_ENDPOINT || "https://www.kamanilan.com/api/v1";
+if (API_URL.endsWith("/api")) {
+  API_URL += "/v1";
+}
 
 async function fetchSlugs(
   endpoint: string,
@@ -77,6 +80,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // ── Category × City kombinasyonlari (SEO long-tail) ─────
+  const cities = priorityCities();
+  const categoryCityEntries: MetadataRoute.Sitemap = [];
+  for (const catSlug of categorySlugs) {
+    for (const city of cities) {
+      categoryCityEntries.push({
+        url: `${SITE_URL}/kategori/${catSlug}/${city.slug}`,
+        lastModified: now,
+        changeFrequency: "weekly",
+        priority: Math.max(0.4, Math.min(0.7, city.priority * 0.7)),
+      });
+    }
+  }
+
   const articleEntries: MetadataRoute.Sitemap = articleSlugs.map((slug) => ({
     url: `${SITE_URL}/haberler/${slug}`,
     lastModified: now,
@@ -93,8 +110,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticPages,
-    ...listingEntries,
     ...categoryEntries,
+    ...categoryCityEntries,
+    ...listingEntries,
     ...articleEntries,
     ...announcementEntries,
   ];

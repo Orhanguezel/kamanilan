@@ -2,8 +2,8 @@
 // FILE: src/modules/banner/admin.routes.ts
 // =============================================================
 import type { FastifyInstance } from "fastify";
-import { requireAuth } from "@/common/middleware/auth";
-import { requireAdmin } from "@/common/middleware/roles";
+import { requireAuth } from "@vps/shared-backend/middleware/auth";
+import { requireAdmin } from "@vps/shared-backend/middleware/roles";
 import {
   adminListBanners,
   adminGetBanner,

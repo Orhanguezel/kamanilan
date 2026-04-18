@@ -2,8 +2,8 @@
 // FILE: src/modules/subscription/admin.routes.ts  (ADMIN)
 // =============================================================
 import type { FastifyInstance } from "fastify";
-import { requireAuth } from "@/common/middleware/auth";
-import { requireAdmin } from "@/common/middleware/roles";
+import { requireAuth } from "@vps/shared-backend/middleware/auth";
+import { requireAdmin } from "@vps/shared-backend/middleware/roles";
 import {
   adminListPlans,
   adminCreatePlan,

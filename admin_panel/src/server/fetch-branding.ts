@@ -19,7 +19,7 @@ function getServerApiUrl(): string {
   const pub = (process.env.NEXT_PUBLIC_API_URL || '').trim().replace(/\/+$/, '');
   if (pub) return pub;
 
-  return 'http://localhost:8078/api';
+  return 'https://kamanilan.com/api';
 }
 
 /**

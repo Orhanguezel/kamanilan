@@ -16,103 +16,92 @@ interface Props {
    (sütun sayısına göre küçültme yok, container'ı doldurur)
 ───────────────────────────────────────────────── */
 function BannerCard({ banner }: { banner: BannerItem }) {
-  const bg     = banner.background_color   || "hsl(var(--muted))";
-  const title  = banner.title_color        || "hsl(var(--foreground))";
-  const desc   = banner.description_color  || "hsl(var(--muted-foreground))";
-  const btn    = banner.button_color       || "hsl(var(--accent))";
-  const btnHov = banner.button_hover_color || banner.button_color || "hsl(var(--accent))";
-  const btnTxt = banner.button_text_color  || "hsl(var(--accent-foreground))";
+  // Regex to catch old green colors (emerald, teal, green hex/names)
+  const isOldGreen = (color: string) => {
+    if (!color) return false;
+    const greenRegex = /(#10[bB]981|#059669|#06[dD]17[bB]|emerald|teal|#14[bB]58[eE]|green)/i;
+    return greenRegex.test(color);
+  };
+
+  const dbBg = banner.background_color;
+  const bg = isOldGreen(dbBg || "") ? "hsl(var(--col-ink))" : (dbBg || "hsl(var(--col-ivory))");
+  const title  = isOldGreen(dbBg || "") ? "hsl(var(--col-saffron))" : (banner.title_color || "hsl(var(--col-ink))");
+  const desc   = isOldGreen(dbBg || "") ? "hsl(var(--col-parchment) / 0.7)" : (banner.description_color || "hsl(var(--col-text-2))");
+  
   const bgImage = banner.image;
   const thumbImage = banner.thumbnail && banner.thumbnail !== banner.image ? banner.thumbnail : null;
 
   return (
     <div
-      className="group relative overflow-hidden rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[200px] w-full h-full"
+      className="group relative overflow-hidden rounded-[32px] border border-border shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 w-full h-full flex flex-col md:flex-row items-center"
       style={{ backgroundColor: bg }}
     >
+      {/* Editorial Decorative Element */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-parchment opacity-50 pointer-events-none skew-x-[-15deg] translate-x-12" />
+
       {bgImage && (
         <div className="pointer-events-none absolute inset-0">
           <Image
             src={bgImage}
             alt={banner.alt ?? banner.title}
             fill
-            className="object-cover opacity-[0.2] transition-transform duration-300 group-hover:scale-[1.03]"
+            className="object-cover opacity-[0.12] mix-blend-multiply transition-transform duration-1000 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 50vw"
             unoptimized
           />
         </div>
       )}
 
-      {/* Derinlik katmanları */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/20" />
-      <div
-        className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full opacity-10"
-        style={{ backgroundColor: "hsl(var(--accent))" }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-6 -right-4 h-20 w-20 rounded-full opacity-[0.06]"
-        style={{ backgroundColor: "hsl(var(--accent))" }}
-      />
-      {/* Sol kenar çizgisi */}
-      <div
-        className="absolute inset-y-0 left-0 w-1 rounded-l-lg"
-        style={{ backgroundColor: "hsl(var(--accent))" }}
-      />
-
-      <div className="relative flex items-center h-full min-h-[200px]">
-        {/* Sol: metin içeriği */}
-        <div className="flex flex-1 flex-col justify-center pl-7 pr-5 py-6 md:pl-9 md:pr-7">
-          {banner.subtitle && (
-            <span
-              className="mb-2 block text-[0.6rem] font-bold uppercase tracking-[0.2em]"
-              style={{ color: "hsl(var(--accent))" }}
-            >
-              {banner.subtitle}
-            </span>
-          )}
-          <h3
-            className="font-playfair font-bold leading-tight text-xl md:text-2xl"
-            style={{ color: title }}
+      {/* Content Area */}
+      <div className="relative z-10 flex-1 p-8 md:p-12 lg:p-14 flex flex-col items-start justify-center">
+        {banner.subtitle && (
+          <div className="eyebrow mb-6">
+            {banner.subtitle}
+          </div>
+        )}
+        <h3
+          className="font-fraunces font-medium leading-[1.1] text-2xl md:text-3xl lg:text-4xl tracking-tight mb-6 transition-colors group-hover:text-saffron-2"
+          style={{ color: title }}
+        >
+          {banner.title.split(' ').map((word, i) => (
+             <span key={i}>
+                {["Fırsat", "Özel", "İndirim", "Ceviz"].includes(word) ? <em>{word}</em> : word}{" "}
+             </span>
+          ))}
+        </h3>
+        {banner.description && (
+          <p
+            className="mb-10 line-clamp-2 text-sm md:text-[15px] leading-relaxed max-w-[480px] opacity-80"
+            style={{ color: desc }}
           >
-            {banner.title}
-          </h3>
-          {banner.description && (
-            <p
-              className="mt-2 mb-4 line-clamp-3 text-sm leading-relaxed opacity-85"
-              style={{ color: desc }}
-            >
-              {banner.description}
-            </p>
-          )}
-          {banner.button_text && (
-            <div>
-              <span
-                className="group/btn inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold shadow transition-all duration-150 hover:shadow-md active:scale-95"
-                style={{ backgroundColor: btn, color: btnTxt }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = btnHov)}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = btn)}
-              >
-                {banner.button_text}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-1" />
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Sağ: ön plan görseli (thumbnail varsa) */}
-        {thumbImage && (
-          <div className="relative hidden shrink-0 sm:block" style={{ height: 180, width: 240 }}>
-            <Image
-              src={thumbImage}
-              alt={banner.alt ?? banner.title}
-              fill
-              className="object-contain object-right-bottom transition-transform duration-300 group-hover:scale-[1.04]"
-              sizes="(max-width: 1024px) 220px, 240px"
-              unoptimized
-            />
+            {banner.description}
+          </p>
+        )}
+        {banner.button_text && (
+          <div className="btn-editorial py-4 px-10">
+            <span>
+              {banner.button_text}
+              <ArrowRight className="h-4.5 w-4.5 arrow" />
+            </span>
           </div>
         )}
       </div>
+
+      {/* Thumbnail / Product Focus */}
+      {thumbImage && (
+        <div className="relative z-10 pr-12 hidden md:block">
+           <div className="relative h-[240px] w-[240px] lg:h-[300px] lg:w-[300px]">
+              <Image
+                src={thumbImage}
+                alt={banner.alt ?? banner.title}
+                fill
+                className="object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110 group-hover:rotate-[5deg]"
+                sizes="300px"
+                unoptimized
+              />
+           </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -154,8 +143,8 @@ export function BannerRowSection({ config }: Props) {
   if (!visible.length) return null;
 
   return (
-    <section className={isSolo ? "py-4" : "py-2 h-full"}>
-      <div className={isSolo ? "container mx-auto px-4 flex flex-col gap-3" : "px-2 md:px-3 flex flex-col gap-3 h-full"}>
+    <section className={isSolo ? "py-12 md:py-16" : "py-2 h-full"}>
+      <div className={isSolo ? "container flex flex-col gap-8" : "px-2 md:px-3 flex flex-col gap-8 h-full"}>
         {visible.map((banner) =>
           banner.link_url ? (
             <Link

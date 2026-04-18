@@ -858,7 +858,10 @@
         "announcements": "Duyurular",
         "articles": "Haberler",
         "news_suggestions": "Haber Önerileri",
-        "news_sources": "Haber Kaynakları"
+        "news_sources": "Haber Kaynakları",
+        "imports": "Toplu Import",
+        "xml_feeds": "XML Feed",
+        "photo_queue": "Foto Kuyruğu"
       },
       "stats": {
         "deliveredOrders": "Yayınlanan İlan",
@@ -4573,6 +4576,224 @@
         "edit": "Düzenle",
         "cancel": "İptal",
         "save": "Kaydet"
+      }
+    },
+    "imports": {
+      "header": {
+        "title": "Toplu İlan Import",
+        "description": "Excel (.xlsx) veya CSV dosyalarından toplu ilan aktarımı."
+      },
+      "empty": {
+        "title": "Henüz import yok.",
+        "hint": "Yukarıdaki 'Yükle' butonundan Excel veya CSV dosyanızı seçin."
+      },
+      "table": {
+        "fileName": "Dosya",
+        "status": "Durum",
+        "rows": "Satır",
+        "imported": "Aktarılan",
+        "createdAt": "Tarih",
+        "actions": "İşlem"
+      },
+      "actions": {
+        "upload": "Dosya Yükle",
+        "open": "Aç",
+        "delete": "Sil",
+        "commit": "İlanları Oluştur ({count})",
+        "validateAndSave": "Kolonları Eşle ve Doğrula",
+        "backToList": "Listeye Dön"
+      },
+      "mapping": {
+        "title": "Kolon Eşleme",
+        "description": "Dosyadaki kolonları ilan alanlarına eşleyin. Başlık, Şehir ve İlçe zorunludur.",
+        "selectColumn": "Kolon seçin",
+        "none": "(Boş)",
+        "fields": {
+          "title":             "Başlık",
+          "slug":              "Slug (URL)",
+          "city":              "Şehir",
+          "district":          "İlçe",
+          "neighborhood":      "Mahalle",
+          "address":           "Adres",
+          "description":       "Açıklama",
+          "excerpt":           "Kısa Özet",
+          "price":             "Fiyat",
+          "currency":          "Para Birimi",
+          "status":            "Durum",
+          "category_slug":     "Kategori (slug)",
+          "sub_category_slug": "Alt Kategori (slug)",
+          "brand_slug":        "Marka (slug)",
+          "external_id":       "Harici Kod",
+          "photos":            "Fotoğraflar"
+        }
+      },
+      "items": {
+        "title": "Satırlar",
+        "empty": "Bu durumda satır yok.",
+        "tabs": {
+          "valid": "Geçerli",
+          "invalid": "Hatalı",
+          "imported": "Aktarıldı",
+          "failed": "Başarısız"
+        },
+        "table": {
+          "title": "Başlık",
+          "status": "Durum",
+          "errors": "Hatalar"
+        }
+      },
+      "detail": {
+        "summary": "{total} satır · {valid} geçerli · {invalid} hatalı · {imported} aktarıldı"
+      },
+      "completion": {
+        "completed": "Import Tamamlandı",
+        "failed": "Import Başarısız",
+        "summary": "{imported} / {total} ilan oluşturuldu."
+      },
+      "commitConfirm": "{count} ilanı oluşturmak istediğinize emin misiniz?",
+      "deleteConfirm": "\"{name}\" dosyasını ve satırlarını silmek istediğinize emin misiniz?",
+      "messages": {
+        "uploaded": "{rows} satır parse edildi.",
+        "mappingSaved": "{valid} geçerli, {invalid} hatalı.",
+        "committed": "{imported} ilan oluşturuldu ({failed} başarısız).",
+        "deleted": "Import silindi."
+      },
+      "errors": {
+        "generic":         "Bir hata oluştu.",
+        "uploadFailed":    "Dosya yüklenemedi.",
+        "mappingRequired": "Başlık, Şehir ve İlçe zorunlu.",
+        "mappingFailed":   "Kolon eşleme doğrulanamadı.",
+        "noValidItems":    "Aktarılacak geçerli satır yok.",
+        "commitFailed":    "İlanlar oluşturulamadı.",
+        "limitExceeded":   "Abonelik limiti aşıldı. {overage} ilan fazla.",
+        "jobNotFound":     "Import kaydı bulunamadı."
+      }
+    },
+    "xmlFeeds": {
+      "header": {
+        "title": "XML Feed Yönetimi",
+        "description": "Sahibinden-uyumlu XML feed URL'lerinden periyodik ilan çekimi."
+      },
+      "empty": {
+        "title": "Henüz XML feed yok.",
+        "hint": "Emlakçının feed URL'si ile 'Yeni Feed' butonuyla oluşturun."
+      },
+      "table": {
+        "name": "Ad",
+        "url": "URL",
+        "format": "Format",
+        "status": "Durum",
+        "interval": "Period",
+        "lastFetched": "Son Çekim",
+        "actions": "İşlem"
+      },
+      "state": {
+        "inactive": "pasif"
+      },
+      "actions": {
+        "create": "Yeni Feed",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "open": "Aç",
+        "delete": "Sil",
+        "runNow": "Şimdi Çek",
+        "backToList": "Listeye Dön"
+      },
+      "fields": {
+        "name": "Ad",
+        "url": "URL",
+        "format": "Format",
+        "interval": "Period (dakika)",
+        "authHeaderName": "Auth Header Adı",
+        "authHeaderValue": "Auth Header Değeri",
+        "isActive": "Aktif"
+      },
+      "placeholders": {
+        "name": "Örn: XYZ Emlak Sahibinden"
+      },
+      "tabs": {
+        "settings": "Ayarlar",
+        "runs": "Çekim Geçmişi",
+        "categoryMap": "Kategori Eşleme"
+      },
+      "runs": {
+        "empty": "Henüz çekim yapılmamış.",
+        "table": {
+          "startedAt": "Başlangıç",
+          "status": "Durum",
+          "found": "Bulunan",
+          "added": "Eklendi",
+          "updated": "Güncellendi",
+          "skipped": "Atlandı",
+          "failed": "Hata"
+        }
+      },
+      "categoryMap": {
+        "title": "Kategori Eşleme",
+        "description": "XML'deki kategori string'ini yerel kategori/alt kategori ID'sine eşleyin. Eşlenmeyen satırlar pasif (is_active=0) olarak oluşur.",
+        "empty": "Henüz kategori eşlemesi yok. Bir çekim sonrası 'unmapped' kategoriler buraya eklenir.",
+        "table": {
+          "external": "XML Kategori",
+          "localCat": "Yerel Kategori (UUID)",
+          "localSub": "Alt Kategori (UUID)"
+        }
+      },
+      "create": {
+        "title": "Yeni XML Feed",
+        "description": "Emlakçının feed URL'sini ve çekim periyodunu girin."
+      },
+      "detail": {
+        "lastFetched": "Son çekim"
+      },
+      "messages": {
+        "created":            "Feed oluşturuldu.",
+        "updated":            "Feed güncellendi.",
+        "deleted":            "Feed silindi.",
+        "runCompleted":       "+{added} ~{updated} ✗{failed}",
+        "categoryMapSaved":   "Kategori eşlemesi kaydedildi."
+      },
+      "errors": {
+        "generic":        "Bir hata oluştu.",
+        "requiredFields": "Ad ve URL zorunlu.",
+        "createFailed":   "Feed oluşturulamadı.",
+        "runFailed":      "Çekim başarısız.",
+        "feedInactive":   "Pasif feed çekilemez — önce aktif edin.",
+        "feedNotFound":   "Feed bulunamadı."
+      },
+      "deleteConfirm": "\"{name}\" feed'ini silmek istediğinize emin misiniz? Tüm çekim geçmişi ve item kayıtları cascade silinecek."
+    },
+    "photoQueue": {
+      "header": {
+        "title": "Fotoğraf İndirme Kuyruğu",
+        "description": "XML feed ve toplu import'tan gelen fotoğrafların Cloudinary'ye yüklenme durumu."
+      },
+      "stats": {
+        "pending": "Bekleyen",
+        "downloading": "İndiriliyor",
+        "done": "Tamamlanan",
+        "failed": "Başarısız"
+      },
+      "failed": {
+        "title": "Başarısız Fotoğraflar",
+        "description": "3 kez denendi ve başarısız oldu. Sorunu inceleyip manuel olarak yeniden deneyebilirsiniz.",
+        "empty": "Başarısız fotoğraf yok.",
+        "noError": "(hata açıklaması yok)",
+        "table": {
+          "source": "Kaynak",
+          "url": "URL",
+          "error": "Hata",
+          "retries": "Denemeler",
+          "updatedAt": "Son Güncelleme"
+        }
+      },
+      "actions": {
+        "retry": "Yeniden Dene"
+      },
+      "messages": {
+        "retried": "Retry başlatıldı."
+      },
+      "errors": {
+        "generic": "Bir hata oluştu."
       }
     }
   },

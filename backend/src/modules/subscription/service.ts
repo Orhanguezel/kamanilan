@@ -4,7 +4,7 @@
 // =============================================================
 import { db } from "@/db/client";
 import { eq } from "drizzle-orm";
-import { categories } from "@/modules/categories/schema";
+import { categories } from '@/modules/proporties/local-schemas';
 import {
   subscriptionPlanFeatures,
   subscriptionPlans,
@@ -84,6 +84,68 @@ export async function getUserPlan(userId: string) {
     plan,
     features: featureMap,
   };
+}
+
+// ------------------------------------------------------------------
+// hasFeature
+// Import/XML feed gibi boolean feature'lari kontrol eder.
+// "true" string'i → true; diger her sey (yoksa dahil) → false.
+// ------------------------------------------------------------------
+export async function hasFeature(
+  userId: string,
+  key: "bulk_import_enabled" | "xml_feed_enabled" | "can_add_video" | "can_feature_listing" | "can_boost_listing",
+): Promise<boolean> {
+  const map = await getFeatureMap(userId);
+  return String(map[key] ?? "").toLowerCase() === "true";
+}
+
+// ------------------------------------------------------------------
+// getListingCapacity
+// Kullanicinin mevcut aktif ilan + plan limiti bilgisi.
+// limit = null -> sinirsiz (plan max_active_listings="-1")
+// ------------------------------------------------------------------
+export async function getListingCapacity(userId: string): Promise<{
+  current: number;
+  limit: number | null;
+}> {
+  const featureMap = await getFeatureMap(userId);
+  const maxStr = featureMap["max_active_listings"];
+  const current = await repoCountActiveListings(userId);
+
+  if (!maxStr) return { current, limit: null };
+  const max = Number(maxStr);
+  if (!Number.isFinite(max) || max < 0) return { current, limit: null };
+  return { current, limit: max };
+}
+
+// ------------------------------------------------------------------
+// canImportMore
+// Toplu import icin N yeni ilan ekleyebilir mi?
+// Mevcut + N <= limit kontrolu.
+// ------------------------------------------------------------------
+export async function canImportMore(userId: string, count: number): Promise<{
+  allowed: boolean;
+  current: number;
+  limit: number | null;
+  overage: number;
+}> {
+  const { current, limit } = await getListingCapacity(userId);
+  if (limit === null) return { allowed: true, current, limit, overage: 0 };
+  const projected = current + Math.max(0, count);
+  const overage = Math.max(0, projected - limit);
+  return { allowed: overage === 0, current, limit, overage };
+}
+
+// ------------------------------------------------------------------
+// getMaxPhotosPerListing
+// Per-ilan foto limiti. Feature yoksa default 20.
+// ------------------------------------------------------------------
+export async function getMaxPhotosPerListing(userId: string): Promise<number> {
+  const map = await getFeatureMap(userId);
+  const raw = map["max_photos_per_listing"];
+  if (!raw) return 20;
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? n : 20;
 }
 
 // ------------------------------------------------------------------

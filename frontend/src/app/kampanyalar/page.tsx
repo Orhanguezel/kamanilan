@@ -160,7 +160,7 @@ function CampaignCard({ sale }: { sale: FlashSale }) {
 
           {/* CTA */}
           <Link
-            href={sale.button_url ?? ROUTES.LISTINGS}
+            href={sale.button_url || ROUTES.LISTINGS}
             className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-bold transition-all hover:opacity-90 active:scale-95"
             style={{ background: btnBg, color: btnText }}
           >

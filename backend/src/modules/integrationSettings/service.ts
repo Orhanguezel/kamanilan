@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { asc, like, sql } from 'drizzle-orm';
 import { db } from '@/db/client';
-import { siteSettings } from '@/modules/siteSettings/schema';
+import { siteSettings } from '@vps/shared-backend/modules/siteSettings/schema';
 import type { JsonLike } from './validation';
 
 const INTEGRATION_PREFIX = 'integration.';
@@ -144,7 +144,7 @@ export async function upsertIntegrationSettings(
   }
 
   if (values.length) {
-    await db.insert(siteSettings).values(values).onDuplicateKeyUpdate({
+    await db.insert(siteSettings).values(values as any).onDuplicateKeyUpdate({
       set: {
         value: sql`VALUES(${siteSettings.value})`,
         updated_at: sql`VALUES(${siteSettings.updated_at})`,

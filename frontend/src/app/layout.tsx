@@ -8,25 +8,37 @@ import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { TopbarPopup } from "@/components/layout/topbar-popup";
 import { SidebarPopups } from "@/components/layout/sidebar-popups";
 import { t } from "@/lib/t";
+import { JsonLd } from "@/components/seo/json-ld";
+import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
 import "./globals.css";
 
-const nunito = Nunito({
-  variable: "--font-nunito",
+import { Manrope, Fraunces, JetBrains_Mono } from "next/font/google";
+
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
 });
 
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  axes: ["SOFT", "opsz"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3003";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kamanilan.com";
 const apiBase =
-  process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "http://localhost:8078/api";
+  process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "https://kamanilan.com/api";
 
 // ─── Tip yardımcıları ──────────────────────────────────────────────────────
 
@@ -48,7 +60,7 @@ interface SettingRecord {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#2D6A4F",
+  themeColor: "#c9931a",
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -57,10 +69,11 @@ export async function generateMetadata(): Promise<Metadata> {
   let ogLocale = "tr_TR";
   let ogImage = "";
   let seoIcons: SeoAppIcons = {};
+  let siteLogo = "";
 
   try {
     const res = await fetch(
-      `${apiBase}/site_settings?key_in=brand_name,brand_og_image,seo_defaults,seo_app_icons`,
+      `${apiBase}/site_settings?key_in=brand_name,brand_og_image,seo_defaults,seo_app_icons,site_logo`,
       {
         next: { revalidate: 3600 }, // 1 saatte bir yenile
       }
@@ -88,6 +101,13 @@ export async function generateMetadata(): Promise<Metadata> {
               seoIcons = r.value as SeoAppIcons;
             }
             break;
+          case "site_logo": {
+            if (typeof r.value === "string") siteLogo = r.value;
+            else if (r.value && typeof r.value === "object" && "url" in (r.value as object)) {
+              siteLogo = (r.value as { url?: string }).url ?? "";
+            }
+            break;
+          }
         }
       }
     }
@@ -113,13 +133,13 @@ export async function generateMetadata(): Promise<Metadata> {
       images: ogImage ? [ogImage] : undefined,
     },
     icons: {
-      icon: seoIcons.faviconSvg
-        ? [{ url: seoIcons.faviconSvg, type: "image/svg+xml" }]
-        : [{ url: "/favicon/favicon.ico" }],
-      shortcut: seoIcons.favicon ?? "/favicon/favicon.ico",
+      icon: (seoIcons.favicon || siteLogo)
+        ? [{ url: seoIcons.favicon || siteLogo || "/favicon/favicon.png" }]
+        : [{ url: "/favicon/favicon.png" }],
+      shortcut: seoIcons.favicon || siteLogo || "/favicon/favicon.ico",
       apple: seoIcons.appleTouchIcon
         ? [{ url: seoIcons.appleTouchIcon }]
-        : undefined,
+        : [{ url: "/favicon/apple-touch-icon.png" }],
     },
     manifest: "/manifest.webmanifest",
   };
@@ -127,17 +147,41 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // ─── Root Layout ───────────────────────────────────────────────────────────
 
+const SITE_NAME = "Kamanilan";
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const orgJsonLd = buildOrganizationJsonLd({
+    name:        SITE_NAME,
+    legalName:   "Kaman İlan",
+    url:         siteUrl,
+    logoUrl:     `${siteUrl}/favicon/favicon.png`,
+    description: "Kaman ve Kırşehir bölgesinin yerel ilan ve haber platformu. Emlak, araç, 2. el eşya, Kaman cevizi ve yerel ürünler için güvenilir dijital vitrin.",
+    foundingDate: "2026",
+    areaServed:   ["Kaman", "Kırşehir", "Mucur", "Akpınar", "Boztepe"],
+    address: {
+      addressLocality: "Kaman",
+      addressRegion:   "Kırşehir",
+      addressCountry:  "TR",
+    },
+    sameAs: [
+      "https://www.facebook.com/profile.php?id=61586451088043",
+      "https://www.instagram.com/kamanilan",
+      "https://x.com/kamanilan",
+    ],
+  });
+  const websiteJsonLd = buildWebSiteJsonLd({ name: SITE_NAME, url: siteUrl });
+
   return (
     <html lang="tr" suppressHydrationWarning>
       <body
-        className={`${nunito.variable} ${playfairDisplay.variable} font-sans antialiased`}
+        className={`${manrope.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
+        <JsonLd data={[orgJsonLd, websiteJsonLd]} id="site" />
         <QueryProvider>
           <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
             <div className="flex min-h-screen flex-col">

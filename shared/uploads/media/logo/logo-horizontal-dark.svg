@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <defs>
+    <radialGradient id="walnutGradDk" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="hsl(155,38%,46%)"/>
+      <stop offset="100%" stop-color="hsl(153,42%,14%)"/>
+    </radialGradient>
+    <linearGradient id="leafGradDk" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="hsl(151,39%,62%)"/>
+      <stop offset="100%" stop-color="hsl(153,39%,38%)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark background pill -->
+  <rect x="0" y="0" width="320" height="80" rx="12" fill="hsl(153,39%,30%)"/>
+
+  <!-- Subtle pattern overlay -->
+  <rect x="0" y="0" width="320" height="80" rx="12" fill="url(#bgPattern)" opacity="0.04"/>
+
+  <!-- ─── WALNUT ICON ─── -->
+  <g transform="translate(12, 8)">
+    <ellipse cx="32" cy="33" rx="28" ry="29" fill="url(#walnutGradDk)"/>
+    <ellipse cx="32" cy="33" rx="22" ry="23" fill="hsl(153,42%,16%)"/>
+    <path d="M5 33 Q32 7 59 33" stroke="hsl(30,64%,58%)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <line x1="32" y1="5" x2="32" y2="61" stroke="hsl(30,64%,58%)" stroke-width="1.2" opacity="0.5"/>
+    <path d="M10 19 Q32 39 54 19" stroke="hsl(30,64%,58%)" stroke-width="1" fill="none" opacity="0.45" stroke-linecap="round"/>
+    <path d="M10 47 Q32 30 54 47" stroke="hsl(30,64%,58%)" stroke-width="1" fill="none" opacity="0.45" stroke-linecap="round"/>
+    <ellipse cx="22" cy="19" rx="9" ry="5.5" fill="hsl(155,38%,46%)" opacity="0.4" transform="rotate(-25,22,19)"/>
+    <ellipse cx="32" cy="64" rx="18" ry="4" fill="hsl(153,42%,8%)" opacity="0.4"/>
+    <path d="M50 9 Q74 0 70 24 Q58 18 50 9Z" fill="url(#leafGradDk)"/>
+    <path d="M50 9 Q65 16 70 24" stroke="hsl(151,39%,72%)" stroke-width="1" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- "Kaman" — light color on dark -->
+  <text x="100" y="38"
+        font-family="'Playfair Display', Georgia, serif"
+        font-size="26" font-weight="900"
+        fill="hsl(135,27%,93%)"
+        letter-spacing="-0.3">Kaman</text>
+  <!-- "İLAN" — accent amber -->
+  <text x="101" y="58"
+        font-family="'Nunito', 'Segoe UI', sans-serif"
+        font-size="16" font-weight="800"
+        fill="hsl(30,64%,58%)"
+        letter-spacing="5">İLAN</text>
+  <!-- dot -->
+  <circle cx="179" cy="54" r="3.5" fill="hsl(151,39%,52%)"/>
+  <!-- separator -->
+  <line x1="101" y1="44" x2="295" y2="44" stroke="hsla(135,27%,93%,0.18)" stroke-width="0.8"/>
+  <!-- tagline -->
+  <text x="101" y="72"
+        font-family="'Nunito', 'Segoe UI', sans-serif"
+        font-size="8.5" font-weight="600"
+        fill="hsla(135,27%,93%,0.55)"
+        letter-spacing="1.8">KIRŞEHİR · KAMAN İLÇESİ</text>
+</svg>

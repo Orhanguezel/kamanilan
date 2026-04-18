@@ -76,3 +76,8 @@ export * from '@/integrations/shared/announcements';
 export * from '@/integrations/shared/articles';
 export * from '@/integrations/shared/newsAggregator';
 export * from '@/integrations/shared/coupon.types';
+
+// --- Imports + XML feeds + Photo queue (Faz 2) ---
+export * from '@/integrations/shared/imports.admin';
+export * from '@/integrations/shared/xmlFeeds.admin';
+export * from '@/integrations/shared/photoQueue.admin';

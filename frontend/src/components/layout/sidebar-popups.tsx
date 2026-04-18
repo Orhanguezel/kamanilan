@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { X, ArrowRight } from "lucide-react";
+import { X, ArrowRight, Zap } from "lucide-react";
 import { usePopupsQuery } from "@/modules/popup/popup.service";
+import { t } from "@/lib/t";
 import type { PopupItem } from "@/modules/popup/popup.type";
-
-/* ─── Gösterim yardımcıları ──────────────────────────────────────────── */
 
 const STORAGE_PREFIX = "sidebar_popup_closed_";
 
@@ -27,38 +26,31 @@ function markClosed(popup: PopupItem) {
   localStorage.setItem(`${STORAGE_PREFIX}${popup.id}`, new Date().toISOString());
 }
 
-/* ─── Konum sınıfları ─────────────────────────────────────────────────── */
-
 const POSITION_CLASSES: Record<string, string> = {
-  sidebar_top:    "top-24 right-4",
-  sidebar_center: "top-1/2 right-4 -translate-y-1/2",
-  sidebar_bottom: "bottom-6 right-4",
+  sidebar_top:    "top-32 right-8",
+  sidebar_center: "top-1/2 right-8 -translate-y-1/2",
+  sidebar_bottom: "bottom-8 right-8",
 };
-
-/* ─── Tek sidebar popup kartı ────────────────────────────────────────── */
 
 function SidebarCard({ popup }: { popup: PopupItem }) {
   const [visible, setVisible]   = useState(false);
-  const [btnHover, setBtnHover] = useState(false);
-
-  // FIX: setState her zaman setTimeout callback'i içinde çağrılıyor (asenkron),
-  // böylece effect body'sinde senkron setState uyarısı önleniyor.
+  
   useEffect(() => {
     if (!shouldShow(popup)) return;
     const ms = popup.delay_seconds > 0 ? popup.delay_seconds * 1000 : 0;
     const t = setTimeout(() => setVisible(true), ms);
     return () => clearTimeout(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [popup.id, popup.delay_seconds]);
+  }, [popup.id, popup.delay_seconds, popup]);
 
   if (!visible) return null;
 
-  // Yeni tema tokenları: varsayılanlar artık koyu yeşil değil
-  const bg      = popup.background_color   || "hsl(var(--muted))";
-  const fg      = popup.text_color         || "hsl(var(--foreground))";
-  const btnBg   = popup.button_color       || "hsl(var(--accent))";
-  const btnHovr = popup.button_hover_color  || btnBg;
-  const btnFg   = popup.button_text_color   || "#FFFFFF";
+  // Premium Luxury Defaults (Ink & Saffron)
+  // Force Ink theme if database still has old green shades
+  const isGreen = /#(10b981|059669|16a34a|15803d|166534|065f46|064e3b)|green|emerald|teal/i.test(popup.background_color || "");
+  const bg = isGreen ? "hsl(var(--col-ink))" : (popup.background_color || "hsl(var(--col-paper))");
+  const fg = isGreen ? "white" : (popup.text_color || "hsl(var(--col-ink))");
+  const btnBg = popup.button_color || "hsl(var(--col-saffron))";
+  const btnFg = popup.button_text_color || "hsl(var(--col-ink))";
 
   const posClass = POSITION_CLASSES[popup.type] ?? POSITION_CLASSES.sidebar_bottom;
 
@@ -69,56 +61,47 @@ function SidebarCard({ popup }: { popup: PopupItem }) {
 
   return (
     <div
-      className={`fixed ${posClass} z-40 w-64 overflow-hidden rounded-2xl shadow-2xl`}
-      style={{
-        backgroundColor: bg,
-        border: "1px solid hsl(var(--border))",
-      }}
+      className={`fixed ${posClass} z-[60] w-[300px] overflow-hidden rounded-[24px] shadow-3xl border border-border transition-all duration-700 animate-in fade-in slide-in-from-right-10`}
+      style={{ backgroundColor: bg }}
     >
-      {/* Sol aksan şeridi (amber) */}
-      <div
-        className="absolute inset-y-0 left-0 w-1 rounded-l-2xl"
-        style={{ backgroundColor: "hsl(var(--accent))" }}
-      />
-
-      {/* Kapat butonu */}
+      {/* Decorative Saffron corner */}
+      <div className="absolute top-0 left-0 w-12 h-12 bg-saffron opacity-10 blur-2xl rounded-full" />
+      
+      {/* Close button */}
       {popup.closeable && (
         <button
           onClick={handleClose}
-          className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full transition-opacity hover:opacity-70"
-          style={{ backgroundColor: "hsl(var(--border))", color: fg }}
+          className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all text-current opacity-60 hover:opacity-100"
           aria-label="Kapat"
         >
-          <X className="h-3 w-3" />
+          <X className="h-3.5 w-3.5" />
         </button>
       )}
 
-      {/* Görsel */}
+      {/* Image Handling */}
       {popup.image && (
-        <div className="h-32 w-full overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+        <div className="h-40 w-full overflow-hidden">
           <img
             src={popup.image}
             alt={popup.alt ?? popup.title}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
           />
         </div>
       )}
 
-      {/* İçerik */}
-      <div className="pl-5 pr-4 py-4">
-        <h4
-          className="font-playfair mb-1.5 font-bold leading-tight text-base"
-          style={{ color: fg }}
-        >
+      {/* Content */}
+      <div className="p-7">
+        <div className="flex items-center gap-2 mb-4">
+           <Zap className="h-3 w-3 text-saffron" />
+           <span className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-60" style={{ color: fg }}>Önemli Duyuru</span>
+        </div>
+
+        <h4 className="font-fraunces text-xl font-medium tracking-tight mb-3 leading-tight" style={{ color: fg }}>
           {popup.title}
         </h4>
 
         {popup.content && (
-          <p
-            className="mb-3 text-xs leading-relaxed line-clamp-3 opacity-80"
-            style={{ color: fg }}
-          >
+          <p className="mb-6 text-[13px] leading-relaxed opacity-80 line-clamp-4" style={{ color: fg }}>
             {popup.content}
           </p>
         )}
@@ -127,22 +110,17 @@ function SidebarCard({ popup }: { popup: PopupItem }) {
           <Link
             href={popup.link_url}
             target={popup.link_target ?? "_self"}
-            rel={popup.link_target === "_blank" ? "noopener noreferrer" : undefined}
-            className="group/btn inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-all hover:opacity-90 active:scale-95"
-            style={{ backgroundColor: btnHover ? btnHovr : btnBg, color: btnFg }}
-            onMouseEnter={() => setBtnHover(true)}
-            onMouseLeave={() => setBtnHover(false)}
+            className="group/btn inline-flex items-center justify-center w-full gap-2 rounded-full py-3.5 text-xs font-bold uppercase tracking-widest transition-all hover:brightness-110 active:scale-95 shadow-xl shadow-black/5"
+            style={{ backgroundColor: btnBg, color: btnFg }}
           >
             {popup.button_text}
-            <ArrowRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-0.5" />
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-1" />
           </Link>
         )}
       </div>
     </div>
   );
 }
-
-/* ─── Dışa açık bileşen ───────────────────────────────────────────────── */
 
 export function SidebarPopups() {
   const { data: topPopups    = [] } = usePopupsQuery("sidebar_top");

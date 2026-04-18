@@ -2,7 +2,7 @@
 // FILE: src/modules/auth/_shared.ts
 // FINAL — Shared helpers for auth module
 // =============================================================
-import type { users } from '@/modules/auth/schema';
+import type { users } from '@vps/shared-backend/modules/auth/schema';
 import { z } from 'zod';
 
 type UserRow = typeof users.$inferSelect;

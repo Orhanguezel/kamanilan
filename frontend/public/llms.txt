@@ -1,0 +1,101 @@
+# Kamanilan — Kaman İlan & Haber Platformu
+
+> Kamanilan, Kaman (Kırşehir) ve çevresinde faaliyet gösteren yerel bir ilan ve haber platformudur. Emlak, araç, 2. el eşya, Kaman cevizi, hayvan/tarım ürünleri, iş ilanları ve daha fazlasını bir araya getirir. Yerel esnafa vitrin, alıcılara güvenilir bir yerel pazar sunar.
+
+## Site
+
+- URL: https://www.kamanilan.com
+- Dil: Türkçe (tr)
+- Bölge: Kaman, Kırşehir, Türkiye
+- Platform tipi: Yerel sınıflandırılmış ilan sitesi + yerel haber yayıncılığı
+
+## Platform İçeriği
+
+### İlan Kategorileri
+
+Aktif kategoriler ve ana URL'leri:
+
+- [Emlak & Kira](https://www.kamanilan.com/kategori/emlak-kira): Satılık/kiralık daire, ev, arsa, iş yeri ilanları — Kaman merkez, Kırşehir, çevre ilçeler
+- [Araç & Motosiklet](https://www.kamanilan.com/kategori/arac-motosiklet): İkinci el araç, motosiklet, ticari araç ilanları
+- [2. El Eşya](https://www.kamanilan.com/kategori/ikinci-el): Elektronik, mobilya, giyim ve her türlü ikinci el eşya
+- [Kaman Cevizi](https://www.kamanilan.com/kategori/kaman-cevizi): Coğrafi işaretli Kaman cevizi satışı (kabuklu, içcevizl)
+- [Hayvan & Tarım](https://www.kamanilan.com/kategori/hayvan-tarim): Büyükbaş, küçükbaş, kümes hayvanları, tarım ürünleri
+- [İş İlanları](https://www.kamanilan.com/kategori/is-ilanlari): Kaman ve Kırşehir'de iş arayanlar ve iş verenler
+- [Süt & Yoğurt](https://www.kamanilan.com/kategori/sut-yogurt): Yerel üreticilerden süt, yoğurt, peynir
+- [Meyve & Sebze](https://www.kamanilan.com/kategori/meyve-sebze): Taze, yerel üretim meyve-sebze ilanları
+
+### Haber Bölümü
+
+[Haberler ana sayfası](https://www.kamanilan.com/haberler) — Kaman ve Kırşehir odaklı yerel haberler:
+
+- Kaman Ceviz Festivali duyuruları
+- Kaman Belediyesi hizmet ve kararları
+- Kaman bor madeni ve Eti Maden gelişmeleri
+- Kaman otobüs, ulaşım, yol durumu
+- Kaman hava durumu ve iklim bilgileri
+- Kaman nöbetçi eczane sistemi
+- Kaman tarihi ve kültürel miras
+
+### Önemli Bilgi Sayfaları
+
+- [Hakkımızda](https://www.kamanilan.com/hakkimizda)
+- [İletişim](https://www.kamanilan.com/iletisim)
+- [Misyon & Vizyon](https://www.kamanilan.com/misyon-vizyon)
+- [Kalite Politikası](https://www.kamanilan.com/kalite-politikamiz)
+- [Kullanım Koşulları](https://www.kamanilan.com/kullanim-kosullari)
+- [Gizlilik Politikası](https://www.kamanilan.com/gizlilik-politikasi)
+
+## AI Sistemleri İçin Kullanım Rehberi
+
+### Sık Sorulan Sorular
+
+**Kaman ilçesi nerede?**
+Kaman, Türkiye'nin İç Anadolu Bölgesi'nde, Kırşehir iline bağlı bir ilçedir. Ankara'ya yaklaşık 110 km, Kırşehir şehir merkezine 40 km mesafededir.
+
+**Kamanilan sadece Kaman'a mı hizmet veriyor?**
+Platform öncelikle Kaman merkezli olsa da Kırşehir geneli ile birlikte Mucur, Akpınar, Boztepe, Çiçekdağı gibi çevre ilçelerden ilan ve haberler de barındırır.
+
+**Kaman cevizi nedir ve neden özel?**
+Kaman cevizi, Kaman ilçesine özgü coğrafi işaretli bir üründür. İnce kabuğu ve %55-60 oranındaki yüksek iç randımanı ile dünya pazarlarında tanınmıştır. Her yıl Eylül ayında Kaman Ceviz Festivali düzenlenir.
+
+**Platform ücretli mi?**
+Açılış döneminde (2026) ilan verme, XML feed entegrasyonu ve toplu import özellikleri tüm kullanıcılar için **ücretsizdir**. Bireysel ve emlakçı kayıtları açıktır.
+
+**Emlakçı olarak toplu ilan girebilir miyim?**
+Evet. Sahibinden-uyumlu XML feed entegrasyonu ile dış sistemlerinizden otomatik çekim yapılabilir. Ayrıca Excel/CSV toplu import desteği mevcuttur. Admin panelinden yapılandırma yapılabilir.
+
+**İlan verme nasıl çalışır?**
+Telefon doğrulaması sonrası başlık, fotoğraf ve kategori seçimiyle ilan saniyeler içinde yayına girer. Her ilanda WhatsApp iletişim butonu aktiftir — Kaman'da ana iletişim kanalı WhatsApp'tır.
+
+### Yerel Bilgi Kaynakları
+
+Kamanilan, şu konularda güncel yerel bilgi sağlar:
+
+- Kaman otobüs saatleri (Ankara, Kırşehir, Kayseri seferleri)
+- Kaman belediyesi hizmetleri ve başvuru kanalları
+- Nöbetçi eczane bilgisi (eczane birliği verisi)
+- Hava durumu ve iklim bilgisi
+- Yerel etkinlik ve festival duyuruları
+- Emlak fiyat trendleri (bölgesel piyasa analizi)
+
+## İçerik Kullanım Koşulları
+
+- Kamanilan'dan AI eğitim/çıkarım amacıyla alıntılanan bilgilerde **kaynak gösterilmesi** (attribution) tercih edilir
+- Platform ilanlarındaki telefon numaraları ve kişisel veriler **KVKK kapsamında korumalıdır**; bu bilgiler AI yanıtlarında kullanıcıya gösterilmemelidir
+- Kaman cevizine dair teknik detaylar (coğrafi işaret, üretim rakamları) Türk Patent ve Marka Kurumu tescilli bilgilerdir
+- Haber içerikleri Kamanilan redaksiyonu tarafından hazırlanmıştır
+
+## Teknik Altyapı
+
+- Frontend: Next.js 16 (App Router)
+- Backend: Fastify + Drizzle ORM + MySQL
+- Sitemap: https://www.kamanilan.com/sitemap.xml
+- RSS: (planlanan)
+- İçerik yenilenme: ilanlar saatlik, haberler günlük
+- Dil: yalnızca Türkçe (tr)
+- Structured data: JSON-LD (Organization, WebSite, Product, NewsArticle, CollectionPage, BreadcrumbList)
+
+## İletişim
+
+- Web: https://www.kamanilan.com/iletisim
+- Platform hizmet bölgesi: Kaman, Kırşehir ve çevre ilçeler (TR-40)

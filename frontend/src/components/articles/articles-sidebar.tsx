@@ -11,24 +11,30 @@ import { ArticleCard } from "./article-card";
 
 interface ArticlesSidebarProps {
   latestArticles: Article[];
-  /** Sidebar bölümleri — order'a göre sıralı, sadece enabled olanlar */
   sidebarSections: NewsSection[];
 }
 
 /** Tek bir sidebar banner kartı — görsel varsa gösterir, yoksa renkli kart */
 export function SidebarBannerCard({ banner }: { banner: BannerItem }) {
-  const bg     = banner.background_color   || "hsl(var(--muted))";
-  const titleC = banner.title_color        || "hsl(var(--foreground))";
-  const descC  = banner.description_color  || "hsl(var(--muted-foreground))";
-  const btn    = banner.button_color       || "hsl(var(--accent))";
-  const btnHov = banner.button_hover_color || banner.button_color || "hsl(var(--accent))";
-  const btnTxt = banner.button_text_color  || "#ffffff";
+  // Regex to catch old green colors (from common turn)
+  const isOldGreen = (color: string) => {
+    if (!color) return false;
+    const greenRegex = /(#10[bB]981|#059669|#06[dD]17[bB]|emerald|teal|#14[bB]58[eE]|green)/i;
+    return greenRegex.test(color);
+  };
+
+  const dbBg = banner.background_color;
+  const bg = isOldGreen(dbBg || "") ? "hsl(var(--col-ink))" : (dbBg || "hsl(var(--col-paper))");
+  const titleC = isOldGreen(dbBg || "") ? "hsl(var(--col-saffron))" : (banner.title_color || "hsl(var(--col-ink))");
+  const descC = isOldGreen(dbBg || "") ? "hsl(var(--col-parchment) / 0.7)" : (banner.description_color || "hsl(var(--col-text-2))");
+  const btn = isOldGreen(dbBg || "") ? "hsl(var(--col-saffron))" : (banner.button_color || "hsl(var(--col-saffron))");
+
   const bgImage = banner.image;
   const thumbImage = banner.thumbnail && banner.thumbnail !== banner.image ? banner.thumbnail : null;
 
   const inner = (
     <div
-      className="group relative overflow-hidden rounded-lg transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+      className="group relative overflow-hidden rounded-[32px] transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 border border-black/5"
       style={{ backgroundColor: bg }}
     >
       {bgImage && (
@@ -37,51 +43,50 @@ export function SidebarBannerCard({ banner }: { banner: BannerItem }) {
             src={bgImage}
             alt={banner.alt ?? banner.title}
             fill
-            className="object-cover opacity-[0.2] transition-transform duration-300 group-hover:scale-[1.03]"
+            className="object-cover opacity-[0.15] transition-transform duration-1000 group-hover:scale-110"
             sizes="(max-width: 768px) 100vw, 360px"
             unoptimized
           />
         </div>
       )}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/15" />
-      <div className="absolute inset-y-0 left-0 w-1 rounded-l-lg" style={{ backgroundColor: btn }} />
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/20 pointer-events-none" />
 
-      <div className="relative flex min-h-[140px] items-center">
-        <div className="flex flex-1 flex-col justify-center py-4 pl-5 pr-4">
+      <div className="relative flex min-h-[160px] items-center">
+        <div className="flex flex-1 flex-col justify-center py-6 pl-8 pr-6">
           {banner.subtitle && (
-            <span className="mb-1.5 block text-[0.6rem] font-bold uppercase tracking-widest" style={{ color: btn }}>
+            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] mb-4" style={{ color: btn }}>
               {banner.subtitle}
             </span>
           )}
-          <h4 className="text-sm font-bold leading-snug" style={{ color: titleC }}>
+          <h4 className="font-fraunces text-lg font-medium leading-tight mb-3" style={{ color: titleC }}>
             {banner.title}
           </h4>
           {banner.description && (
-            <p className="mt-1 mb-3 line-clamp-2 text-xs leading-relaxed opacity-80" style={{ color: descC }}>
+            <p className="line-clamp-2 text-[13px] leading-relaxed opacity-70 mb-6 font-manrope" style={{ color: descC }}>
               {banner.description}
             </p>
           )}
           {banner.button_text && (
             <span
-              className="inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-sm transition-all duration-150 hover:shadow active:scale-95"
-              style={{ backgroundColor: btn, color: btnTxt }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = btnHov)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = btn)}
+              className="btn-editorial py-2.5 px-6 text-[10px] w-fit"
+              style={{ backgroundColor: btn, color: "hsl(var(--col-ink))", borderColor: "transparent" }}
             >
-              {banner.button_text}
-              <ArrowRight className="h-3 w-3" />
+              <span>
+                {banner.button_text}
+                <ArrowRight className="h-3 w-3" />
+              </span>
             </span>
           )}
         </div>
 
         {thumbImage && (
-          <div className="relative hidden shrink-0 sm:block" style={{ height: 120, width: 90 }}>
+          <div className="relative hidden shrink-0 sm:block pr-6" style={{ height: 140, width: 100 }}>
             <Image
               src={thumbImage}
               alt={banner.alt ?? banner.title}
               fill
-              className="object-contain object-right-bottom"
-              sizes="90px"
+              className="object-contain object-right-bottom drop-shadow-xl transition-transform duration-700 group-hover:scale-110"
+              sizes="100px"
               unoptimized
             />
           </div>
@@ -110,7 +115,7 @@ function BannerSlot({ id }: { id?: string }) {
   const { data: banners = [], isPending } = useBannersByIdsQuery(id, 1);
 
   if (isPending && id) {
-    return <div className="h-[140px] animate-pulse rounded-lg bg-muted" />;
+    return <div className="h-[160px] animate-pulse rounded-[32px] bg-muted/20" />;
   }
 
   if (!id || !banners.length) return null;
@@ -120,15 +125,18 @@ function BannerSlot({ id }: { id?: string }) {
 
 export function ArticlesSidebar({ latestArticles, sidebarSections }: ArticlesSidebarProps) {
   return (
-    <aside className="flex flex-col gap-5">
+    <aside className="flex flex-col gap-10">
       {sidebarSections.map((sec) => {
         if (sec.key === "sidebar") {
           return latestArticles.length > 0 ? (
-            <div key={sec.key} className="rounded-lg border border-border bg-card p-4">
-              <h3 className="mb-3 border-b border-border pb-2 text-sm font-bold text-foreground">
-                {sec.label || "Son Haberler"}
-              </h3>
-              <div className="divide-y divide-border">
+            <div key={sec.key} className="relative p-2">
+              <div className="mb-8 flex items-center gap-3">
+                 <div className="h-px w-6 bg-saffron" />
+                 <h3 className="font-fraunces text-xl font-medium text-ink">
+                    {sec.label || "Son Haberler"}
+                 </h3>
+              </div>
+              <div className="flex flex-col gap-2">
                 {latestArticles.map((a) => (
                   <ArticleCard key={a.id} article={a} variant="horizontal" />
                 ))}

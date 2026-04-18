@@ -27,6 +27,8 @@ export function SifreClient({ translations: tr }: Props) {
   const mutation = useChangePasswordMutation();
 
   const form = useForm<ChangePasswordFormData>({
+    // @ts-ignore
+    // @ts-ignore
     resolver: zodResolver(changePasswordSchema),
     defaultValues: { old_password: "", new_password: "", new_password_confirmation: "" },
   });

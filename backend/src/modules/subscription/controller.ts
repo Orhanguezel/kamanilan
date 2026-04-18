@@ -2,7 +2,7 @@
 // FILE: src/modules/subscription/controller.ts  (PUBLIC)
 // =============================================================
 import type { RouteHandler } from "fastify";
-import type { JwtUser } from "@/common/middleware/auth";
+import type { JwtUser } from "@vps/shared-backend/middleware/auth";
 import { repoListPlans, repoGetFeatures } from "./repository";
 import { getUserPlan } from "./service";
 

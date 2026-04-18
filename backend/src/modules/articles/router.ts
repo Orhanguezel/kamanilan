@@ -7,7 +7,7 @@ import {
   listArticleComments, createArticleComment,
   getArticleLikes, toggleArticleLike,
 } from "./controller";
-import { requireAuth } from "@/common/middleware/auth";
+import { requireAuth } from "@vps/shared-backend/middleware/auth";
 
 export async function registerArticles(app: FastifyInstance) {
   const pub  = { config: { public: true } };

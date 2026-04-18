@@ -12,30 +12,26 @@ interface SectionHeaderProps {
 
 export function SectionHeader({ title, subtitle, viewAllHref }: SectionHeaderProps) {
   return (
-    <div className="mb-8 flex items-end justify-between">
-      <div>
-        <h2
-          className="font-playfair text-2xl font-bold flex items-center gap-2"
-          style={{ color: "hsl(var(--foreground))" }}
-        >
-          <span
-            className="flex-shrink-0 rounded-full"
-            style={{ width: 4, height: "1.3em", background: "hsl(var(--accent))" }}
-          />
-          {title}
+    <div className="section-header">
+      <div className="flex flex-col gap-2">
+        <div className="eyebrow">Seçki</div>
+        <h2 className="section-title">
+           {title.split(' ').map((word, i) => (
+             <span key={i}>
+                {["Fırsat", "Seçkileri", "İlanlar"].includes(word) ? <em>{word}</em> : word}{" "}
+             </span>
+           ))}
         </h2>
         {subtitle && (
-          <p className="mt-1 pl-3 text-sm text-muted-foreground">{subtitle}</p>
+          <p className="mt-2 text-[15px] text-[hsl(var(--muted-foreground))] max-w-[500px] leading-relaxed">
+            {subtitle}
+          </p>
         )}
       </div>
       {viewAllHref && (
-        <Link
-          href={viewAllHref}
-          className="flex items-center gap-1 text-xs font-bold transition-all hover:gap-1.5"
-          style={{ color: "hsl(var(--accent))" }}
-        >
+        <Link href={viewAllHref} className="ghost-link">
           {t("common.view_all")}
-          <ChevronRight className="h-3.5 w-3.5" />
+          <ChevronRight className="h-4 w-4 arrow" />
         </Link>
       )}
     </div>

@@ -2,7 +2,7 @@
 import { mysqlTable, char, int, text, datetime, index, foreignKey } from "drizzle-orm/mysql-core";
 import { sql } from "drizzle-orm";
 import { properties } from "../proporties/schema";
-import { users } from "../auth/schema";
+import { users } from '@vps/shared-backend/modules/auth/schema';
 
 /** CART ITEMS (DB kolonu: options; API'de selected_options olarak map'lenecek) */
 export const cartItems = mysqlTable(

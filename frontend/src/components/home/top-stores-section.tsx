@@ -2,26 +2,22 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Store } from "lucide-react";
+import { Store, ArrowRight } from "lucide-react";
 import { t } from "@/lib/t";
 import { ROUTES } from "@/config/routes";
 import { useCategoriesQuery, useCategoryCountsQuery } from "@/modules/site/site.service";
 import type { CategoryItem } from "@/modules/site/site.type";
-import { SectionHeader } from "./section-header";
 import type { SectionConfig } from "@/modules/theme/theme.type";
 
 interface Props {
   config?: SectionConfig;
 }
 
-// 6 pastel renk döngüsü (quickecommerce stili)
-const PASTEL_COLORS = [
-  "hsl(210 80% 94%)",
-  "hsl(340 80% 94%)",
-  "hsl(120 60% 91%)",
-  "hsl(40 90% 92%)",
-  "hsl(270 70% 93%)",
-  "hsl(180 60% 91%)",
+const PREMIUM_PALETTE = [
+  "hsl(var(--col-paper))",
+  "hsl(var(--col-ivory))",
+  "hsl(var(--col-cream))",
+  "hsl(var(--col-parchment))",
 ];
 
 export function TopStoresSection({ config }: Props) {
@@ -38,56 +34,68 @@ export function TopStoresSection({ config }: Props) {
   if (!isPending && categories.length === 0) return null;
 
   return (
-    <section className="py-10" style={{ background: "hsl(var(--muted) / 0.3)" }}>
-      <div className="container mx-auto px-4">
-        <SectionHeader
-          title={config?.label || t("home.top_stores_title")}
-          subtitle={t("home.top_stores_subtitle")}
-          viewAllHref={ROUTES.CATEGORIES}
-        />
+    <section className="py-24 bg-white">
+      <div className="container px-4">
+        
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <div className="max-w-2xl">
+             <div className="eyebrow mb-6">İş Ortaklarımız</div>
+             <h2 className="section-title">
+               Kaman'ın <em>Güvenilir</em> Mağazaları
+             </h2>
+          </div>
+          <Link href={ROUTES.CATEGORIES} className="ghost-link">
+             {t("common.view_all")} <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
 
         {isPending ? (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-28 animate-pulse rounded-xl bg-muted" />
+              <div key={i} className="aspect-square animate-pulse rounded-[32px] bg-muted/20" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8">
             {categories.map((cat, idx) => {
-              const bg = PASTEL_COLORS[idx % PASTEL_COLORS.length];
+              const bg = PREMIUM_PALETTE[idx % PREMIUM_PALETTE.length];
               const count = (counts as Record<string, number>)[cat.id] ?? 0;
 
               return (
                 <Link
                   key={cat.id}
                   href={ROUTES.CATEGORY(cat.slug)}
-                  className="group flex flex-col items-center gap-2 rounded-xl p-4 text-center transition-all hover:scale-[1.03] hover:shadow-md"
+                  className="group relative flex flex-col items-center justify-center aspect-square rounded-[32px] p-6 text-center transition-all duration-500 hover:shadow-3xl hover:-translate-y-2 border border-black/5"
                   style={{ background: bg }}
                 >
-                  {cat.image_url ? (
-                    <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-white/60">
-                      <Image
-                        src={cat.image_url}
-                        alt={cat.alt ?? cat.name}
-                        fill
-                        sizes="48px"
-                        className="object-cover"
-                      />
-                    </div>
-                  ) : cat.icon ? (
-                    <span className="text-3xl">{cat.icon}</span>
-                  ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/50">
-                      <Store className="h-6 w-6 text-foreground/60" />
-                    </div>
-                  )}
+                  <div className="mb-6">
+                    {cat.image_url ? (
+                      <div className="relative h-20 w-20 overflow-hidden rounded-full border-4 border-white shadow-xl transition-transform duration-500 group-hover:scale-110">
+                        <Image
+                          src={cat.image_url}
+                          alt={cat.alt ?? cat.name}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : cat.icon ? (
+                      <div className="h-20 w-20 flex items-center justify-center text-5xl transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-110">
+                        {cat.icon}
+                      </div>
+                    ) : (
+                      <div className="h-20 w-20 flex items-center justify-center rounded-full bg-white shadow-xl">
+                        <Store className="h-8 w-8 text-walnut" />
+                      </div>
+                    )}
+                  </div>
 
-                  <div>
-                    <p className="text-xs font-semibold leading-tight text-foreground line-clamp-2">{cat.name}</p>
+                  <div className="space-y-1">
+                    <p className="font-fraunces text-base font-medium leading-tight text-ink line-clamp-2">{cat.name}</p>
                     {count > 0 && (
-                      <p className="mt-0.5 text-[10px] text-muted-foreground">
-                        {count} {t("category.listing_count_suffix")}
+                      <p className="font-mono text-[9px] uppercase tracking-widest opacity-40">
+                        {count} Aktif İlan
                       </p>
                     )}
                   </div>

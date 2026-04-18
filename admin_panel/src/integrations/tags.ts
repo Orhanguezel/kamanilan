@@ -200,7 +200,19 @@ export const tags = [
   'NewsSources',
   'NewsSource',
   'NewsSuggestions',
-  'NewsSuggestion'
+  'NewsSuggestion',
+  // --- Imports + XML feeds + Photo queue (Faz 2) ---
+  'ImportJobs',
+  'ImportJob',
+  'ImportJobItems',
+  'XmlFeeds',
+  'XmlFeed',
+  'XmlFeedRuns',
+  'XmlFeedItems',
+  'XmlFeedCategoryMap',
+  'PhotoQueueStats',
+  'PhotoQueueFailed',
+  'PhotoQueueProperty'
 ] as const;
 
 export type tag = typeof tags[number];

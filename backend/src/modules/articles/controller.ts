@@ -11,8 +11,8 @@ import { publicListQuerySchema, slugParamSchema, createCommentSchema } from "./v
 import type { ArticleRow } from "./schema";
 import { db } from "@/db/client";
 import { eq } from "drizzle-orm";
-import { profiles } from "@/modules/profiles/schema";
-import type { JwtUser } from "@/common/middleware/auth";
+import { profiles } from "@vps/shared-backend/modules/profiles/schema";
+import type { JwtUser } from "@vps/shared-backend/middleware/auth";
 
 function toPublicView(row: ArticleRow, coverUrl: string | null) {
   return {

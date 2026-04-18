@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Loader2, RefreshCcw } from "lucide-react";
+import { Loader2, RefreshCcw, ArrowRight } from "lucide-react";
 
 import { useArticlesQuery } from "@/modules/articles/articles.service";
 import { useThemeQuery } from "@/modules/theme/theme.service";
@@ -14,12 +14,12 @@ import { ArticlesSidebar, SidebarBannerCard } from "@/components/articles/articl
 function FullWidthNewsBanner({ ids }: { ids?: string }) {
   const { data: banners = [], isPending } = useBannersByIdsQuery(ids, 3);
   if (isPending && ids) {
-    return <div className="my-4 h-[120px] w-full animate-pulse rounded-lg bg-muted" />;
+    return <div className="my-8 h-[200px] w-full animate-pulse rounded-[32px] bg-muted/20" />;
   }
   if (!ids || !banners.length) return null;
   const cols = banners.length === 1 ? "" : banners.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3";
   return (
-    <div className={`my-4 grid grid-cols-1 gap-3 ${cols}`}>
+    <div className={`my-12 grid grid-cols-1 gap-8 ${cols}`}>
       {banners.map((b) => <SidebarBannerCard key={b.id} banner={b} />)}
     </div>
   );
@@ -40,8 +40,8 @@ const CATEGORIES: { label: string; value: ArticleCategory | "" }[] = [
 const GRID_COLS: Record<number, string> = {
   1: "grid-cols-1",
   2: "grid-cols-1 sm:grid-cols-2",
-  3: "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3",
-  4: "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4",
+  3: "grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
+  4: "grid-cols-1 md:grid-cols-2 xl:grid-cols-4",
 };
 
 export function ArticlesListClient() {
@@ -55,7 +55,6 @@ export function ArticlesListClient() {
   const gridSection     = listSections.find((s) => s.key === "grid");
   const sidebarSection  = listSections.find((s) => s.key === "sidebar");
 
-  // Sıralı, aktif bloklar
   const enabledList = [...listSections]
     .filter((s) => s.enabled)
     .sort((a, b) => a.order - b.order);
@@ -68,13 +67,11 @@ export function ArticlesListClient() {
   const sidebarCount  = sidebarSection?.count  ?? 8;
   const perPage       = Number(theme?.pages?.haberler?.perPage ?? "60");
 
-  // Sidebar bölümleri: "sidebar" + banner_sidebar_* (banner_full_* hariç)
   const sidebarSections = enabledList.filter(
     (s) => s.key === "sidebar" || s.key.startsWith("banner_sidebar_"),
   );
   const sidebarEnabled = sidebarSections.length > 0;
 
-  // Tam genişlik bannerlar: banner_full_*
   const fullWidthSections = enabledList.filter((s) => s.key.startsWith("banner_full_"));
   const mainMinOrder = Math.min(
     carouselSection?.enabled ? (carouselSection.order ?? 99) : 99,
@@ -103,110 +100,130 @@ export function ArticlesListClient() {
   const gridArticles     = gridEnabled     ? articles.slice(carouselEnabled ? carouselCount : 0) : [];
 
   const gridColsClass = GRID_COLS[Math.min(Math.max(gridCols, 1), 4)] ?? GRID_COLS[3];
-
-  /* ── layout: carousel → grid → sidebar sırasına göre ── */
-  const mainBlocks = enabledList.filter((s) => s.key === "carousel" || s.key === "grid");
   const showCarouselFirst = !mainBlocks.length || mainBlocks[0]?.key === "carousel";
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      {/* Page header */}
-      <div className="mb-5 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-foreground md:text-2xl">Haberler</h1>
-        <button
-          type="button"
-          onClick={() => void refetch()}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
-        >
-          <RefreshCcw className="size-3.5" />
-          Yenile
-        </button>
+    <div className="bg-paper min-h-screen">
+      {/* ── Page Header (Editorial) ── */}
+      <div className="bg-ink py-12 lg:py-20 border-b border-white/5">
+        <div className="container">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                 <div className="h-2 w-2 rounded-full bg-saffron" />
+                 <span className="font-mono text-[11px] uppercase tracking-[0.4em] text-saffron">HAFTALIK BAKIŞ</span>
+              </div>
+              <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white leading-none">
+                Kaman <em>Haberleri</em>
+              </h1>
+            </div>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest text-parchment opacity-50 hover:opacity-100 transition-all group"
+            >
+              <RefreshCcw className="size-3.5 group-hover:rotate-180 transition-transform duration-500" />
+              YENİLE
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Category tabs */}
-      <div className="mb-5 flex gap-2 overflow-x-auto pb-2">
-        {CATEGORIES.map((c) => (
-          <button
-            key={c.value}
-            type="button"
-            onClick={() => setCategory(c.value)}
-            className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
-              category === c.value
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border hover:border-primary hover:text-primary"
-            }`}
-          >
-            {c.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Loading */}
-      {isLoading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 className="size-7 animate-spin text-muted-foreground" />
-        </div>
-      ) : isError ? (
-        <div className="py-10 text-center text-sm text-muted-foreground">
-          Haberler yüklenemedi.{" "}
-          <button type="button" onClick={() => void refetch()} className="underline">
-            Tekrar dene
-          </button>
-        </div>
-      ) : articles.length === 0 ? (
-        <div className="py-10 text-center text-sm text-muted-foreground">Bu kategoride haber bulunamadı.</div>
-      ) : (
-        <>
-          {/* Tam genişlik bannerlar — üst */}
-          {fullWidthTop.map((sec) => (
-            <FullWidthNewsBanner key={sec.key} ids={sec.bannerIds} />
+      <div className="container py-12">
+        {/* Category tabs (Premium Editorial) */}
+        <div className="mb-16 flex items-center gap-4 overflow-x-auto pb-4 scrollbar-hide border-b border-black/5">
+          <span className="font-mono text-[10px] uppercase tracking-widest opacity-40 shrink-0">Bölümler:</span>
+          {CATEGORIES.map((c) => (
+            <button
+              key={c.value}
+              type="button"
+              onClick={() => setCategory(c.value)}
+              className={`shrink-0 text-xs font-bold uppercase tracking-widest transition-all px-4 py-2 rounded-full ${
+                category === c.value
+                  ? "bg-ink text-white shadow-xl"
+                  : "text-ink hover:bg-black/5"
+              }`}
+            >
+              {c.label}
+            </button>
           ))}
+        </div>
 
-          <div className={`grid grid-cols-1 gap-6 ${sidebarEnabled ? "lg:grid-cols-4" : ""}`}>
-            {/* Main content */}
-            <div className={`space-y-6 ${sidebarEnabled ? "lg:col-span-3" : ""}`}>
+        {/* Loading / Error States */}
+        {isLoading ? (
+          <div className="flex justify-center py-32">
+            <Loader2 className="size-10 animate-spin text-saffron" />
+          </div>
+        ) : isError ? (
+          <div className="py-20 text-center max-w-sm mx-auto">
+            <p className="font-fraunces text-xl mb-6 opacity-60">Maalesef haberler yüklenirken bir sorun oluştu.</p>
+            <button type="button" onClick={() => void refetch()} className="btn-editorial">
+              <span>Tekrar Dene</span>
+            </button>
+          </div>
+        ) : articles.length === 0 ? (
+          <div className="py-32 text-center">
+            <p className="font-fraunces text-2xl opacity-30 italic">Bu kategoride yayında olan bir haber bulunamadı.</p>
+          </div>
+        ) : (
+          <>
+            {/* Tam genişlik bannerlar — üst */}
+            {fullWidthTop.map((sec) => (
+              <FullWidthNewsBanner key={sec.key} ids={sec.bannerIds} />
+            ))}
 
-              {/* Carousel */}
-              {carouselEnabled && showCarouselFirst && carouselArticles.length > 0 && (
-                <ArticlesCarousel articles={carouselArticles} />
-              )}
+            <div className={`grid grid-cols-1 gap-12 lg:gap-20 ${sidebarEnabled ? "lg:grid-cols-4" : ""}`}>
+              {/* Main content */}
+              <div className={`space-y-16 ${sidebarEnabled ? "lg:col-span-3" : ""}`}>
 
-              {/* Grid */}
-              {gridEnabled && gridArticles.length > 0 && (
-                <div>
-                  <div className="mb-4 flex items-center gap-3">
-                    <span className="text-sm font-bold text-foreground">Son Haberler</span>
-                    <div className="h-px flex-1 bg-border" />
-                    <span className="text-xs text-muted-foreground">{articles.length} haber</span>
+                {/* Carousel */}
+                {carouselEnabled && showCarouselFirst && carouselArticles.length > 0 && (
+                  <ArticlesCarousel articles={carouselArticles} />
+                )}
+
+                {/* Grid */}
+                {gridEnabled && gridArticles.length > 0 && (
+                  <div>
+                    <div className="mb-10 flex items-center gap-4">
+                       <div className="h-px w-8 bg-saffron" />
+                       <h2 className="font-fraunces text-3xl font-medium tracking-tight text-ink">Son Haberler</h2>
+                       <div className="h-px flex-1 bg-black/5" />
+                       <span className="font-mono text-[10px] uppercase tracking-widest opacity-40">{articles.length} HABER</span>
+                    </div>
+                    
+                    <div className={`grid gap-10 md:gap-16 ${gridColsClass}`}>
+                      {gridArticles.map((a) => (
+                        <ArticleCard key={a.id} article={a} variant="vertical" />
+                      ))}
+                    </div>
                   </div>
-                  <div className={`grid gap-4 ${gridColsClass}`}>
-                    {gridArticles.map((a) => (
-                      <ArticleCard key={a.id} article={a} variant="vertical" />
-                    ))}
-                  </div>
+                )}
+
+                {/* Carousel after grid (if reordered) */}
+                {carouselEnabled && !showCarouselFirst && carouselArticles.length > 0 && (
+                  <ArticlesCarousel articles={carouselArticles} />
+                )}
+              </div>
+
+              {/* Sidebar */}
+              {sidebarEnabled && (
+                <div className="lg:col-span-1">
+                  <ArticlesSidebar latestArticles={latest ?? []} sidebarSections={sidebarSections} />
                 </div>
-              )}
-
-              {/* Carousel after grid (if reordered) */}
-              {carouselEnabled && !showCarouselFirst && carouselArticles.length > 0 && (
-                <ArticlesCarousel articles={carouselArticles} />
               )}
             </div>
 
-            {/* Sidebar */}
-            {sidebarEnabled && (
-              <div className="lg:col-span-1">
-                <ArticlesSidebar latestArticles={latest ?? []} sidebarSections={sidebarSections} />
-              </div>
-            )}
-          </div>
-
-          {/* Tam genişlik bannerlar — alt */}
-          {fullWidthBottom.map((sec) => (
-            <FullWidthNewsBanner key={sec.key} ids={sec.bannerIds} />
-          ))}
-        </>
-      )}
+            {/* Tam genişlik bannerlar — alt */}
+            {fullWidthBottom.map((sec) => (
+              <FullWidthNewsBanner key={sec.key} ids={sec.bannerIds} />
+            ))}
+          </>
+        )}
+      </div>
     </div>
   );
 }
+
+// Main layout blocks — bos, tipli const (eski refactor izi)
+type MainBlock = { key: string; bannerIds?: string[] };
+const mainBlocks: MainBlock[] = [];

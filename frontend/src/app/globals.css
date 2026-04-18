@@ -4,197 +4,180 @@
 
 @layer base {
   /* ══════════════════════════════════════════════════════════════════════
-     LAYER 1 — Ham Palet · Kaman İlan · Ceviz Bahçesi Yeşil
-     Bu değişkenleri doğrudan kullanma; aşağıdaki semantik tokenları kullan.
-     Format: H S% L%  →  Kullanım: hsl(var(--token))
+     LAYER 1 — Editorial Local-Luxury Palette
      ══════════════════════════════════════════════════════════════════════ */
   :root {
-    --col-forest:    153 42% 18%;   /* #1B4332  Orman Yeşili        */
-    --col-walnut:    153 39% 30%;   /* #2D6A4F  Ceviz Bahçesi Yeşil */
-    --col-midgreen:  155 38% 41%;   /* #40916C  Orta Yeşil          */
-    --col-vivid:     151 39% 52%;   /* #52B788  Canlı Yeşil         */
-    --col-amber:      30 64% 53%;   /* #D4873C  Altın Amber (CTA)   */
-    --col-cream:     120 33% 98%;   /* #F8FBF8  Açık Beyaz-Yeşil    */
-    --col-krem:      135 27% 93%;   /* #E8F2EB  Açık Yeşil Krem     */
-    --col-teal:      168 19% 40%;   /* #52796F  Mat Deniz Yeşili    */
-    --col-border:    148 19% 83%;   /* #C8DDD0  Açık Yeşil Kenarlık */
-    --col-text:      134 29% 14%;   /* #1A2E1E  Koyu Yeşil Metin    */
-  }
+    /* ══════════════════════════════════════════════════════════════════════
+       PRIMARY DESIGN TOKENS (from Premium Pattern)
+       ══════════════════════════════════════════════════════════════════════ */
+    --col-ink:        30 31% 7%;     /* #1a120b */
+    --col-espresso:   22 35% 12%;    /* #2b1d12 */
+    --col-walnut:     23 40% 21%;    /* #4a3020 */
+    --col-bark:       26 39% 30%;    /* #6b4a2f */
+    --col-hazel:      31 33% 42%;    /* #8e6a47 */
+    --col-wheat:      38 43% 62%;    /* #c9a875 */
+    --col-parchment:  42 35% 86%;    /* #ede2c9 */
+    --col-ivory:      42 45% 90%;    /* #f5ecd7 */
+    --col-cream:      42 50% 95%;    /* #faf5ea */
+    --col-paper:      45 60% 97%;    /* #fdfaf3 */
 
-  /* ══════════════════════════════════════════════════════════════════════
-     LAYER 2 — Semantik Tokenlar (Tailwind/shadcn uyumlu)
-     Renk kuralı: 80% neutral · 10% primary (yeşil) · 10% accent (amber)
-     ══════════════════════════════════════════════════════════════════════ */
-  :root {
+    /* Accents */
+    --col-saffron:    42 77% 45%;    /* #c9931a */
+    --col-saffron-2:  42 81% 37%;    /* #a87611 */
+    --col-ember:      18 69% 41%;    /* #b24b22 */
+    --col-olive:      76 33% 32%;    /* #5f6d36 */
+    --col-moss:       78 33% 21%;    /* #3c4825 */
+    --col-sage:       73 25% 61%;    /* #a9b481 */
+
+    /* Functional */
+    --success:              94 45% 29%;    /* #4a6d2a */
+    --danger:               14 66% 36%;    /* #9a3520 */
+
     --background:           var(--col-cream);
-    --foreground:           var(--col-text);
+    --foreground:           var(--col-ink);
+    --card:                 var(--col-paper);
+    --card-foreground:      var(--col-ink);
+    --primary:              var(--col-ink);
+    --primary-foreground:   var(--col-paper);
+    --accent:               var(--col-saffron);
+    --accent-foreground:    var(--col-ink);
+    --muted:                var(--col-parchment);
+    --muted-foreground:     32 22% 45%;    /* #8b7358 */
+    --border:               30 31% 7% / 0.09;
 
-    --card:                 var(--col-cream);
-    --card-foreground:      var(--col-text);
+    /* Supplementary text + layer tokens */
+    --text:                 var(--col-ink);
+    --text-2:               27 32% 27%;    /* #5a4632 */
+    --text-3:               32 22% 45%;    /* #8b7358 */
 
-    --popover:              var(--col-cream);
-    --popover-foreground:   var(--col-text);
+    /* Backward-compat alias'lar (raw style={} kullanimlari icin) */
+    --col-text-2:           var(--text-2);
+    --col-text-3:           var(--text-3);
+    --surface:              var(--col-paper);
+    --surface-2:            var(--col-ivory);
+    --line:                 30 31% 7% / 0.09;
+    --line-2:               30 31% 7% / 0.18;
 
-    /* Primary: Orman Yeşili — kısıtlı kullan (%10) */
-    --primary:              var(--col-forest);
-    --primary-foreground:   var(--col-cream);
+    /* Layout */
+    --container-max:        1280px;
+    --radius-sm:            6px;
+    --radius:               12px;
+    --radius-lg:            20px;
+    --soft-variation:       40;
 
-    /* Secondary: Orta Yeşil */
-    --secondary:            var(--col-midgreen);
-    --secondary-foreground: var(--col-cream);
+    /* Editorial shadows (warm walnut-tinted) */
+    --shadow-1:             0 1px 2px rgba(74, 48, 32, 0.06);
+    --shadow-2:             0 4px 20px -4px rgba(74, 48, 32, 0.12);
+    --shadow-3:             0 20px 50px -20px rgba(74, 48, 32, 0.25);
 
-    /* Muted: Açık Yeşil Krem */
-    --muted:                var(--col-krem);
-    --muted-foreground:     var(--col-teal);
+    /* Motion */
+    --ease:                 cubic-bezier(0.22, 1, 0.36, 1);
 
-    /* Accent: Altın Amber — yalnızca CTA (%10) */
-    --accent:               var(--col-amber);
-    --accent-foreground:    var(--col-text);
-
-    --destructive:          0 84.2% 60.2%;
-    --destructive-foreground: var(--col-cream);
-
-    --border:               var(--col-border);
-    --input:                var(--col-border);
-    --ring:                 var(--col-forest);
-    --radius:               0.375rem;
+    /* Grain overlay opacity */
+    --grain-opacity:        0.035;
   }
 
-  /* ══════════════════════════════════════════════════════════════════════
-     LAYER 3 — Komponent Tokenları
-     ══════════════════════════════════════════════════════════════════════ */
-  :root {
-    --nav-bg:    var(--col-walnut);  /* Navbar  = ceviz bahçesi yeşili */
-    --nav-fg:    var(--col-cream);
-    --footer-bg: var(--col-forest);  /* Footer  = orman yeşili         */
-    --footer-fg: var(--col-krem);
-  }
-
-  /* ══════════════════════════════════════════════════════════════════════
-     DARK MODE
-     ══════════════════════════════════════════════════════════════════════ */
   .dark {
-    --background:           134 40% 8%;
-    --foreground:           var(--col-krem);
-
-    --card:                 153 42% 12%;
-    --card-foreground:      var(--col-krem);
-
-    --popover:              153 42% 12%;
-    --popover-foreground:   var(--col-krem);
-
-    --primary:              var(--col-amber);   /* dark'ta parlak amber */
-    --primary-foreground:   var(--col-text);
-
-    --secondary:            var(--col-forest);
-    --secondary-foreground: var(--col-krem);
-
-    --muted:                153 42% 14%;
-    --muted-foreground:     148 20% 65%;
-
-    --accent:               var(--col-amber);
-    --accent-foreground:    var(--col-text);
-
-    --destructive:          0 62.8% 30.6%;
-    --destructive-foreground: var(--col-cream);
-
-    --border:               153 30% 22%;
-    --input:                153 30% 22%;
-    --ring:                 var(--col-amber);
-
-    --nav-bg:               134 40% 8%;
-    --nav-fg:               var(--col-krem);
-    --footer-bg:            134 45% 5%;
-    --footer-fg:            var(--col-krem);
+    --background:           30 31% 4%;
+    --foreground:           var(--col-paper);
+    --card:                 30 31% 6%;
+    --primary:              var(--col-saffron);
+    --primary-foreground:   var(--col-ink);
+    --border:               30 31% 20%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  html {
-    overflow-x: clip;
-  }
+  * { @apply border-border; }
   body {
-    @apply bg-background text-foreground;
-    overflow-x: clip;
-    font-family: var(--font-nunito), Nunito, system-ui, sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-manrope), sans-serif;
+    overflow-x: hidden;
   }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+  
+  /* Grain Texture Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
   }
+
+  /* Editorial Scrollbar */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--col-cream)); }
+  ::-webkit-scrollbar-thumb { 
+    background: hsl(var(--col-wheat)); 
+    border-radius: 10px; 
+    border: 2px solid hsl(var(--col-cream)); 
+  }
+}
+
+@layer components {
+  /* Editorial Primitives from HTML Pattern */
+  .eyebrow {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-[hsl(var(--col-saffron-2))] inline-flex items-center gap-2.5;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply w-6 h-px bg-[hsl(var(--col-saffron-2))];
+  }
+
+  .section-header {
+    @apply flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 pb-6 border-b border-border;
+  }
+
+  .section-title {
+    @apply font-fraunces text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight leading-[1.05] text-[hsl(var(--col-ink))];
+    font-variation-settings: "opsz" 144, "SOFT" 40;
+  }
+  .section-title em {
+    @apply italic font-normal text-[hsl(var(--col-saffron-2))];
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+
+  .ghost-link {
+    @apply font-mono text-[12px] uppercase tracking-[0.12em] text-[hsl(var(--col-walnut))] inline-flex items-center gap-2.5 pb-1 border-b border-[hsl(var(--col-ink)/0.2)] transition-all duration-300 hover:text-[hsl(var(--col-saffron-2))] hover:border-[hsl(var(--col-saffron))] hover:gap-3.5;
+  }
+
+  .btn-editorial {
+    @apply relative overflow-hidden inline-flex items-center gap-2.5 px-6 py-3 bg-ink text-cream rounded-full text-sm font-semibold tracking-wide transition-all duration-300 ease-editorial;
+  }
+  .btn-editorial::before {
+    content: "";
+    @apply absolute inset-0 bg-saffron translate-y-[101%] transition-transform duration-300 ease-editorial;
+  }
+  .btn-editorial:hover { @apply text-ink; }
+  .btn-editorial:hover::before { @apply translate-y-0; }
+  .btn-editorial span { @apply relative z-10 flex items-center gap-2.5; }
+
+  /* Premium pattern — marquee top strip (header duyuru cubugu) */
+  .top-strip {
+    @apply bg-ink text-parchment font-mono text-[12px] tracking-[0.06em] py-2;
+  }
+  .top-strip .marquee { @apply flex gap-10 items-center text-wheat; }
+  .top-strip .marquee span { @apply inline-flex items-center gap-2; }
+  .top-strip .marquee .dot {
+    @apply w-1 h-1 rounded-full bg-saffron;
+    box-shadow: 0 0 8px hsl(var(--col-saffron));
+  }
+
+  /* Premium pattern — editorial card */
+  .premium-card {
+    @apply bg-surface rounded-[var(--radius-lg)] border border-line shadow-editorial-2 transition-all duration-300 ease-editorial;
+  }
+  .premium-card:hover { @apply shadow-editorial-3; }
 }
 
 @layer utilities {
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Filter sidebar: thin scrollbar, visible on hover */
-  .filter-sidebar-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
-  }
-  .filter-sidebar-scroll:hover {
-    scrollbar-color: hsl(var(--border)) transparent;
-  }
-  .filter-sidebar-scroll::-webkit-scrollbar {
-    width: 4px;
-  }
-  .filter-sidebar-scroll::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .filter-sidebar-scroll::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border-radius: 4px;
-  }
-  .filter-sidebar-scroll:hover::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--border));
-  }
-
-  /* Font helper */
-  .font-playfair {
-    font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
-  }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-/* ============================================================
-   cols-grid  — tema tarafından kontrol edilen responsive grid
-   Kullanım: className="cols-grid gap-4"
-             style={{ "--sm": 1, "--md": 2, "--lg": 3 }}
-   ============================================================ */
-@layer utilities {
-  .cols-grid {
-    display: grid;
-    grid-template-columns: repeat(var(--sm, 1), minmax(0, 1fr));
-  }
-  @media (min-width: 640px) {
-    .cols-grid {
-      grid-template-columns: repeat(var(--sm, 1), minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 768px) {
-    .cols-grid {
-      grid-template-columns: repeat(var(--md, 2), minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 1024px) {
-    .cols-grid {
-      grid-template-columns: repeat(var(--lg, 3), minmax(0, 1fr));
-    }
-  }
+  .font-fraunces { font-family: var(--font-fraunces), serif; }
+  .font-manrope { font-family: var(--font-manrope), sans-serif; }
+  .font-mono { font-family: var(--font-jetbrains-mono), monospace; }
+  
+  .perspective-1000 { perspective: 1000px; }
+  .rotate-x-12 { transform: rotateX(12deg); }
 }

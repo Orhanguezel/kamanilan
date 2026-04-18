@@ -13,5 +13,6 @@ export function getApiBaseUrl(): string {
     return "/api/proxy";
   }
 
-  return env.NEXT_PUBLIC_REST_API_ENDPOINT;
+  const endpoint = env.NEXT_PUBLIC_REST_API_ENDPOINT;
+  return endpoint.endsWith("/api") ? `${endpoint}/v1` : endpoint;
 }

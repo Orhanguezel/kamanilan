@@ -81,3 +81,8 @@ export * from '@/integrations/endpoints/admin/articles_admin.endpoints';
 export * from '@/integrations/endpoints/admin/news_aggregator_admin.endpoints';
 export * from '@/integrations/endpoints/admin/wallet_admin.endpoints';
 export * from '@/integrations/endpoints/admin/coupons_admin.endpoints';
+
+// --- Imports + XML feeds + Photo queue (Faz 2) ---
+export * from '@/integrations/endpoints/admin/imports_admin.endpoints';
+export * from '@/integrations/endpoints/admin/xml_feeds_admin.endpoints';
+export * from '@/integrations/endpoints/admin/photo_queue_admin.endpoints';

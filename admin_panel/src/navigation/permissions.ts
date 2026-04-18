@@ -57,7 +57,11 @@ export type AdminNavKey =
   | 'news_sources'
   | 'news_suggestions'
   | 'wallets'
-  | 'coupons';
+  | 'coupons'
+  // Faz 2 — toplu import + XML feed + photo queue
+  | 'imports'
+  | 'xml_feeds'
+  | 'photo_queue';
 
 const ADMIN_ONLY: PanelRole[] = ['admin'];
 const ADMIN_AND_SELLER: PanelRole[] = ['admin', 'seller'];

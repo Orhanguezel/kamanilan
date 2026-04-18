@@ -16,6 +16,7 @@ import {
   Linkedin,
   Twitter,
   MessageCircle,
+  ArrowRight,
 } from "lucide-react";
 
 interface ContactTranslations {
@@ -73,7 +74,7 @@ function normalizePhone(phoneCode: string, phone: string) {
 
 function SocialIcon({ icon }: { icon: string }) {
   const normalized = icon.trim().toLowerCase();
-  const cls = "h-4 w-4 text-primary-foreground";
+  const cls = "h-4 w-4";
 
   if (normalized === "facebook") return <Facebook className={cls} />;
   if (normalized === "instagram") return <Instagram className={cls} />;
@@ -129,225 +130,192 @@ export function ContactPageClient({
       : null;
 
   return (
-    <div className="container py-6">
-      <nav className="mb-5 flex items-center gap-1.5 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-foreground">
-          {t.home}
-        </Link>
-        <ChevronRight className="h-3.5 w-3.5" />
-        <span className="text-foreground">{t.contact}</span>
-      </nav>
-
-      <div className="grid gap-6 xl:grid-cols-[520px_minmax(0,1fr)]">
-        <aside className="rounded-lg border border-border bg-card p-6">
-          <div className="mb-7 overflow-hidden rounded-lg border border-border bg-muted">
-            {detailsSection.imageUrl ? (
-              <div className="relative h-[260px] w-full md:h-[420px]">
-                <Image
-                  src={detailsSection.imageUrl}
-                  alt={formSection.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 520px"
-                  className="object-cover"
-                />
-              </div>
-            ) : (
-              <div className="flex h-[260px] items-center justify-center text-5xl font-medium text-muted-foreground md:h-[420px]">
-                538x475
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-5">
-            {detailsSection.address && (
-              <div>
-                <p className="mb-2 text-xl font-medium leading-none text-foreground">{t.address}</p>
-                <div className="flex items-center gap-3 text-base text-foreground">
-                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary">
-                    <MapPin className="h-4 w-4 text-primary-foreground" />
-                  </span>
-                  <span>{detailsSection.address}</span>
-                </div>
-              </div>
-            )}
-
-            {detailsSection.phone && (
-              <div>
-                <p className="mb-2 text-xl font-medium leading-none text-foreground">{t.phone}</p>
-                <a
-                  href={`tel:${detailsSection.phone}`}
-                  className="flex items-center gap-3 text-base text-foreground hover:text-primary"
-                >
-                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary">
-                    <Phone className="h-4 w-4 text-primary-foreground" />
-                  </span>
-                  <span>{detailsSection.phone}</span>
-                </a>
-              </div>
-            )}
-
-            {detailsSection.email && (
-              <div>
-                <p className="mb-2 text-xl font-medium leading-none text-foreground">{t.email}</p>
-                <a
-                  href={`mailto:${detailsSection.email}`}
-                  className="flex items-center gap-3 text-base text-foreground hover:text-primary"
-                >
-                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary">
-                    <Mail className="h-4 w-4 text-primary-foreground" />
-                  </span>
-                  <span>{detailsSection.email}</span>
-                </a>
-              </div>
-            )}
-
-            {detailsSection.website && (
-              <div>
-                <p className="mb-2 text-xl font-medium leading-none text-foreground">{t.website}</p>
-                <a
-                  href={detailsSection.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 break-all text-base text-foreground hover:text-primary"
-                >
-                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary">
-                    <Globe className="h-4 w-4 text-primary-foreground" />
-                  </span>
-                  <span>{detailsSection.website}</span>
-                </a>
-              </div>
-            )}
-
-            {detailsSection.social.length > 0 && (
-              <div>
-                <p className="mb-2 text-xl font-medium leading-none text-foreground">{t.social_connect}</p>
-                <div className="flex flex-wrap items-center gap-3">
-                  {detailsSection.social.map((item, idx) => (
-                    <a
-                      key={`${item.url}-${idx}`}
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary transition-colors hover:bg-primary/90"
-                    >
-                      <SocialIcon icon={item.icon} />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </aside>
-
-        <section className="rounded-lg border border-border bg-card p-7">
-          <h1 className="text-5xl font-semibold leading-none text-foreground md:text-6xl">
-            {formSection.title || t.contact}
-          </h1>
-          <p className="mt-4 max-w-4xl text-base text-muted-foreground md:text-lg">
-            {formSection.subtitle || t.contact_subtitle}
-          </p>
-
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <div>
-              <label className="mb-2 block text-base font-medium text-foreground">{t.name}</label>
-              <input
-                type="text"
-                required
-                maxLength={255}
-                value={form.name}
-                onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-                placeholder={t.name_placeholder}
-                className="h-12 w-full rounded-md border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-              />
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-base font-medium text-foreground">{t.email}</label>
-                <input
-                  type="email"
-                  required
-                  maxLength={255}
-                  value={form.email}
-                  onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
-                  placeholder={t.email_placeholder}
-                  className="h-12 w-full rounded-md border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-base font-medium text-foreground">{t.phone}</label>
-                <div className="flex rounded-md border border-input focus-within:border-primary">
-                  <select
-                    value={phoneCode}
-                    onChange={(e) => setPhoneCode(e.target.value)}
-                    className="h-12 w-24 rounded-l-md border-r border-input bg-muted px-2 text-sm text-foreground outline-none"
-                    aria-label="phone code"
-                  >
-                    <option value="+90">+90</option>
-                    <option value="+1">+1</option>
-                    <option value="+44">+44</option>
-                    <option value="+49">+49</option>
-                  </select>
-                  <input
-                    type="tel"
-                    required
-                    maxLength={20}
-                    value={form.phone}
-                    onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
-                    placeholder={t.phone_placeholder}
-                    className="h-12 flex-1 rounded-r-md bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-base font-medium text-foreground">{t.message}</label>
-              <textarea
-                required
-                maxLength={2000}
-                rows={7}
-                value={form.message}
-                onChange={(e) => setForm((prev) => ({ ...prev, message: e.target.value }))}
-                placeholder={t.message_placeholder}
-                className="w-full rounded-md border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-              />
-            </div>
-
-            {status === "success" && (
-              <div className="flex items-center gap-2 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-950/30 dark:text-green-400">
-                <CheckCircle className="h-4 w-4" />
-                {t.success}
-              </div>
-            )}
-            {status === "error" && (
-              <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/30 dark:text-red-400">{t.error}</div>
-            )}
-
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              className="inline-flex h-12 min-w-[220px] items-center justify-center gap-2 rounded-md bg-primary px-6 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
-            >
-              <Send className="h-4 w-4" />
-              {status === "loading" ? "..." : t.send_message || t.send}
-            </button>
-          </form>
-        </section>
+    <div className="bg-[hsl(var(--col-paper))] min-h-screen">
+      {/* ── Hero ── */}
+      <div className="bg-[hsl(var(--col-ink))] py-20 lg:py-32 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/4 h-full bg-[hsl(var(--col-saffron))] opacity-5 skew-x-[-15deg] translate-x-12" />
+        <div className="container relative z-10">
+           <nav className="mb-8 flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-white opacity-40">
+             <Link href="/" className="hover:text-[hsl(var(--col-saffron))] transition-colors">{t.home}</Link>
+             <span className="opacity-20">/</span>
+             <span className="text-white">{t.contact}</span>
+           </nav>
+           <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white mb-6 leading-none">
+             Bize <em>Ulaşın</em>
+           </h1>
+           <p className="text-[hsl(var(--col-parchment))] opacity-50 text-sm md:text-base max-w-xl leading-relaxed">
+             {formSection.subtitle || t.contact_subtitle}
+           </p>
+        </div>
       </div>
 
-      {mapUrl && (
-        <div className="mt-6 overflow-hidden rounded-lg border border-border bg-card p-3">
-          <iframe
-            src={mapUrl}
-            title="map"
-            className="h-[340px] w-full rounded-md border-0"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+      <div className="container py-20 lg:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-start">
+          
+          {/* ── Information ── */}
+          <div className="space-y-16">
+            <div className="section-header">
+               <div className="eyebrow mb-6">İletişim Bilgileri</div>
+               <h2 className="font-fraunces text-3xl md:text-4xl font-medium text-[hsl(var(--col-ink))]">Size Bir Adım <br /><em>Kadar Yakınız</em></h2>
+            </div>
+
+            <div className="grid gap-10">
+              {detailsSection.address && (
+                <div className="flex gap-6 group">
+                   <div className="h-14 w-14 shrink-0 rounded-2xl bg-white shadow-xl flex items-center justify-center text-[hsl(var(--col-saffron-2))] group-hover:bg-[hsl(var(--col-saffron-2))] group-hover:text-white transition-all duration-500">
+                     <MapPin className="h-6 w-6" />
+                   </div>
+                   <div>
+                      <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">{t.address}</h4>
+                      <p className="text-[hsl(var(--col-ink))] font-medium leading-relaxed max-w-xs">{detailsSection.address}</p>
+                   </div>
+                </div>
+              )}
+              {detailsSection.phone && (
+                <div className="flex gap-6 group">
+                  <div className="h-14 w-14 shrink-0 rounded-2xl bg-white shadow-xl flex items-center justify-center text-[hsl(var(--col-saffron-2))] group-hover:bg-[hsl(var(--col-saffron-2))] group-hover:text-white transition-all duration-500">
+                     <Phone className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">{t.phone}</h4>
+                    <a href={`tel:${detailsSection.phone}`} className="text-[hsl(var(--col-ink))] text-xl font-fraunces hover:text-[hsl(var(--col-saffron-2))] transition-colors">{detailsSection.phone}</a>
+                  </div>
+                </div>
+              )}
+              {detailsSection.email && (
+                <div className="flex gap-6 group">
+                  <div className="h-14 w-14 shrink-0 rounded-2xl bg-white shadow-xl flex items-center justify-center text-[hsl(var(--col-saffron-2))] group-hover:bg-[hsl(var(--col-saffron-2))] group-hover:text-white transition-all duration-500">
+                     <Mail className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">{t.email}</h4>
+                    <a href={`mailto:${detailsSection.email}`} className="text-[hsl(var(--col-ink))] text-xl font-fraunces hover:text-[hsl(var(--col-saffron-2))] transition-colors underline underline-offset-8 decoration-black/10">{detailsSection.email}</a>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Social */}
+            {detailsSection.social.length > 0 && (
+              <div className="pt-10 border-t border-black/5">
+                 <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-40 mb-6 uppercase">{t.social_connect}</h4>
+                 <div className="flex gap-3">
+                    {detailsSection.social.map((item, idx) => (
+                      <a
+                        key={`${item.url}-${idx}`}
+                        href={item.url || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="h-12 w-12 rounded-full bg-[hsl(var(--col-ink))] text-white flex items-center justify-center hover:bg-[hsl(var(--col-saffron))] hover:text-[hsl(var(--col-ink))] transition-all shadow-lg"
+                      >
+                         <SocialIcon icon={item.icon} />
+                      </a>
+                    ))}
+                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* ── Form ── */}
+          <div className="bg-white rounded-[48px] p-8 md:p-14 shadow-3xl border border-black/5 relative">
+            <h3 className="font-fraunces text-2xl md:text-3xl font-medium text-[hsl(var(--col-ink))] mb-10">Bize Mesaj Gönderin</h3>
+            
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{t.name}</label>
+                <input
+                  type="text"
+                  required
+                  value={form.name}
+                  onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                  placeholder={t.name_placeholder}
+                  className="w-full bg-[hsl(var(--col-paper))] border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm"
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{t.email}</label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+                    placeholder={t.email_placeholder}
+                    className="w-full bg-[hsl(var(--col-paper))] border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{t.phone}</label>
+                  <div className="flex bg-[hsl(var(--col-paper))] rounded-2xl overflow-hidden focus-within:ring-2 focus-within:ring-[hsl(var(--col-saffron-2))] transition-all">
+                     <select
+                        value={phoneCode}
+                        onChange={(e) => setPhoneCode(e.target.value)}
+                        className="bg-black/5 px-4 outline-none text-xs font-bold"
+                     >
+                       <option value="+90">+90</option>
+                       <option value="+49">+49</option>
+                       <option value="+1">+1</option>
+                     </select>
+                     <input
+                       type="tel"
+                       required
+                       value={form.phone}
+                       onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
+                       placeholder={t.phone_placeholder}
+                       className="w-full bg-transparent border-none py-4 px-6 outline-none text-sm"
+                     />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{t.message}</label>
+                <textarea
+                  required
+                  rows={5}
+                  value={form.message}
+                  onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+                  placeholder={t.message_placeholder}
+                  className="w-full bg-[hsl(var(--col-paper))] border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm resize-none"
+                />
+              </div>
+
+              {status === "success" && (
+                <div className="flex items-center gap-3 p-4 bg-green-50 text-green-700 rounded-2xl text-sm font-medium animate-in fade-in slide-in-from-bottom-2">
+                  <CheckCircle className="h-5 w-5" /> {t.success}
+                </div>
+              )}
+              {status === "error" && (
+                <div className="p-4 bg-red-50 text-red-700 rounded-2xl text-sm font-medium">{t.error}</div>
+              )}
+
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                className="btn-editorial w-full py-5 justify-center mt-4 bg-[hsl(var(--col-ink))] text-white group"
+              >
+                <span>
+                  {status === "loading" ? "Gönderiliyor..." : (t.send_message || t.send)}
+                  <Send className="h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                </span>
+              </button>
+            </form>
+          </div>
         </div>
-      )}
+
+        {/* Map */}
+        {mapUrl && (
+          <div className="mt-20 lg:mt-32 rounded-[48px] overflow-hidden shadow-2xl border-8 border-white">
+            <iframe
+              src={mapUrl}
+              title="Kaman İlan Konum"
+              className="h-[400px] md:h-[600px] w-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
+              loading="lazy"
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

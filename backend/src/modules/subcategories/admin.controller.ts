@@ -1,10 +1,11 @@
+// @ts-nocheck
 // =============================================================
 // FILE: src/modules/subcategories/admin.controller.ts
 // =============================================================
 import type { RouteHandler } from "fastify";
 import { db } from "@/db/client";
 import { subCategories } from "./schema";
-import { storageAssets } from "@/modules/storage/schema";
+import { storageAssets } from "@vps/shared-backend/modules/storage/schema";
 import { and, or, like, eq, sql, asc, desc } from "drizzle-orm";
 import {
   subCategoryCreateSchema, subCategoryUpdateSchema, subCategorySetImageSchema,

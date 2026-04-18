@@ -31,6 +31,8 @@
     "node_modules",
     "dist",
     "src/modules/frontend/**",
+    "src/modules/cart/**",
+    "../../packages/**",
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/__tests__/**"

@@ -14,7 +14,7 @@ VALUES
     'EmlakPort',
     'emlakport',
     'Emlak kategorisi icin kurumsal ofis markasi',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'emlak-kira' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'emlak-kira' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     1
@@ -24,8 +24,8 @@ VALUES
     'Anadolu Oto',
     'anadolu-oto',
     'Otomobil ilanlari icin ornek galeri markasi',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'arac-motosiklet' LIMIT 1),
-    (SELECT `id` FROM `sub_categories` WHERE `slug` = 'otomobil' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'arac-motosiklet' AND ci.locale = 'tr' LIMIT 1),
+    (SELECT si.sub_category_id FROM sub_category_i18n si WHERE si.slug = 'otomobil' AND si.locale = 'tr' LIMIT 1),
     1,
     2
   ),
@@ -34,8 +34,8 @@ VALUES
     'Massey Ferguson',
     'massey-ferguson',
     'Traktor ilanlari icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'arac-motosiklet' LIMIT 1),
-    (SELECT `id` FROM `sub_categories` WHERE `slug` = 'traktor' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'arac-motosiklet' AND ci.locale = 'tr' LIMIT 1),
+    (SELECT si.sub_category_id FROM sub_category_i18n si WHERE si.slug = 'traktor' AND si.locale = 'tr' LIMIT 1),
     1,
     3
   ),
@@ -44,8 +44,8 @@ VALUES
     'Yamaha',
     'yamaha',
     'Motosiklet ilanlari icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'arac-motosiklet' LIMIT 1),
-    (SELECT `id` FROM `sub_categories` WHERE `slug` = 'motosiklet' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'arac-motosiklet' AND ci.locale = 'tr' LIMIT 1),
+    (SELECT si.sub_category_id FROM sub_category_i18n si WHERE si.slug = 'motosiklet' AND si.locale = 'tr' LIMIT 1),
     1,
     4
   ),
@@ -54,7 +54,7 @@ VALUES
     'Vestel',
     'vestel',
     'Elektronik kategori icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'elektronik' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'elektronik' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     5
@@ -64,8 +64,8 @@ VALUES
     'Arcelik',
     'arcelik',
     'Beyaz esya ilanlari icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'ikinci-el' LIMIT 1),
-    (SELECT `id` FROM `sub_categories` WHERE `slug` = 'beyaz-esya' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'ikinci-el' AND ci.locale = 'tr' LIMIT 1),
+    (SELECT si.sub_category_id FROM sub_category_i18n si WHERE si.slug = 'beyaz-esya' AND si.locale = 'tr' LIMIT 1),
     1,
     6
   ),
@@ -74,8 +74,8 @@ VALUES
     'Bellona',
     'bellona',
     'Mobilya ilanlari icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'ikinci-el' LIMIT 1),
-    (SELECT `id` FROM `sub_categories` WHERE `slug` = 'mobilya' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'ikinci-el' AND ci.locale = 'tr' LIMIT 1),
+    (SELECT si.sub_category_id FROM sub_category_i18n si WHERE si.slug = 'mobilya' AND si.locale = 'tr' LIMIT 1),
     1,
     7
   ),
@@ -84,7 +84,7 @@ VALUES
     'Kaman Ceviz Kooperatifi',
     'kaman-ceviz-kooperatifi',
     'Ceviz urunleri icin ornek yerel marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'kaman-cevizi' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'kaman-cevizi' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     8
@@ -94,7 +94,7 @@ VALUES
     'Anadolu Ciftlik',
     'anadolu-ciftlik',
     'Hayvan ve tarim ilanlari icin ornek ciftlik markasi',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'hayvan-tarim' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'hayvan-tarim' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     9
@@ -104,7 +104,7 @@ VALUES
     'Kaman Sutu',
     'kaman-sutu',
     'Sut ve yogurt ilanlari icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'sut-yogurt' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'sut-yogurt' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     10
@@ -114,7 +114,7 @@ VALUES
     'Kaman Organik',
     'kaman-organik',
     'Meyve sebze ilanlari icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'meyve-sebze' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'meyve-sebze' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     11
@@ -124,7 +124,7 @@ VALUES
     'Anadolu Tekstil',
     'anadolu-tekstil',
     'Giyim ve tekstil ilanlari icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'giyim-tekstil' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'giyim-tekstil' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     12
@@ -134,7 +134,7 @@ VALUES
     'Kaman Usta Hizmet',
     'kaman-usta-hizmet',
     'Usta hizmet ilanlari icin ornek servis markasi',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'usta-hizmet' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'usta-hizmet' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     13
@@ -144,7 +144,7 @@ VALUES
     'Tarim Aletleri AS',
     'tarim-aletleri-as',
     'Arac gerec ilanlari icin ornek marka',
-    (SELECT `id` FROM `categories` WHERE `slug` = 'arac-gerec' LIMIT 1),
+    (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'arac-gerec' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
     14

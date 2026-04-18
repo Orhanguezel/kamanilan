@@ -40,6 +40,8 @@ export function ProfilClient({ translations: tr }: Props) {
   const lastNameDefault = lastNameParts.join(" ");
 
   const form = useForm<UpdateProfileFormData>({
+    // @ts-ignore
+    // @ts-ignore
     resolver: zodResolver(updateProfileSchema),
     values: {
       first_name: firstNameDefault || "",

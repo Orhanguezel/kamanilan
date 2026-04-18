@@ -1,6 +1,8 @@
 import type { FastifyInstance } from "fastify";
-import { requireAuth } from "@/common/middleware/auth";
-import { requireSellerOrAdmin } from "@/common/middleware/roles";
+import { requireAuth } from "@vps/shared-backend/middleware/auth";
+import { requireRoles } from "@vps/shared-backend/middleware/roles";
+import type { FastifyRequest, FastifyReply } from "fastify";
+const requireSellerOrAdmin = (req: FastifyRequest, reply: FastifyReply) => requireRoles(req, reply, ['admin', 'seller'] as any);
 import {
   createMyCampaign,
   createMyStore,

@@ -1,55 +1,27 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronRight, Zap, Search } from "lucide-react";
 import type { SectionConfig } from "@/modules/theme/theme.type";
 import { useSlidersQuery } from "@/modules/site/site.service";
 import type { SliderItem } from "@/modules/site/site.type";
+import { ROUTES } from "@/config/routes";
 
 interface Props {
   config?: SectionConfig;
 }
 
-const DEFAULT_GRADIENT =
-  "linear-gradient(130deg, hsl(153, 42%, 12%) 0%, hsl(153, 39%, 28%) 55%, hsl(155, 38%, 38%) 100%)";
-
-export function HeroSection({ config: _config }: Props) {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const isHovered = useRef(false);
-
+export function HeroSection({ config }: Props) {
   const { data: slides = [], isPending } = useSlidersQuery();
   const items = slides as SliderItem[];
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.on("select", onSelect);
-    const timer = setInterval(() => {
-      if (!isHovered.current) emblaApi.scrollNext();
-    }, 4000);
-    return () => {
-      clearInterval(timer);
-      emblaApi.off("select", onSelect);
-    };
-  }, [emblaApi, onSelect]);
-
   if (isPending) {
     return (
-      <section className="mt-2 py-2">
-        <div className="container mx-auto px-4 md:px-6">
-          <div
-            className="h-[260px] md:h-[300px] animate-pulse rounded-2xl"
-            style={{ background: DEFAULT_GRADIENT }}
-          />
+      <section className="py-20 md:py-32">
+        <div className="container">
+          <div className="h-[500px] animate-pulse rounded-[32px] bg-parchment/50" />
         </div>
       </section>
     );
@@ -57,166 +29,115 @@ export function HeroSection({ config: _config }: Props) {
 
   if (!items.length) return null;
 
+  const mainSlide = items[0];
+
   return (
-    <section className="mt-2 py-2">
-      <div className="container mx-auto px-4 md:px-6">
-        {/* Carousel wrapper — relative for abs nav buttons */}
-        <div
-          className="relative"
-          onMouseEnter={() => { isHovered.current = true; }}
-          onMouseLeave={() => { isHovered.current = false; }}
-        >
-          <div ref={emblaRef} className="overflow-hidden rounded-2xl shadow-lg">
-            <div className="flex">
-              {items.map((slide) => {
-                const gradient = slide.gradient ?? DEFAULT_GRADIENT;
-                const badgeColor = slide.badgeColor ?? "hsl(var(--accent))";
-                const badgeTextColor = badgeColor.includes("38% 41%") ? "#fff" : "#2A1505";
+    <section className="relative overflow-hidden bg-gradient-to-b from-cream to-ivory py-20 lg:py-32 border-b border-border">
+      {/* Editorial Watermark / Grains moved to body global, but we can add glows here */}
+      <div className="pointer-events-none absolute -right-[200px] -top-[200px] h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(201,147,26,0.14),transparent_60%)]" />
+      <div className="pointer-events-none absolute -left-[100px] -bottom-[150px] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(95,109,54,0.08),transparent_60%)]" />
 
-                return (
-                  <div
-                    key={slide.id}
-                    className="relative min-w-full"
-                    style={{ background: gradient }}
-                  >
-                    {/* Arka plan resmi — düşük opaklık */}
-                    {slide.image && (
-                      <div
-                        className="pointer-events-none absolute inset-0"
-                        style={{
-                          backgroundImage: `url(${slide.image})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          opacity: 0.1,
-                        }}
-                      />
-                    )}
+      <div className="container relative z-10">
+        <div className="grid grid-cols-1 gap-20 lg:grid-cols-[1.2fr_1fr] items-center">
+          
+          {/* Sol: Copy / Editorial Content */}
+          <div className="flex flex-col items-start max-w-[680px]">
+            <div className="eyebrow mb-8">
+              {mainSlide.badgeText || "Regional Hub · 2026"}
+            </div>
+            
+            <h1 className="font-fraunces text-[clamp(48px,7vw,92px)] leading-[0.95] tracking-tight text-ink font-variation-soft-80">
+              {mainSlide.title.split(' ').map((word, i) => (
+                <span key={i}>
+                  {["Kaman", "Cevizi", "Hasat"].includes(word) ? (
+                    <em className="inline-block relative not-italic font-light text-saffron-2">
+                      {word}
+                      <span className="absolute bottom-[0.08em] left-0 right-0 h-1 bg-saffron opacity-30 px-2" />
+                    </em>
+                  ) : word}{" "}
+                </span>
+              ))}
+            </h1>
 
-                    {/* Dekoratif blob'lar */}
-                    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                      <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-white/5 blur-3xl" />
-                      <div className="absolute -left-10 bottom-0 h-48 w-48 rounded-full bg-black/10 blur-3xl" />
-                    </div>
+            <p className="mt-8 text-lg md:text-xl leading-relaxed text-text-2 max-w-[540px]">
+              {mainSlide.description || "Kaman'ın bereketli topraklarından sofranıza gelen en taze ve kaliteli ürünler."}
+            </p>
 
-                    {/* İçerik: sol metin + sağ görsel */}
-                    <div className="relative flex items-center gap-6 px-8 py-8 md:px-12 md:py-10 min-h-[220px] md:min-h-[280px]">
+            {/* Premium Search Bar */}
+            <form action={ROUTES.LISTINGS} className="mt-12 w-full max-w-[620px] transition-all duration-300">
+               <div className="group relative flex items-center bg-paper rounded-full border border-border p-2 shadow-xl focus-within:border-saffron focus-within:shadow-2xl">
+                 <div className="hidden md:flex items-center border-r border-border px-5 py-2">
+                    <select className="bg-transparent text-[13px] font-bold outline-none cursor-pointer text-walnut uppercase tracking-wider">
+                      <option>Tüm İlanlar</option>
+                      <option>Ceviz</option>
+                      <option>Emlak</option>
+                    </select>
+                 </div>
+                 <input 
+                   name="q"
+                   placeholder="Kaman'da ne arıyorsunuz?" 
+                   className="flex-1 bg-transparent px-6 py-3 text-sm font-medium outline-none"
+                 />
+                 <button className="h-12 w-12 flex items-center justify-center rounded-full bg-ink text-saffron transition-all hover:rotate-[-15deg] hover:bg-saffron hover:text-ink">
+                    <Search className="h-5 w-5" />
+                 </button>
+               </div>
+            </form>
 
-                      {/* Sol: Metin */}
-                      <div className="flex-1 min-w-0">
-                        {slide.badgeText && (
-                          <span
-                            className="mb-3 inline-block rounded-full px-4 py-1 text-xs font-bold"
-                            style={{ background: badgeColor, color: badgeTextColor }}
-                          >
-                            {slide.badgeText}
-                          </span>
-                        )}
-
-                        <h1
-                          className="font-playfair text-2xl font-bold text-white md:text-4xl"
-                          style={{ whiteSpace: "pre-line", lineHeight: 1.25 }}
-                        >
-                          {slide.title}
-                        </h1>
-
-                        {slide.description && (
-                          <p className="mt-3 max-w-sm text-sm text-white/75 md:text-base">
-                            {slide.description}
-                          </p>
-                        )}
-
-                        {slide.buttonLink && (
-                          <Link
-                            href={slide.buttonLink}
-                            className="mt-5 inline-block rounded-lg px-6 py-2.5 text-sm font-bold shadow-lg transition-all hover:opacity-90 active:scale-95"
-                            style={{ background: "hsl(var(--accent))", color: "#2A1505" }}
-                          >
-                            {slide.buttonText || "İncele"}
-                          </Link>
-                        )}
-                      </div>
-
-                      {/* Sağ: Ön plan görseli */}
-                      {slide.image2 && (
-                        <div className="hidden md:block flex-shrink-0 w-[260px] lg:w-[320px]">
-                          <div className="relative h-[190px] lg:h-[230px] overflow-hidden rounded-xl shadow-2xl ring-2 ring-white/10">
-                            <Image
-                              src={slide.image2}
-                              alt={slide.alt ?? slide.title}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 1024px) 260px, 320px"
-                              priority={slide.order === 1}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="mt-6 flex flex-wrap gap-2.5 items-center">
+               <span className="font-mono text-[10px] uppercase tracking-widest text-text-3 mr-2">Trendler:</span>
+               {["Satılık Arazi", "Yeni Mahsul", "Traktör"].map(tag => (
+                 <Link key={tag} href={`${ROUTES.LISTINGS}?q=${tag}`} className="px-4 py-1.5 rounded-full border border-border text-[12px] font-bold text-walnut hover:bg-ink hover:text-saffron transition-all">
+                   {tag}
+                 </Link>
+               ))}
             </div>
           </div>
 
-          {/* Prev/Next okları */}
-          {emblaApi && items.length > 1 && (
-            <>
-              <button
-                onClick={() => emblaApi.scrollPrev()}
-                className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full text-white transition-all hover:scale-110"
-                style={{ background: "hsla(153, 42%, 5%, 0.5)" }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "hsl(var(--accent))";
-                  e.currentTarget.style.color = "#2A1505";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "hsla(153, 42%, 5%, 0.5)";
-                  e.currentTarget.style.color = "white";
-                }}
-                aria-label="Önceki"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => emblaApi.scrollNext()}
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full text-white transition-all hover:scale-110"
-                style={{ background: "hsla(153, 42%, 5%, 0.5)" }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "hsl(var(--accent))";
-                  e.currentTarget.style.color = "#2A1505";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "hsla(153, 42%, 5%, 0.5)";
-                  e.currentTarget.style.color = "white";
-                }}
-                aria-label="Sonraki"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </>
-          )}
+          {/* Sağ: Editorial Visual Collage */}
+          <div className="relative h-[480px] md:h-[600px] w-full">
+            {/* Main Center Image */}
+            <div className="absolute left-0 top-10 z-20 w-[65%] h-[75%] rounded-[32px] overflow-hidden shadow-2xl rotate-[-3deg] transition-all hover:rotate-0 hover:scale-[1.03]">
+               <Image 
+                 src={items[0]?.image || "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb"} 
+                 alt="Kaman 1" fill className="object-cover" priority 
+               />
+            </div>
+            {/* Secondary Floating Image */}
+            <div className="absolute right-0 top-32 z-10 w-[55%] h-[55%] rounded-[24px] overflow-hidden shadow-2xl rotate-[5deg] transition-all hover:rotate-0 hover:scale-[1.03]">
+               <Image 
+                 src={items[1]?.image || items[0]?.image2 || "https://images.unsplash.com/photo-1570129477492-45c003edd2be"} 
+                 alt="Kaman 2" fill className="object-cover" 
+               />
+            </div>
+            {/* Stats Card Overlay */}
+            <div className="absolute bottom-5 left-[25%] z-30 w-[55%] h-[180px] rounded-[24px] bg-ink p-8 flex flex-col items-center justify-center text-center shadow-3xl rotate-[-2deg] transition-all hover:rotate-0 hover:scale-105">
+               <span className="font-fraunces text-6xl font-light italic text-saffron leading-none">2026</span>
+               <span className="mt-3 font-mono text-[10px] uppercase tracking-[0.3em] text-wheat">Tescilli Mahsul Zamanı</span>
+            </div>
+            {/* Rotating Badge */}
+            <div className="absolute top-0 right-[8%] z-40 h-28 w-28 md:h-32 md:w-32 animate-[spin_20s_linear_infinite] rounded-full bg-saffron shadow-2xl flex items-center justify-center p-5 text-center font-mono text-[9px] md:text-[10px] uppercase font-bold leading-tight tracking-wider text-ink">
+               Kaman Cevizi · %100 Orijinal · Coğrafi İşaret · 2026
+            </div>
+          </div>
         </div>
 
-        {/* Slide noktaları */}
-        {items.length > 1 && (
-          <div className="mt-3 flex justify-center gap-2">
-            {items.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => emblaApi?.scrollTo(i)}
-                className="h-1.5 rounded-full transition-all"
-                style={{
-                  width: i === selectedIndex ? 20 : 6,
-                  background:
-                    i === selectedIndex
-                      ? "hsl(var(--accent))"
-                      : "hsl(var(--muted-foreground) / 0.3)",
-                }}
-                aria-label={`Slayt ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        {/* Hero Stats Ribbon */}
+        <div className="mt-20 lg:mt-32 pt-12 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-12">
+           {[
+             { num: "LXX", unit: "+", label: "Aktif İlan" },
+             { num: "MD", unit: "k", label: "Aylık Ziyaret" },
+             { num: "IX", unit: "/X", label: "Memnuniyet" },
+             { num: "XXIV", unit: "h", label: "Destek" }
+           ].map((s, idx) => (
+             <div key={idx} className="flex flex-col items-start gap-3">
+               <div className="font-fraunces text-4xl lg:text-5xl text-ink tracking-tight">
+                 {s.num}<sup className="text-xl italic text-saffron-2 ml-1">{s.unit}</sup>
+               </div>
+               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[hsl(var(--muted-foreground))]">{s.label}</div>
+             </div>
+           ))}
+        </div>
       </div>
     </section>
   );

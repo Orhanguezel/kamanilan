@@ -112,8 +112,7 @@ export function InfiniteListingsSection({ config }: Props) {
 
   return (
     <section
-      className="py-10 border-t"
-      style={{ background: "hsl(var(--background))" }}
+      className="py-24 bg-white border-t border-black/5"
     >
       <div className="container mx-auto px-4">
         <SectionHeader
@@ -122,19 +121,19 @@ export function InfiniteListingsSection({ config }: Props) {
           viewAllHref={ROUTES.LISTINGS}
         />
 
-        <div className={`grid gap-3 ${gridClass}`}>
+        <div className={`grid gap-4 md:gap-8 ${gridClass}`}>
           {allListings.map((listing) => (
             <ListingCard key={listing.id} listing={listing} />
           ))}
 
           {isLoading &&
-            Array.from({ length: PER_PAGE }).map((_, i) => (
-              <ListingSkeleton key={`sk-init-${i}`} />
+            Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="aspect-[4/5] animate-pulse rounded-[32px] bg-muted/20" />
             ))}
 
           {isFetchingNextPage &&
-            Array.from({ length: 8 }).map((_, i) => (
-              <ListingSkeleton key={`sk-next-${i}`} />
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="aspect-[4/5] animate-pulse rounded-[32px] bg-muted/20" />
             ))}
         </div>
 

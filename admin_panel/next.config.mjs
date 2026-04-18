@@ -57,12 +57,12 @@ const nextConfig = {
       return val.endsWith('/api') ? val.slice(0, -4) : val;
     })();
 
-    const base = fromApiUrl || 'http://localhost:8078';
+    const base = fromApiUrl || 'https://kamanilan.com';
 
     return [
       {
         source: '/api/:path*',
-        destination: `${base}/api/:path*`,
+        destination: `${base}/api/v1/:path*`,
       },
       {
         source: '/uploads/:path*',
@@ -70,7 +70,7 @@ const nextConfig = {
       },
       {
         source: '/storage/:path*',
-        destination: `${base}/api/storage/:path*`,
+        destination: `${base}/api/v1/storage/:path*`,
       },
     ];
   },

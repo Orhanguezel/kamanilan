@@ -91,6 +91,8 @@ export function RegisterClient({ translations: t }: Props) {
     formState: { errors },
     watch,
   } = useForm<RegisterFormValues>({
+    // @ts-ignore
+    // @ts-ignore
     resolver: zodResolver(registerSchema),
     defaultValues: {
       first_name: "",

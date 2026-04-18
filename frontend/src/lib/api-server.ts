@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = process.env.NEXT_PUBLIC_REST_API_ENDPOINT || "https://sportoonline.com/api/v1";
+let BASE_URL = process.env.NEXT_PUBLIC_REST_API_ENDPOINT || "https://www.kamanilan.com/api/v1";
+if (BASE_URL.endsWith("/api")) {
+  BASE_URL += "/v1";
+}
 
 export async function fetchAPI<T>(
   endpoint: string,

@@ -63,4 +63,7 @@ export const ROUTES = {
 
   // Mağazalar (yakında)
   STORES: "/magazalar",
+
+  // Kurumsal / Sayfalar dizini
+  KURUMSAL: "/kurumsal",
 } as const;

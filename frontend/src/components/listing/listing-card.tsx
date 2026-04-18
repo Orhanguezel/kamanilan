@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Clock, Tag, Heart, ShoppingCart } from "lucide-react";
+import { MapPin, Clock, Heart, ShoppingCart, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { t } from "@/lib/t";
 import { ROUTES } from "@/config/routes";
@@ -10,11 +10,15 @@ import { useLikedListings } from "@/hooks/use-liked-listings";
 import { useCartStore } from "@/stores/cart-store";
 import type { Listing } from "@/modules/listing/listing.types";
 
-function formatPrice(price: string | null, currency: string): string {
+function formatPrice(price: string | null, currency: string): React.ReactNode {
   if (!price || price === "0") return t("listing.free");
   const num = parseFloat(price);
   if (isNaN(num)) return t("listing.free");
-  return `${num.toLocaleString("tr-TR")} ${currency === "TRY" ? "₺" : currency}`;
+  return (
+    <span className="font-fraunces text-lg md:text-xl font-medium tracking-tight">
+      {num.toLocaleString("tr-TR")} <small className="text-xs italic opacity-70 ml-0.5">{currency === "TRY" ? "₺" : currency}</small>
+    </span>
+  );
 }
 
 function formatDateShort(dateStr: string): string {
@@ -23,27 +27,6 @@ function formatDateShort(dateStr: string): string {
     month: "short",
   });
 }
-
-function getStatusLabel(status: string): string {
-  const map: Record<string, string> = {
-    satilik: "Satılık",
-    kiralik: "Kiralık",
-    takas: "Takas",
-    ihtiyac: "İhtiyaç",
-    ucretsiz: "Ücretsiz",
-    tukendi: "Tükendi",
-  };
-  return map[status] ?? status;
-}
-
-const STATUS_COLORS: Record<string, string> = {
-  satilik: "bg-blue-600",
-  kiralik: "bg-emerald-600",
-  takas: "bg-violet-600",
-  ihtiyac: "bg-orange-600",
-  ucretsiz: "bg-gray-600",
-  tukendi: "bg-red-600",
-};
 
 interface ListingCardProps {
   listing: Listing;
@@ -54,128 +37,102 @@ export function ListingCard({ listing }: ListingCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const liked = isLiked(listing.id);
 
-  const imageUrl = listing.image_url ?? null;
-  const m2    = listing.variant_values?.find((v) => v.variant_slug === "net-metrekare");
-  const rooms = listing.variant_values?.find((v) => v.variant_slug === "oda-sayisi");
-
-  const statusColor = STATUS_COLORS[listing.status] ?? "bg-gray-600";
+  const imageUrl = listing.image_url ?? "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop&q=60";
 
   return (
-    <Link
-      href={ROUTES.LISTING_DETAIL(listing.slug)}
-      className="group relative flex flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5"
-    >
-      {/* Image */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-        {imageUrl ? (
-          <Image
+    <article className="group relative flex flex-col bg-paper rounded-[20px] overflow-hidden border border-border transition-all duration-500 hover:shadow-2xl hover:border-saffron/30 hover:-translate-y-1">
+      {/* ── Visual Frame ── */}
+      <Link href={ROUTES.LISTING_DETAIL(listing.slug)} className="relative aspect-[16/11] w-full overflow-hidden block">
+         <Image
             src={imageUrl}
-            alt={listing.alt ?? listing.title}
+            alt={listing.alt || listing.title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 480px) 50vw, (max-width: 768px) 33vw, 25vw"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-muted to-muted/50">
-            <Tag className="h-8 w-8 text-muted-foreground/30" />
-          </div>
-        )}
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw"
+         />
+         
+         {/* Badges Overlay */}
+         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+            {listing.featured && (
+               <span className="bg-saffron text-ink text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg">
+                 ★ Öne Çıkan
+               </span>
+            )}
+            {listing.badge_text && (
+               <span className="bg-ember text-white text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg">
+                 {listing.badge_text}
+               </span>
+            )}
+         </div>
 
-        {/* Top-left: featured / badge */}
-        <div className="absolute left-1.5 top-1.5 flex flex-wrap gap-1">
-          {listing.featured && (
-            <span className="rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-semibold leading-tight text-white shadow">
-              {t("listing.featured")}
-            </span>
-          )}
-          {listing.badge_text && (
-            <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-semibold leading-tight text-white shadow">
-              {listing.badge_text}
-            </span>
-          )}
-        </div>
-
-        {/* Top-right: status + like + cart */}
-        <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
-          <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium text-white shadow ${statusColor}`}>
-            {getStatusLabel(listing.status)}
-          </span>
-
-          {/* Cart button */}
-          {listing.has_cart && (
+         <div className="absolute top-4 right-4 flex flex-col gap-2">
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                addItem(listing);
-                toast.success(t("listing.added_to_cart"));
-              }}
-              aria-label="Sepete ekle"
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-white/80 text-primary shadow transition-colors hover:bg-white backdrop-blur-sm"
+              onClick={(e) => toggle(listing.id, e)}
+              className={`h-9 w-9 flex items-center justify-center rounded-full backdrop-blur-md transition-all shadow-lg ${
+                liked ? "bg-ember text-white" : "bg-white/80 text-ink hover:bg-white"
+              }`}
             >
-              <ShoppingCart className="h-3.5 w-3.5" />
+              <Heart className={`h-4.5 w-4.5 ${liked ? "fill-current" : ""}`} />
             </button>
-          )}
+            
+            {listing.has_cart && (
+               <button
+                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); addItem(listing); toast.success(t("listing.added_to_cart")); }}
+                 className="h-9 w-9 flex items-center justify-center rounded-full bg-white/80 text-ink backdrop-blur-md shadow-lg hover:bg-ink hover:text-saffron transition-all"
+               >
+                 <ShoppingCart className="h-4.5 w-4.5" />
+               </button>
+            )}
+         </div>
+      </Link>
 
-          {/* Like button */}
-          <button
-            onClick={(e) => toggle(listing.id, e)}
-            aria-label={liked ? "Beğeniyi kaldır" : "Beğen"}
-            className={`flex h-6 w-6 items-center justify-center rounded-full shadow transition-colors ${
-              liked
-                ? "bg-red-500 text-white"
-                : "bg-white/80 text-gray-500 hover:bg-white hover:text-red-400 backdrop-blur-sm"
-            }`}
-          >
-            <Heart className={`h-3.5 w-3.5 ${liked ? "fill-current" : ""}`} />
-          </button>
+      {/* ── Content ── */}
+      <div className="flex flex-1 flex-col p-5 md:p-6">
+        {/* Meta Info */}
+        <div className="flex items-center justify-between mb-3">
+           <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-saffron-2 flex items-center gap-2">
+              <span className="h-1 w-1 rounded-full bg-current" />
+              {listing.categories?.name || "Kategori"}
+           </div>
+           <div className="flex items-center gap-1.5 font-mono text-[9px] text-[hsl(var(--muted-foreground))] opacity-70">
+              <Clock className="h-3 w-3" />
+              {formatDateShort(listing.created_at)}
+           </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="flex flex-1 flex-col px-2.5 py-2">
         {/* Title */}
-        <h3 className="line-clamp-2 text-xs font-semibold leading-snug text-foreground group-hover:text-primary">
-          {listing.title}
+        <h3 className="line-clamp-2 font-fraunces text-lg md:text-xl font-medium leading-[1.3] text-ink group-hover:text-saffron-2 transition-colors mb-3">
+          <Link href={ROUTES.LISTING_DETAIL(listing.slug)}>{listing.title}</Link>
         </h3>
 
-        {/* Location */}
-        <div className="mt-1 flex items-center gap-0.5 text-[10px] text-muted-foreground">
-          <MapPin className="h-2.5 w-2.5 shrink-0" />
-          <span className="line-clamp-1">
-            {listing.neighborhood
-              ? `${listing.neighborhood}, ${listing.district}`
-              : listing.district}
-          </span>
+        {/* Details Row */}
+        <div className="mb-4 flex items-center gap-1.5 text-[13px] text-text-2 font-medium">
+           <MapPin className="h-3.5 w-3.5 text-saffron" />
+           <span className="truncate">
+             {listing.neighborhood || listing.district || "Kaman"}, Kırşehir
+           </span>
         </div>
 
-        {/* Variant chips: rooms + m2 */}
-        {(rooms || m2) && (
-          <div className="mt-1 flex flex-wrap gap-1">
-            {rooms && (
-              <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                {rooms.value}
-              </span>
-            )}
-            {m2 && (
-              <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                {m2.value} m²
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Footer */}
-        <div className="mt-auto flex items-end justify-between pt-1.5">
-          <span className="text-sm font-bold text-primary leading-tight">
-            {formatPrice(listing.price, listing.currency)}
-          </span>
-          <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
-            <Clock className="h-2.5 w-2.5" />
-            {formatDateShort(listing.created_at)}
-          </span>
+        {/* Seller Info (Editorial Small) */}
+        <div className="mt-auto pt-5 border-t border-border flex items-end justify-between">
+           <div className="flex flex-col">
+              <div className="text-ink">
+                {formatPrice(listing.price, listing.currency)}
+              </div>
+           </div>
+           
+           <div className="flex items-center gap-2.5">
+             <div className="text-right hidden sm:block">
+               <div className="text-[10px] font-mono text-[hsl(var(--muted-foreground))] uppercase tracking-wider">Satıcı</div>
+               <div className="text-[12px] font-bold text-ink truncate max-w-[80px]">{(listing as any).user_name || "Özel Satıcı"}</div>
+             </div>
+             <div className="h-9 w-9 rounded-full bg-parchment border border-border flex items-center justify-center font-fraunces italic font-bold text-walnut relative">
+               {((listing as any).user_name?.[0] || "K").toUpperCase()}
+               <CheckCircle2 className="absolute -right-0.5 -bottom-0.5 h-3.5 w-3.5 text-blue-500 fill-white" />
+             </div>
+           </div>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }

@@ -2,7 +2,7 @@
 // FILE: src/modules/properties/admin.routes.ts
 // =============================================================
 import type { FastifyInstance } from "fastify";
-import { makeAdminPermissionGuard } from '@/common/middleware/permissions';
+import { makeAdminPermissionGuard } from '@vps/shared-backend/middleware/permissions';
 import {
   listPropertiesAdmin,
   getPropertyAdmin,

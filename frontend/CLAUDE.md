@@ -1,93 +1,102 @@
-# CLAUDE.md
+# CLAUDE.md — Kamanilan Frontend
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Musteri tarafi web uygulamasi. `vps-guezel` monorepo workspace'i altinda, Fastify backend'e (port 8078) baglanir.
 
-## Overview
+## Stack
 
-Customer-facing e-commerce frontend for QuickEcommerce. Built with **Next.js 16** (App Router, Turbopack), **TypeScript strict**, **next-intl** for i18n, and connects to a **Laravel backend** REST API. Part of a monorepo (`quickecommerce/`) alongside `admin-panel/`, `backend-laravel/`, and `customer-app-and-web-flutter/`.
+- **Next.js 16** App Router + Turbopack
+- **React 19**, TypeScript strict
+- **Tailwind CSS v3** + Shadcn/ui + Radix UI
+- **Zustand** (auth, cart, recently-viewed, chat widget)
+- **TanStack Query v5** (server state)
+- **react-hook-form** + **Zod** (form validation)
+- **axios** + **js-cookie** (API + session cookie)
+- **Iyzipay** uclu odeme akisi
+- **Backend:** Fastify + Drizzle ORM + MySQL (monorepo: `@vps/shared-backend`)
 
-## Commands
+## Komutlar
 
 ```bash
-bun run dev          # Dev server on port 3003 (Turbopack)
-bun run dev:no-turbo # Dev server without Turbopack
+bun run dev          # 3003 portunda dev server (Turbopack)
+bun run dev:no-turbo # Turbopack olmadan
 bun run build        # Production build
-bun run start        # Production server on port 3003
+bun run start        # 3003 portunda production
 bun run lint         # ESLint
 ```
 
-## Architecture
+Root workspace'ten: `bun run dev:kamanilan:fe`.
 
-### Routing — Turkish-First URLs
+## Routing — Tek Dil, Turkce Slug'lar
 
-All routes use **Turkish slugs**. Route constants are in `src/config/routes.ts`:
+Kamanilan **TR tek dil**. App router'da **`[locale]` prefix'i yok** — tum sayfalar dogrudan Turkce slug uzerinden.
+
+Route sabitleri: [src/config/routes.ts](src/config/routes.ts)
 
 ```
-/giris, /kayit, /sepet, /odeme, /urun/[slug], /kategori/[slug],
-/magazalar, /blog, /hakkimizda, /iletisim, /kuponlar,
-/hesabim, /siparislerim, /favorilerim, /adreslerim, /cuzdan, /destek
+/, /giris, /kayit, /ilanlar, /ilan/[slug], /ilan-ver, /ilanlarim,
+/kategori/[slug], /kategoriler, /ara, /duyurular, /haberler/[slug],
+/sepet, /odeme, /hesabim (+ alt sayfalar), /mesajlar, /bildirimler,
+/kampanyalar, /kuponlar, /magazalar, /iletisim, /hakkimizda,
+/gizlilik-politikasi, /kullanim-kosullari, /misyon-vizyon, /kalite-politikamiz
 ```
 
-Routes are locale-prefixed via next-intl: `/tr/urun/iphone-15`, `/en/urun/iphone-15`.
+## i18n — Cookie Tabanli, TR Varsayilan
 
-### i18n (next-intl)
+next-intl **kullanilmaz**. Basit cookie + JSON sozluk sistemi:
 
-- Locales: `tr` (default), `en`
-- Config: `src/i18n/routing.ts`
-- Translations: `public/locales/tr.json`, `public/locales/en.json`
-- **CRITICAL:** Always use `Link`, `useRouter`, `usePathname` from `@/i18n/routing` — they auto-add the locale prefix. **Never manually prepend** `/${locale}/` to hrefs (causes `/tr/tr/` double-locale bug).
+- **Sozlukler:** [src/locales/tr.json](src/locales/tr.json) (EN tutuluyor ama aktif degil)
+- **Yardimci:** [src/lib/t.ts](src/lib/t.ts) — `t("key", {}, locale?)` cagrisi
+- **Locale kaynagi:** `lang` cookie (server'da `cookies()`, client'ta `js-cookie`)
+- **Backend locale header:** `x-lang` veya `X-Locale` ile istek atilir (backend `APP_LOCALES=tr` ile yalnizca `tr` kabul eder)
 
-### API Integration — Dual Strategy
+**Cift-locale bug'i yok** — route'larda locale prefix bulunmadigi icin `Link`/`useRouter` dogrudan `next/link` ve `next/navigation`'dan import edilir.
 
-**Server Components (SSR):** `src/lib/api-server.ts` — direct axios calls with locale header.
+## API Entegrasyonu — Dual Strategy
 
-**Client Components:** `src/lib/base-service.ts` — `useBaseService<DataType>(route)` hook returns `findAll`, `find`, `findBySlug`, `create`, `update`, `patch`, `delete`. Includes automatic token refresh on 401 (queues concurrent requests).
+- **Server Components (SSR):** [src/lib/api-server.ts](src/lib/api-server.ts) — dogrudan axios + locale header
+- **Client Components:** [src/lib/base-service.ts](src/lib/base-service.ts) — `useBaseService<T>(route)` TanStack hook'u (findAll, find, findBySlug, create, update, patch, delete) + otomatik 401 refresh kuyruk yonetimi
+- **Proxy (dev):** Tarayici istekleri `/api/proxy/*` uzerinden gider ([src/proxy.ts](src/proxy.ts) + Next.js rewrite) — CORS'u atlar. Prod'da dogrudan API.
+- **Endpoint sabitleri:** `src/endpoints/api-endpoints.ts`
 
-**API proxy:** In development, browser requests go through `/api/proxy/*` (Next.js rewrite) to avoid CORS. In production, direct API calls. Logic in `src/lib/api-url.ts`.
+## State Management
 
-**Endpoints:** All 100+ API route strings in `src/endpoints/api-endpoints.ts`.
+- **Zustand** [src/stores/](src/stores/): `auth-store.ts`, `cart-store.ts`, `recently-viewed-store.ts`, `chat-widget-store.ts`. Gereklilere gore `persist` middleware ile localStorage.
+- **TanStack Query v5** [src/lib/query-provider.tsx](src/lib/query-provider.tsx): 10 dk stale, 30 dk gc, window focus'ta refetch kapali.
 
-### State Management
+## Modul Deseni
 
-- **Zustand** (`src/stores/`): `auth-store.ts` (user/auth state), `cart-store.ts` (local cart). Both persist to localStorage.
-- **TanStack Query v5** (`src/lib/query-provider.tsx`): Server state. 10min stale time, 30min GC, no refetch on window focus.
+Feature kodu [src/modules/{feature}/](src/modules/) altinda:
+- `*.service.ts` — TanStack Query hook'lari
+- `*.type.ts` — TypeScript interface'leri
 
-### Module Pattern
+Mevcut modeller: `address, ai-chat, announcement, articles, auth, banner, cart, chat, checkout, contact, favorites, flash-sale, listing, news, notification, order, popup, profile, site, storage, support, theme, wallet`.
 
-Feature code lives in `src/modules/{feature}/`:
-- `*.service.ts` — TanStack Query hooks (queries + mutations)
-- `*.type.ts` — TypeScript interfaces
+## Dinamik Tema
 
-Modules: auth, banner, blog, cart, chat, checkout, flash-deal, newsletter, notification, order, product, profile, site, store, support, theme, wallet, wishlist.
+[src/app/layout.tsx](src/app/layout.tsx) tema renklerini backend `siteSettings`'ten ceker, HEX→HSL cevirir, inline `<style>` enjekte eder. Istemci tarafi [src/components/providers/theme-provider.tsx](src/components/providers/theme-provider.tsx) dinamik guncellemeyi yonetir. Tum renkler `hsl(var(--primary))` pattern'inde (Shadcn/Radix konvansiyonu).
 
-### Dynamic Theming
+## Environment Variables
 
-`src/app/[locale]/layout.tsx` fetches theme colors from the API, converts HEX→HSL, and injects CSS variables as inline `<style>`. Client-side `ThemeProvider` in `src/components/providers/theme-provider.tsx` updates dynamically. All colors use `hsl(var(--primary))` pattern (Shadcn/Radix UI convention).
+`@t3-oss/env-nextjs` + Zod ile dogrulanir ([src/env.mjs](src/env.mjs)):
 
-### UI Stack
+- `NEXT_PUBLIC_REST_API_ENDPOINT` — Backend API URL (zorunlu, ornek: `http://localhost:8078/api`)
+- `NEXT_PUBLIC_SITE_URL` — Frontend URL (zorunlu)
+- `NEXT_PUBLIC_GOOGLE_CLIENT_ID` — Google OAuth (opsiyonel)
+- `NEXT_PUBLIC_FACEBOOK_APP_ID` — Facebook OAuth (opsiyonel)
 
-Shadcn/ui components in `src/components/ui/` (40+ files), built on Radix UI primitives with Tailwind CSS. Icons: lucide-react.
+## Auth Akisi
 
-### Environment Variables
+Token'lar cookie'de (`access_token` — backend HttpOnly set eder). 401'de [base-service.ts](src/lib/base-service.ts) `/api/v1/auth/refresh`'e refresh atar, bekleyen istekleri kuyrukla tekrar dener. Refresh basarisizsa `/giris` yonlendirmesi.
 
-Validated via `@t3-oss/env-nextjs` + Zod in `src/env.mjs`:
-- `NEXT_PUBLIC_REST_API_ENDPOINT` — Backend API URL (required)
-- `NEXT_PUBLIC_SITE_URL` — Frontend URL (required)
-- `NEXT_PUBLIC_GOOGLE_CLIENT_ID` — Google OAuth (optional)
-- `NEXT_PUBLIC_FACEBOOK_APP_ID` — Facebook OAuth (optional)
+## Kritik Kurallar
 
-### Auth Flow
+1. **Locale prefix eklenmez** — `/tr/ilan/...` gibi URL **olusturma**. Rotalar direkt Turkce slug.
+2. **`lang` cookie TR varsayilan** — backend `APP_LOCALES=tr` ile yalnizca `tr` dondurur; `en.json` sozluk var ama aktif degil.
+3. **`@/` path alias** ile cross-module import.
+4. **Hardcoded API URL yasak** — her zaman `env.NEXT_PUBLIC_REST_API_ENDPOINT`.
+5. **Ana sayfa `Promise.allSettled` ile paralel veri cekmeli** — tek section'in hatasi tum sayfayi dusurmesin.
+6. **Shadcn bilesenleri [src/components/ui/](src/components/ui/) altinda.** Yeni bilesen eklemeden once shared-ui paketine tasinabilir mi kontrol et (`@vps/shared-ui` — henuz entegre degil).
 
-Tokens stored in cookies (`auth_token`, `auth_user`). On 401, `base-service.ts` attempts refresh via `/customer/refresh-token`, queues concurrent failing requests, and retries. On refresh failure, redirects to `/giris`.
+## Monorepo Notu
 
-### Docker Deployment
-
-Multi-stage build (Node 22 Alpine), standalone output, runs as non-root user on port 3000. CI/CD via GitHub Actions → GHCR → SSH deploy.
-
-## Critical Rules
-
-1. **Never patch the database directly** — all data changes must go through Laravel seeders. Local DB changes don't reach production.
-2. **Seeder URLs must match frontend routes** — Menu URLs in `MenuSeeder.php` must use Turkish slugs (`magazalar`, not `store/list`).
-3. **Use `Link`/`useRouter` from `@/i18n/routing`** — never from `next/link` or `next/navigation` for navigable links.
-4. **Use `@/` path aliases** for all cross-module imports.
-5. **Homepage uses `Promise.allSettled`** for parallel data fetching — individual section failures don't cascade.
+Frontend su an **`@vps/*` paketlerinden import etmiyor**. Faz 1'de `@vps/core` (API fetch) + `@vps/shared-ui` (Shadcn bilesenler + SEO) + `@vps/shared-types` entegrasyonu planlaniyor. Detay: [../CLAUDE.md](../CLAUDE.md), [../strateji.md](../strateji.md).

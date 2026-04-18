@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const apiUrl =
-  process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "http://localhost:8078/api";
+  process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "https://kamanilan.com/api";
 
 // Backend base URL — /api suffix'i olmadan (/uploads, /static vb. için)
 const backendBase = apiUrl.replace(/\/api$/, "");
@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
       // Backend API proxy
       {
         source: "/api/proxy/:path*",
-        destination: `${apiUrl}/:path*`,
+        destination: `${apiUrl}/v1/:path*`,
       },
       // Backend upload dosyaları proxy (logo, favicon, media vb.)
       {

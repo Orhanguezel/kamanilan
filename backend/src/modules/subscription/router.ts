@@ -2,7 +2,7 @@
 // FILE: src/modules/subscription/router.ts  (PUBLIC)
 // =============================================================
 import type { FastifyInstance } from "fastify";
-import { requireAuth } from "@/common/middleware/auth";
+import { requireAuth } from "@vps/shared-backend/middleware/auth";
 import { listPlans, getMyPlan } from "./controller";
 
 export async function registerSubscription(app: FastifyInstance) {

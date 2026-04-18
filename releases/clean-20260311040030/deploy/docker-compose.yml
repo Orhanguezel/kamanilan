@@ -1,0 +1,106 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: ${COMPOSE_PROJECT_NAME:-kamanilan}-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1", "-u", "$$MARIADB_USER", "--password=$$MARIADB_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app_net
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-kamanilan}-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 8078
+      PUBLIC_URL: ${BACKEND_PUBLIC_URL}
+      FRONTEND_URL: ${FRONTEND_PUBLIC_URL}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      COOKIE_SECRET: ${COOKIE_SECRET}
+      STORAGE_DRIVER: ${STORAGE_DRIVER:-local}
+      LOCAL_STORAGE_BASE_URL: ${LOCAL_STORAGE_BASE_URL:-/uploads}
+      CORS_ORIGIN: ${FRONTEND_PUBLIC_URL},${ADMIN_PANEL_PUBLIC_URL}
+    ports:
+      - "${BACKEND_PORT:-8078}:8078"
+    volumes:
+      - backend_uploads:/app/uploads
+    networks:
+      - app_net
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_REST_API_ENDPOINT: ${BACKEND_PUBLIC_URL}/api
+        NEXT_PUBLIC_SITE_URL: ${FRONTEND_PUBLIC_URL}
+        NEXT_PUBLIC_DEFAULT_LANGUAGE: tr
+        NEXT_PUBLIC_AVAILABLE_LANGUAGES: tr,en
+        NEXT_IMAGE_HOST: kamanilan.com
+    container_name: ${COMPOSE_PROJECT_NAME:-kamanilan}-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "${FRONTEND_PORT:-3003}:3003"
+    networks:
+      - app_net
+
+  admin_panel:
+    build:
+      context: ../admin_panel
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-kamanilan}-admin
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      PORT: 3022
+      HOSTNAME: 0.0.0.0
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_API_URL: ${BACKEND_PUBLIC_URL}/api
+      NEXT_PUBLIC_API_BASE_URL: ${BACKEND_PUBLIC_URL}/api
+      NEXT_PUBLIC_MEDIA_URL: ${BACKEND_PUBLIC_URL}
+      NEXT_PUBLIC_SOCKET_URL: ${BACKEND_PUBLIC_URL}
+      NEXT_PUBLIC_SITE_URL: ${ADMIN_PANEL_PUBLIC_URL}
+    ports:
+      - "${ADMIN_PANEL_PORT:-3022}:3022"
+    networks:
+      - app_net
+
+volumes:
+  db_data:
+  backend_uploads:
+
+networks:
+  app_net:
+    driver: bridge

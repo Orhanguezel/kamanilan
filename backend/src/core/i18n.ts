@@ -1,10 +1,10 @@
 // src/core/i18n.ts
 
 import { db } from "@/db/client";
-import { siteSettings } from "@/modules/siteSettings/schema";
+import { siteSettings } from "@vps/shared-backend/modules/siteSettings/schema";
 import { eq } from "drizzle-orm";
 
-export const LOCALES = ["tr", "en", "de"] as const;
+export const LOCALES = ["tr"] as const;
 export const DEFAULT_LOCALE = "tr";
 
 export type SupportedLocale = (typeof LOCALES)[number];

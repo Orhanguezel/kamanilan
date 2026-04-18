@@ -10,8 +10,8 @@ import {
   foreignKey,
 } from 'drizzle-orm/mysql-core';
 import { sql } from 'drizzle-orm';
-import { categories } from '@/modules/categories/schema';
-import { subCategories } from '@/modules/subcategories/schema';
+import { categories } from '@vps/shared-backend/modules/categories/schema';
+import { subCategories } from '@vps/shared-backend/modules/subcategories/schema';
 
 export const listingTags = mysqlTable(
   'listing_tags',

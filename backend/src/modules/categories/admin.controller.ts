@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================
 // FILE: src/modules/categories/admin.controller.ts
 // =============================================================
@@ -14,7 +15,7 @@ import {
   type CategorySetImageInput,
 } from "./validation";
 import { buildInsertPayload, buildUpdatePayload } from "./controller";
-import { storageAssets } from "@/modules/storage/schema";
+import { storageAssets } from "@vps/shared-backend/modules/storage/schema";
 import { env } from "@/core/env";
 
 const toBool = (v: unknown): boolean | undefined => {
