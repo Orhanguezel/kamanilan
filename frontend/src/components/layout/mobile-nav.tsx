@@ -55,12 +55,17 @@ export function MobileNav({ open, onClose, brandName = "Kaman İlan" }: MobileNa
       <div className="fixed inset-y-0 left-0 z-[101] w-full max-w-[320px] bg-cream shadow-3xl flex flex-col transition-transform duration-500 transform ease-out">
         
         {/* Header */}
-        <div className="p-8 flex items-center justify-between border-b border-border bg-ink text-white">
-           <div className="flex flex-col">
-              <span className="font-fraunces text-2xl font-medium tracking-tight text-saffron">{brandName}</span>
-              <span className="font-mono text-[9px] uppercase tracking-widest opacity-60 mt-1">Yerelin Dijital Pazarı</span>
+        <div className="p-8 flex items-center justify-between border-b border-border bg-[hsl(var(--col-ink))] text-white">
+           <div className="flex flex-col gap-1">
+              <span className="font-fraunces text-3xl font-medium tracking-tight text-[hsl(var(--col-paper))]">
+                Kaman <span className="text-[hsl(var(--col-saffron))]">İlan</span>
+              </span>
+              <div className="flex items-center gap-2 opacity-40">
+                <div className="h-px w-3 bg-[hsl(var(--col-saffron))]" />
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em]">Yerel Gurur</span>
+              </div>
            </div>
-           <button onClick={onClose} className="h-10 w-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all">
+           <button onClick={onClose} className="h-10 w-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/5 shadow-inner">
              <X className="h-5 w-5" />
            </button>
         </div>

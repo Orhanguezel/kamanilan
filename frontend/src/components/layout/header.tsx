@@ -75,13 +75,24 @@ export function Header() {
           </button>
 
           <Link href={ROUTES.HOME} className="flex items-center gap-4 group shrink-0">
-            <div className="relative h-11 w-11 flex-shrink-0 bg-ink rounded-full flex items-center justify-center text-saffron shadow-xl transition-transform group-hover:scale-105">
-              {brandLogo ? <img src={brandLogo} alt={brandName} className="h-6 w-6 object-contain" /> : <span className="font-serif text-xl font-bold leading-none italic">K</span>}
-              <div className="absolute inset-[-4px] rounded-full border border-saffron/40" />
+            <div className="relative h-14 w-14 flex-shrink-0 bg-white rounded-full flex items-center justify-center p-1 shadow-md transition-all duration-500 group-hover:shadow-xl group-hover:scale-105">
+              {brandLogo ? (
+                <img src={brandLogo} alt={brandName} className="h-full w-full object-contain" />
+              ) : (
+                <span className="font-fraunces text-2xl font-bold leading-none text-ink italic">K</span>
+              )}
+              {/* Gold ring */}
+              <div className="absolute inset-0 rounded-full border border-saffron/40 ring-1 ring-saffron/10 ring-offset-2" />
             </div>
-            <div className="hidden md:flex flex-col leading-none">
-               <span className="font-fraunces text-2xl font-medium tracking-tight text-ink">{brandName}</span>
-               <small className="font-mono text-[9px] uppercase tracking-[0.22em] text-[hsl(var(--muted-foreground))] mt-1">{brandLogoText || "Yerel Gurur"}</small>
+            
+            <div className="hidden md:flex flex-col -gap-1">
+               <span className="font-fraunces text-2xl lg:text-3xl font-medium tracking-tight text-ink leading-tight">
+                 {brandName.split(' ')[0]} <span className="text-[hsl(var(--col-ink)/0.8)]">{brandName.split(' ').slice(1).join(' ')}</span>
+               </span>
+               <div className="flex items-center gap-2">
+                 <div className="h-px w-3 bg-saffron" />
+                 <small className="font-mono text-[9px] uppercase tracking-[0.25em] text-[hsl(var(--col-walnut))] font-bold">{brandLogoText || "YEREL GURUR"}</small>
+               </div>
             </div>
           </Link>
 

@@ -63,6 +63,17 @@ export const viewport: Viewport = {
   themeColor: "#c9931a",
 };
 
+/**
+ * site_settings 'value' alanindan string veya {url: string} cekmek icin yardimci.
+ */
+function readSettingUrl(v: unknown): string {
+  if (typeof v === "string") return v;
+  if (v && typeof v === "object" && "url" in (v as object)) {
+    return (v as { url?: string }).url ?? "";
+  }
+  return "";
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   let brandName = t("seo.site_name");
   let description = t("seo.site_description");
@@ -70,12 +81,15 @@ export async function generateMetadata(): Promise<Metadata> {
   let ogImage = "";
   let seoIcons: SeoAppIcons = {};
   let siteLogo = "";
+  let siteFavicon = "";
+  let siteAppleTouchIcon = "";
+  let siteAppIcon512 = "";
 
   try {
     const res = await fetch(
-      `${apiBase}/site_settings?key_in=brand_name,brand_og_image,seo_defaults,seo_app_icons,site_logo`,
+      `${apiBase}/site_settings?key_in=brand_name,brand_og_image,seo_defaults,seo_app_icons,site_logo,site_favicon,site_apple_touch_icon,site_app_icon_512`,
       {
-        next: { revalidate: 3600 }, // 1 saatte bir yenile
+        next: { revalidate: 300 }, // 5 dk cache — admin panel icon degistirince kisa surede yansir
       }
     );
     if (res.ok) {
@@ -101,19 +115,43 @@ export async function generateMetadata(): Promise<Metadata> {
               seoIcons = r.value as SeoAppIcons;
             }
             break;
-          case "site_logo": {
-            if (typeof r.value === "string") siteLogo = r.value;
-            else if (r.value && typeof r.value === "object" && "url" in (r.value as object)) {
-              siteLogo = (r.value as { url?: string }).url ?? "";
-            }
+          case "site_logo":
+            siteLogo = readSettingUrl(r.value);
             break;
-          }
+          case "site_favicon":
+            siteFavicon = readSettingUrl(r.value);
+            break;
+          case "site_apple_touch_icon":
+            siteAppleTouchIcon = readSettingUrl(r.value);
+            break;
+          case "site_app_icon_512":
+            siteAppIcon512 = readSettingUrl(r.value);
+            break;
         }
       }
     }
   } catch {
     // Backend erişilemezse locale fallback'e devam et
   }
+
+  // Favicon öncelik sırası (admin panel logolu db tarafi > seo app icons json > brand logo > fallback)
+  const faviconUrl =
+    siteFavicon ||
+    seoIcons.favicon ||
+    siteLogo ||
+    "/favicon/favicon.png";
+
+  const appleTouchUrl =
+    siteAppleTouchIcon ||
+    seoIcons.appleTouchIcon ||
+    siteLogo ||
+    "/favicon/apple-touch-icon.png";
+
+  const appIcon512Url =
+    siteAppIcon512 ||
+    seoIcons.logoIcon512 ||
+    siteLogo ||
+    "";
 
   return {
     metadataBase: new URL(siteUrl),
@@ -133,13 +171,12 @@ export async function generateMetadata(): Promise<Metadata> {
       images: ogImage ? [ogImage] : undefined,
     },
     icons: {
-      icon: (seoIcons.favicon || siteLogo)
-        ? [{ url: seoIcons.favicon || siteLogo || "/favicon/favicon.png" }]
-        : [{ url: "/favicon/favicon.png" }],
-      shortcut: seoIcons.favicon || siteLogo || "/favicon/favicon.ico",
-      apple: seoIcons.appleTouchIcon
-        ? [{ url: seoIcons.appleTouchIcon }]
-        : [{ url: "/favicon/apple-touch-icon.png" }],
+      icon: [
+        { url: faviconUrl },
+        ...(appIcon512Url ? [{ url: appIcon512Url, sizes: "512x512", type: "image/png" }] : []),
+      ],
+      shortcut: [{ url: faviconUrl }],
+      apple: [{ url: appleTouchUrl }],
     },
     manifest: "/manifest.webmanifest",
   };
