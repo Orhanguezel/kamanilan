@@ -171,7 +171,9 @@
     "view_on_map": "Haritada Gör",
     "published": "Yayınlandı",
     "add_to_cart": "Sepete Ekle",
-    "added_to_cart": "Sepete eklendi"
+    "added_to_cart": "Sepete eklendi",
+    "like": "Favorilere ekle",
+    "unlike": "Favorilerden çıkar"
   },
   "listing_form": {
     "create_title": "Yeni İlan Ver",

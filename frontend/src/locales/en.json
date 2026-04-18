@@ -154,7 +154,9 @@
     "view_on_map": "View on Map",
     "published": "Published",
     "add_to_cart": "Add to Cart",
-    "added_to_cart": "Added to cart"
+    "added_to_cart": "Added to cart",
+    "like": "Add to favorites",
+    "unlike": "Remove from favorites"
   },
   "auth": {
     "email": "Email",

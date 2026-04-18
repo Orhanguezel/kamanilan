@@ -148,9 +148,9 @@ export function Footer() {
                 if (items.length === 0) return null;
                 return (
                   <div key={section.id}>
-                    <h4 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
+                    <h3 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
                       {section.title}
-                    </h4>
+                    </h3>
                     <ul className="space-y-4 text-sm">
                       {items.map((item) => (
                         <li key={item.id}>
@@ -166,9 +166,9 @@ export function Footer() {
             : showStaticLinks && (
               <>
                 <div>
-                  <h4 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
+                  <h3 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
                     {t("footer.quick_links")}
-                  </h4>
+                  </h3>
                   <ul className="space-y-4 text-sm">
                     <li><Link href={ROUTES.LISTINGS}      className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("nav.listings")}</Link></li>
                     <li><Link href={ROUTES.CATEGORIES}    className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("nav.categories")}</Link></li>
@@ -178,9 +178,9 @@ export function Footer() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
+                  <h3 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
                     Yasal Bilgiler
-                  </h4>
+                  </h3>
                   <ul className="space-y-4 text-sm">
                     <li><Link href={ROUTES.ABOUT}    className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("footer.about_us")}</Link></li>
                     <li><Link href={ROUTES.CONTACT}  className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("footer.contact_us")}</Link></li>
@@ -193,9 +193,9 @@ export function Footer() {
 
           {/* ── 4. İLETİŞİM (site_settings'den) ──────────────────── */}
           <div>
-            <h4 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
+            <h3 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
               İletişim
-            </h4>
+            </h3>
             <ul className="space-y-4 text-sm">
               {address && (
                 <li className="flex items-start gap-3">
@@ -232,7 +232,7 @@ export function Footer() {
         </div>
 
         {/* ── Alt copyright ─────────────────────────────────────── */}
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-mono uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-[11px] font-mono uppercase tracking-[0.2em] text-parchment/80 hover:text-parchment transition-colors">
            <div className="flex items-center gap-2">
               &copy; {year} {brandDisplayName}. {t("footer.all_rights_reserved")}
            </div>

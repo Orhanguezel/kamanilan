@@ -60,7 +60,7 @@ export function SpotlightSection() {
                           <CheckCircle2 className="h-3 w-3 text-white" />
                        </div>
                        <div>
-                          <h4 className="font-fraunces text-xl font-medium mb-1">{f.t}</h4>
+                          <h3 className="font-fraunces text-xl font-medium mb-1">{f.t}</h3>
                           <p className="text-sm text-[hsl(var(--muted-foreground))]">{f.d}</p>
                        </div>
                     </div>

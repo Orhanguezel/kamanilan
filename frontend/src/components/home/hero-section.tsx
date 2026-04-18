@@ -32,10 +32,21 @@ export function HeroSection({ config }: Props) {
   const mainSlide = items[0];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-cream to-ivory py-20 lg:py-32 border-b border-border">
-      {/* Editorial Watermark / Grains moved to body global, but we can add glows here */}
-      <div className="pointer-events-none absolute -right-[200px] -top-[200px] h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(201,147,26,0.14),transparent_60%)]" />
-      <div className="pointer-events-none absolute -left-[100px] -bottom-[150px] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(95,109,54,0.08),transparent_60%)]" />
+    <section
+      className="relative overflow-hidden bg-gradient-to-b from-cream to-ivory py-20 lg:py-32 border-b border-border"
+      style={{ contain: "layout paint" }}
+    >
+      {/* Dekoratif gradient blob'lar — contain: strict ile CLS'ye katki sifir */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-[200px] -top-[200px] h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(201,147,26,0.14),transparent_60%)]"
+        style={{ contain: "strict", willChange: "transform" }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-[100px] -bottom-[150px] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(95,109,54,0.08),transparent_60%)]"
+        style={{ contain: "strict", willChange: "transform" }}
+      />
 
       <div className="container relative z-10">
         <div className="grid grid-cols-1 gap-20 lg:grid-cols-[1.2fr_1fr] items-center">

@@ -70,14 +70,27 @@ export function Header() {
       <header className="sticky top-0 z-50 border-b border-border bg-[rgba(253,250,243,0.92)] backdrop-blur-xl transition-all">
         <div className="container grid grid-cols-[auto_1fr_auto] items-center gap-8 py-5 md:py-6">
           
-          <button onClick={() => setMobileOpen(true)} className="lg:hidden h-10 w-10 flex items-center justify-center rounded-full border border-border">
-            <Menu className="h-5 w-5" />
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Menüyü aç"
+            title="Menüyü aç"
+            className="lg:hidden h-10 w-10 flex items-center justify-center rounded-full border border-border"
+          >
+            <Menu aria-hidden="true" className="h-5 w-5" />
           </button>
 
           <Link href={ROUTES.HOME} className="flex items-center gap-4 group shrink-0">
             <div className="relative h-14 w-14 flex-shrink-0 bg-white rounded-full flex items-center justify-center p-1 shadow-md transition-all duration-500 group-hover:shadow-xl group-hover:scale-105">
               {brandLogo ? (
-                <img src={brandLogo} alt={brandName} className="h-full w-full object-contain" />
+                <img
+                  src={brandLogo}
+                  alt={brandName}
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-contain"
+                  decoding="async"
+                />
               ) : (
                 <span className="font-fraunces text-2xl font-bold leading-none text-ink italic">K</span>
               )}
@@ -131,17 +144,34 @@ export function Header() {
           <div className="flex items-center gap-3.5">
             {mounted && (
               <>
-                <Link href={`${ROUTES.LISTINGS}`} className="h-10 w-10 flex items-center justify-center rounded-full border border-border hover:bg-ink hover:text-saffron transition-all">
-                  <Search className="h-4.5 w-4.5" />
+                <Link
+                  href={`${ROUTES.LISTINGS}`}
+                  aria-label="İlanlarda ara"
+                  title="İlanlarda ara"
+                  className="h-10 w-10 flex items-center justify-center rounded-full border border-border hover:bg-ink hover:text-saffron transition-all"
+                >
+                  <Search aria-hidden="true" className="h-4.5 w-4.5" />
                 </Link>
-                <Link href={ROUTES.CART} className="relative h-10 w-10 flex items-center justify-center rounded-full border border-border hover:bg-ink hover:text-saffron transition-all">
-                  <ShoppingCart className="h-4.5 w-4.5" />
-                  {cartItemCount > 0 && <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-saffron text-[9px] font-bold text-ink">{cartItemCount}</span>}
+                <Link
+                  href={ROUTES.CART}
+                  aria-label={`Sepet${cartItemCount > 0 ? ` (${cartItemCount} ürün)` : ""}`}
+                  title="Sepet"
+                  className="relative h-10 w-10 flex items-center justify-center rounded-full border border-border hover:bg-ink hover:text-saffron transition-all"
+                >
+                  <ShoppingCart aria-hidden="true" className="h-4.5 w-4.5" />
+                  {cartItemCount > 0 && <span aria-hidden="true" className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-saffron text-[9px] font-bold text-ink">{cartItemCount}</span>}
                 </Link>
                 {!isAuthenticated ? (
-                  <Link href={ROUTES.LOGIN} className="btn-editorial"><span><User className="h-4 w-4" /> Giriş</span></Link>
+                  <Link href={ROUTES.LOGIN} className="btn-editorial"><span><User aria-hidden="true" className="h-4 w-4" /> Giriş</span></Link>
                 ) : (
-                  <Link href={ROUTES.PROFILE} className="h-10 w-10 flex items-center justify-center rounded-full bg-saffron text-ink transition-transform hover:scale-110 shadow-lg"><User className="h-5 w-5" /></Link>
+                  <Link
+                    href={ROUTES.PROFILE}
+                    aria-label="Hesabım"
+                    title="Hesabım"
+                    className="h-10 w-10 flex items-center justify-center rounded-full bg-saffron text-ink transition-transform hover:scale-110 shadow-lg"
+                  >
+                    <User aria-hidden="true" className="h-5 w-5" />
+                  </Link>
                 )}
               </>
             )}

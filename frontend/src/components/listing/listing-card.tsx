@@ -67,20 +67,27 @@ export function ListingCard({ listing }: ListingCardProps) {
 
          <div className="absolute top-4 right-4 flex flex-col gap-2">
             <button
+              type="button"
               onClick={(e) => toggle(listing.id, e)}
+              aria-label={liked ? t("listing.unlike") : t("listing.like")}
+              aria-pressed={liked}
+              title={liked ? t("listing.unlike") : t("listing.like")}
               className={`h-9 w-9 flex items-center justify-center rounded-full backdrop-blur-md transition-all shadow-lg ${
                 liked ? "bg-ember text-white" : "bg-white/80 text-ink hover:bg-white"
               }`}
             >
-              <Heart className={`h-4.5 w-4.5 ${liked ? "fill-current" : ""}`} />
+              <Heart aria-hidden="true" className={`h-4.5 w-4.5 ${liked ? "fill-current" : ""}`} />
             </button>
-            
+
             {listing.has_cart && (
                <button
+                 type="button"
                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); addItem(listing); toast.success(t("listing.added_to_cart")); }}
+                 aria-label={t("listing.add_to_cart")}
+                 title={t("listing.add_to_cart")}
                  className="h-9 w-9 flex items-center justify-center rounded-full bg-white/80 text-ink backdrop-blur-md shadow-lg hover:bg-ink hover:text-saffron transition-all"
                >
-                 <ShoppingCart className="h-4.5 w-4.5" />
+                 <ShoppingCart aria-hidden="true" className="h-4.5 w-4.5" />
                </button>
             )}
          </div>
@@ -94,7 +101,7 @@ export function ListingCard({ listing }: ListingCardProps) {
               <span className="h-1 w-1 rounded-full bg-current" />
               {listing.categories?.name || "Kategori"}
            </div>
-           <div className="flex items-center gap-1.5 font-mono text-[9px] text-[hsl(var(--muted-foreground))] opacity-70">
+           <div className="flex items-center gap-1.5 font-mono text-[9px] text-walnut opacity-70">
               <Clock className="h-3 w-3" />
               {formatDateShort(listing.created_at)}
            </div>
@@ -123,7 +130,7 @@ export function ListingCard({ listing }: ListingCardProps) {
            
            <div className="flex items-center gap-2.5">
              <div className="text-right hidden sm:block">
-               <div className="text-[10px] font-mono text-[hsl(var(--muted-foreground))] uppercase tracking-wider">Satıcı</div>
+               <div className="text-[10px] font-mono text-walnut uppercase tracking-wider">Satıcı</div>
                <div className="text-[12px] font-bold text-ink truncate max-w-[80px]">{(listing as any).user_name || "Özel Satıcı"}</div>
              </div>
              <div className="h-9 w-9 rounded-full bg-parchment border border-border flex items-center justify-center font-fraunces italic font-bold text-walnut relative">
