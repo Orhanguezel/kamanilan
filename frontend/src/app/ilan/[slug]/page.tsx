@@ -114,7 +114,7 @@ export default async function ListingDetailPage({ params }: Props) {
   return (
     <div className="container mx-auto px-4 py-8">
       <JsonLd data={jsonLd} id="listing" />
-      <ListingDetail slug={slug} />
+      <ListingDetail slug={slug} initialListing={listing} />
     </div>
   );
 }

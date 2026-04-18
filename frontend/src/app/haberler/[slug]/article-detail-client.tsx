@@ -11,6 +11,7 @@ import { useBannersByIdsQuery } from "@/modules/banner/banner.service";
 import { ArticleComments } from "@/components/articles/article-comments";
 import { ArticleCard } from "@/components/articles/article-card";
 import { SidebarBannerCard } from "@/components/articles/articles-sidebar";
+import type { Article } from "@/modules/articles/articles.types";
 
 const CATEGORY_LABELS: Record<string, string> = {
   gundem: "Gündem", spor: "Spor", ekonomi: "Ekonomi",
@@ -58,8 +59,18 @@ function BannerSidebarSlot({ ids }: { ids?: string }) {
   );
 }
 
-export function ArticleDetailClient({ slug }: { slug: string }) {
-  const { data: article, isLoading, isError } = useArticleBySlugQuery(slug);
+interface ArticleDetailClientProps {
+  slug: string;
+  /** Server'dan page.tsx tarafindan fetch edilen haber — SSR HTML'de body render icin. */
+  initialArticle?: Article | null;
+}
+
+export function ArticleDetailClient({ slug, initialArticle }: ArticleDetailClientProps) {
+  const { data: articleFromQuery, isLoading, isError } = useArticleBySlugQuery(slug);
+  // Server HTML SSR'da article gorulsun diye fallback: initialArticle prop.
+  // Client hydrate ettikten sonra query guncel veriyle uzerine yazar.
+  const article = articleFromQuery ?? initialArticle ?? null;
+
   const { data: theme } = useThemeQuery();
 
   const detailSections = useMemo(() => {
@@ -89,7 +100,8 @@ export function ArticleDetailClient({ slug }: { slug: string }) {
     { limit: relatedCount + 1, sort: "published_at", order: "desc" },
   );
 
-  if (isLoading) {
+  // initialArticle varsa loading spinner gosterme; SSR HTML'de article zaten render edilir.
+  if (isLoading && !article) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center bg-[hsl(var(--col-paper))]">
         <Loader2 className="size-10 animate-spin text-[hsl(var(--col-saffron))]" />
@@ -97,7 +109,7 @@ export function ArticleDetailClient({ slug }: { slug: string }) {
     );
   }
 
-  if (isError || !article) {
+  if ((isError && !article) || !article) {
     return (
       <div className="min-h-screen bg-[hsl(var(--col-paper))] flex flex-col items-center justify-center py-24 text-center">
         <h2 className="font-fraunces text-3xl mb-4 text-[hsl(var(--col-ink))]">Haber Bulunamadı</h2>

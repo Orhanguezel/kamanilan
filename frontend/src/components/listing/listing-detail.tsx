@@ -20,7 +20,7 @@ import { ROUTES } from "@/config/routes";
 import { useListingBySlugQuery } from "@/modules/listing/listing.service";
 import { useCartStore } from "@/stores/cart-store";
 import { useRecentlyViewedStore } from "@/stores/recently-viewed-store";
-import type { ListingVariantValue } from "@/modules/listing/listing.types";
+import type { Listing, ListingVariantValue } from "@/modules/listing/listing.types";
 
 function formatPrice(price: string | null, currency: string): string {
   if (!price || price === "0") return t("listing.free");
@@ -144,10 +144,16 @@ function Gallery({ images, title }: GalleryProps) {
 
 interface ListingDetailProps {
   slug: string;
+  /** Server'dan page.tsx tarafindan fetch edilen ilan — SSR HTML'de body render icin. */
+  initialListing?: Listing | null;
 }
 
-export function ListingDetail({ slug }: ListingDetailProps) {
-  const { data: listing, isPending, isError } = useListingBySlugQuery(slug);
+export function ListingDetail({ slug, initialListing }: ListingDetailProps) {
+  const { data: listingFromQuery, isPending, isError } = useListingBySlugQuery(slug);
+  // SSR icin fallback: initialListing server prop. Client hydrate sonrasi query guncel veriyle
+  // uzerine yazar. Bu sayede AI crawler initial HTML'de ilan body'sini gorur.
+  const listing = listingFromQuery ?? initialListing ?? null;
+
   const addItem = useCartStore((s) => s.addItem);
   const addRecentlyViewed = useRecentlyViewedStore((s) => s.addItem);
 
@@ -163,7 +169,7 @@ export function ListingDetail({ slug }: ListingDetailProps) {
     });
   }, [listing, addRecentlyViewed]);
 
-  if (isPending) {
+  if (isPending && !listing) {
     return (
       <div className="space-y-4">
         <div className="aspect-video w-full animate-pulse rounded-xl bg-muted" />
@@ -173,7 +179,7 @@ export function ListingDetail({ slug }: ListingDetailProps) {
     );
   }
 
-  if (isError || !listing) {
+  if ((isError && !listing) || !listing) {
     return (
       <div className="py-16 text-center">
         <p className="text-lg font-medium">{t("listing.listing_not_found")}</p>

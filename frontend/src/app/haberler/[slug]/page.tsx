@@ -89,7 +89,7 @@ export default async function ArticleDetailPage({ params }: Props) {
   return (
     <>
       <JsonLd data={jsonLd} id="article" />
-      <ArticleDetailClient slug={slug} />
+      <ArticleDetailClient slug={slug} initialArticle={article} />
     </>
   );
 }
