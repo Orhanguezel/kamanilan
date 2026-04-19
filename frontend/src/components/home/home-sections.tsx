@@ -183,12 +183,14 @@ const COL_SPAN: Record<number, string> = {
 /* ─── Varsayılan sections[] (layout_blocks yoksa) ─────────────────────── */
 
 const DEFAULT_SECTIONS: SectionConfig[] = [
-  { key: "hero",       enabled: true, order: 1, label: "Hero",            colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
-  { key: "categories", enabled: true, order: 2, label: "Tüm Kategoriler", colsLg: 6, colsMd: 3, colsSm: 2, limit: null },
-  { key: "spotlight",  enabled: true, order: 3, label: "Özel Vurgu",       colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
-  { key: "flash_sale", enabled: true, order: 4, label: "Flash Fırsat",    colsLg: 5, colsMd: 3, colsSm: 2, limit: 5   },
-  { key: "featured",   enabled: true, order: 5, label: "Öne Çıkan",       colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },
-  { key: "recent",     enabled: true, order: 6, label: "Son İlanlar",     colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },
+  { key: "hero",              enabled: true, order: 1, label: "Hero",            colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
+  { key: "categories",        enabled: true, order: 2, label: "Tüm Kategoriler", colsLg: 6, colsMd: 3, colsSm: 2, limit: null },
+  { key: "banner_section__1", enabled: true, order: 3, label: "Reklam Banner 1", colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
+  { key: "spotlight",         enabled: true, order: 4, label: "Özel Vurgu",       colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
+  { key: "flash_sale",        enabled: true, order: 5, label: "Flash Fırsat",    colsLg: 5, colsMd: 3, colsSm: 2, limit: 5   },
+  { key: "banner_section__2", enabled: true, order: 6, label: "Reklam Banner 2", colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
+  { key: "featured",          enabled: true, order: 7, label: "Öne Çıkan",       colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },
+  { key: "recent",            enabled: true, order: 8, label: "Son İlanlar",     colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },
 ];
 
 /* ─── Ana bileşen ──────────────────────────────────────────────────────── */
