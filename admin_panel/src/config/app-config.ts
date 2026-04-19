@@ -32,8 +32,8 @@ export const DEFAULT_BRANDING: AdminBrandingConfig = {
   app_copyright: 'Kaman Ilan',
   html_lang: FALLBACK_LOCALE,
   theme_color: '#2563eb',
-  favicon_16: '/favicon/favicon.svg',
-  favicon_32: '/favicon/favicon.svg',
+  favicon_16: '/favicon/favicon.png',
+  favicon_32: '/favicon/favicon.png',
   apple_touch_icon: '/apple/apple-touch-icon.png',
   meta: {
     title: 'Kaman Ilan Admin Panel',
