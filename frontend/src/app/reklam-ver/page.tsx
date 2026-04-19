@@ -4,7 +4,6 @@ import Link from "next/link";
 import {
   Megaphone,
   LayoutTemplate,
-  Phone,
   MessageCircle,
   CheckCircle2,
   TrendingUp,
@@ -12,7 +11,9 @@ import {
   MapPin,
   ChevronRight,
   Zap,
+  ArrowRight,
 } from "lucide-react";
+import { t } from "@/lib/t";
 import { useSiteSettingsQuery } from "@/modules/site/site.service";
 import { ROUTES } from "@/config/routes";
 
@@ -21,430 +22,267 @@ import { ROUTES } from "@/config/routes";
 const AD_POSITIONS = [
   {
     key: "home_top",
-    label: "Ana Sayfa Üst",
-    desc: "Sayfanın en üstünde, ziyaretçi siteye gelir gelmez gördüğü tam genişlik alan.",
-    size: "Tam genişlik (12/12)",
-    visibility: "Çok Yüksek",
-    priceMonthly: 500,
+    label: "Manşet Üstü",
+    desc: "Ana sayfanın en üstünde, editoryal akışın hemen başında yer alan prestijli alan.",
+    size: "1280x250px",
+    visibility: "Maksimum",
     priceWeekly: 150,
-    bg: "#FFFBF0",
-    accent: "#D97706",
-    icon: "🏆",
-  },
-  {
-    key: "home_middle",
-    label: "Ana Sayfa Orta",
-    desc: "Ana sayfanın ortasında, iki kart yan yana görünüm. Kategori içeriğiyle birlikte.",
-    size: "Yarım genişlik (6/12)",
-    visibility: "Yüksek",
-    priceMonthly: 300,
-    priceWeekly: 100,
-    bg: "#EBF4FF",
-    accent: "#3B82F6",
-    icon: "⭐",
+    accent: "saffron",
   },
   {
     key: "listing_top",
-    label: "İlan Listesi Üstü",
-    desc: "İlan arama ve listeleme sayfasının üstünde. Satın almaya hazır kitleye görünür.",
-    size: "Tam genişlik",
-    visibility: "Hedefli & Yüksek",
-    priceMonthly: 350,
+    label: "İlan Listesi",
+    desc: "Arama sonuçlarının en başında, doğrudan hedef kitleye ulaşan stratejik konum.",
+    size: "970x250px",
+    visibility: "Hedefli",
     priceWeekly: 120,
-    bg: "#FFF5F5",
-    accent: "#E11D48",
-    icon: "🎯",
+    accent: "olive",
+  },
+  {
+    key: "home_middle",
+    label: "Haber/İçerik Arası",
+    desc: "İçerik akışı içinde doğal (native) bir görünüm sunan etkileşim odaklı alan.",
+    size: "728x90px",
+    visibility: "Yüksek",
+    priceWeekly: 100,
+    accent: "walnut",
   },
   {
     key: "home_bottom",
-    label: "Ana Sayfa Alt",
-    desc: "Ana sayfanın altında, üç kart yan yana. Ekonomik seçenek.",
-    size: "Çeyrek genişlik (4/12)",
-    visibility: "Orta",
-    priceMonthly: 200,
+    label: "Alt Akış",
+    desc: "Sayfa sonundaki kurumsal bölümler arasında konumlanan ekonomik seçenek.",
+    size: "300x250px",
+    visibility: "Standart",
     priceWeekly: 70,
-    bg: "#F0FDF4",
-    accent: "#16A34A",
-    icon: "💚",
+    accent: "bark",
   },
 ];
-
-/* ─── Paketler ────────────────────────────────────────────────────── */
-
-const PACKAGES = [
-  {
-    label: "Haftalık",
-    duration: "7 gün",
-    badge: null,
-    description: "Kısa süreli tanıtım için.",
-    multiplier: 1,
-    unit: "priceWeekly",
-  },
-  {
-    label: "Aylık",
-    duration: "30 gün",
-    badge: "Popüler",
-    description: "En çok tercih edilen paket.",
-    multiplier: 1,
-    unit: "priceMonthly",
-  },
-  {
-    label: "3 Aylık",
-    duration: "90 gün",
-    badge: "%20 İndirim",
-    description: "Uzun vadeli görünürlük, daha avantajlı fiyat.",
-    multiplier: 2.4,
-    unit: "priceMonthly",
-  },
-] as const;
 
 /* ─── Adımlar ─────────────────────────────────────────────────────── */
 
 const STEPS = [
   {
     num: "01",
-    title: "Konum Seçin",
-    desc: "Hedef kitlenize en uygun reklam konumunu ve süreyi belirleyin.",
-    color: "hsl(var(--accent))",
+    title: "Konum Seçimi",
+    desc: "İşletmenizin hedeflerine en uygun reklam alanını ve yayın süresini belirleyin.",
   },
   {
     num: "02",
-    title: "İletişime Geçin",
-    desc: "WhatsApp veya telefon ile bize ulaşın, fiyat ve detayları konuşalım.",
-    color: "#3B82F6",
+    title: "Hızlı İletişim",
+    desc: "WhatsApp veya telefon üzerinden ekibimizle detayları ve özel fiyatları netleştirin.",
   },
   {
     num: "03",
-    title: "Materyal Gönderin",
-    desc: "Başlık, açıklama, renk ve link bilgilerini bize iletin.",
-    color: "#16A34A",
+    title: "Tasarım Gönderimi",
+    desc: "Reklam materyallerinizi (görsel, link, başlık) dijital ortamda bize iletin.",
   },
   {
     num: "04",
-    title: "Yayına Alın",
-    desc: "Ödeme onayından sonra reklamınız hemen yayına girer.",
-    color: "#E11D48",
+    title: "Aynı Gün Yayım",
+    desc: "Onay ve ödeme sonrasında reklamınız 24 saat içerisinde sistemde aktifleşir.",
   },
 ];
 
-/* ─── İstatistikler ───────────────────────────────────────────────── */
-
-const STATS = [
-  { icon: Users,     value: "5.000+",    label: "Aylık Ziyaretçi" },
-  { icon: TrendingUp, value: "15.000+", label: "Sayfa Görüntüleme" },
-  { icon: MapPin,    value: "Kaman",     label: "ve Çevre İlçeler" },
-];
-
-/* ─── Ana sayfa ────────────────────────────────────────────────────── */
-
 export default function ReklamVerPage() {
-  const { data: site } = useSiteSettingsQuery([
-    "contact_phone_display",
-    "contact_phone_tel",
-    "contact_whatsapp_link",
-  ]);
+  const { data: site } = useSiteSettingsQuery(["contact_whatsapp_link"]);
 
-  const phoneTel      = site?.contact_phone_tel     as string | undefined;
-  const phoneDisplay  = site?.contact_phone_display as string | undefined;
-  const whatsappLink  = site?.contact_whatsapp_link as string | undefined;
-
-  const waHref = whatsappLink ?? (phoneTel ? `https://wa.me/${phoneTel.replace(/\D/g, "")}` : null);
-  const telHref = phoneTel ? `tel:${phoneTel}` : null;
+  const whatsappLink = site?.contact_whatsapp_link as string | undefined;
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "hsl(var(--background))" }}>
-
-      {/* ── Hero ────────────────────────────────────────────────────── */}
-      <section
-        className="border-b py-12 md:py-16"
-        style={{ borderColor: "hsl(var(--border))", backgroundColor: "hsl(var(--muted))" }}
-      >
-        <div className="container mx-auto px-4 md:px-6">
-          {/* Breadcrumb */}
-          <nav className="mb-6 flex items-center gap-1 text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>
-            <Link href={ROUTES.HOME} className="hover:opacity-80">Ana Sayfa</Link>
-            <ChevronRight className="h-3 w-3" />
-            <span>Reklam Ver</span>
+    <main className="bg-cream min-h-screen">
+      
+      {/* ── 1. Hero ────────────────────────────────────────────────── */}
+      <section className="relative pt-24 pb-20 border-b border-line overflow-hidden">
+        {/* Dekoratif Blob */}
+        <div className="absolute -right-20 -top-20 w-80 h-80 bg-saffron/5 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="container relative z-10">
+          <nav className="mb-10 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-text-3">
+             <Link href={ROUTES.HOME} className="hover:text-saffron transition-colors">Ana Sayfa</Link>
+             <ChevronRight className="h-3 w-3 opacity-30" />
+             <span className="text-ink">Reklam Ver</span>
           </nav>
 
-          <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="max-w-xl">
-              {/* Badge */}
-              <span
-                className="mb-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider"
-                style={{ backgroundColor: "hsl(var(--accent))", color: "#FFFFFF" }}
-              >
-                <Megaphone className="h-3.5 w-3.5" />
-                Reklam Ver
-              </span>
+          <div className="max-w-4xl">
+             <div className="eyebrow mb-6">İşletmenizi Tanıtın</div>
+             <h1 className="font-fraunces text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight leading-[0.95] text-ink mb-8">
+               Kaman İlan'da <br />
+               <em className="italic font-normal text-saffron-2">Yerinizi Alın</em>
+             </h1>
+             <p className="text-lg md:text-xl text-text-2 leading-relaxed max-w-2xl font-manrope">
+                Kırşehir ve Kaman bölgesinin en aktif ilan platformunda binlerce yerel ziyaretçiye ulaşın. 
+                İşletmenizin görünürlüğünü artırmak için size özel reklam çözümlerini keşfedin.
+             </p>
+          </div>
 
-              <h1
-                className="font-playfair mb-3 text-3xl font-black leading-tight md:text-4xl"
-                style={{ color: "hsl(var(--foreground))" }}
-              >
-                Kaman İlan'da <br />
-                <span style={{ color: "hsl(var(--accent))" }}>İşletmenizi Tanıtın</span>
-              </h1>
-              <p className="text-sm leading-relaxed md:text-base" style={{ color: "hsl(var(--muted-foreground))" }}>
-                Yerel halk ve çevre ilçelerdeki binlerce ziyaretçiye ulaşın.
-                Uygun fiyatlı banner alanlarıyla işletmenizin görünürlüğünü artırın.
-              </p>
-            </div>
-
-            {/* İstatistikler */}
-            <div className="flex gap-4 md:gap-6">
-              {STATS.map(({ icon: Icon, value, label }) => (
-                <div key={label} className="flex flex-col items-center text-center">
-                  <Icon className="mb-1 h-5 w-5" style={{ color: "hsl(var(--accent))" }} />
-                  <span className="text-lg font-black" style={{ color: "hsl(var(--foreground))" }}>{value}</span>
-                  <span className="text-[0.65rem] leading-tight" style={{ color: "hsl(var(--muted-foreground))" }}>{label}</span>
+          {/* İstatistikler */}
+          <div className="mt-16 pt-12 border-t border-line grid grid-cols-2 lg:grid-cols-4 gap-12">
+             {[
+               { val: "15k+", label: "Aylık Görüntüleme" },
+               { val: "5k+",  label: "Aktif Ziyaretçi" },
+               { val: "%92",  label: "Yerel Erişim" },
+               { val: "7/24", label: "Destek" }
+             ].map((s, idx) => (
+                <div key={idx} className="flex flex-col gap-2">
+                   <div className="font-fraunces text-4xl text-ink font-light italic">{s.val}</div>
+                   <div className="font-mono text-[10px] uppercase tracking-widest text-text-3">{s.label}</div>
                 </div>
-              ))}
-            </div>
+             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Reklam Konumları ─────────────────────────────────────────── */}
-      <section className="py-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-8 flex items-center gap-2">
-            <LayoutTemplate className="h-5 w-5" style={{ color: "hsl(var(--accent))" }} />
-            <h2 className="text-xl font-bold" style={{ color: "hsl(var(--foreground))" }}>Reklam Konumları</h2>
+      {/* ── 2. Konumlar ────────────────────────────────────────────── */}
+      <section className="py-24">
+        <div className="container">
+          <div className="section-header">
+             <div>
+                <div className="eyebrow mb-4">Ad Positions</div>
+                <h2 className="section-title">Reklam <em>Konumları</em></h2>
+             </div>
+             <p className="md:max-w-xs text-sm text-text-3 font-manrope">
+                Stratejinize göre tercih edebileceğiniz farklı boyut ve etkileşim oranına sahip alanlar.
+             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {AD_POSITIONS.map((pos) => (
-              <div
-                key={pos.key}
-                className="group relative overflow-hidden rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
-                style={{
-                  backgroundColor: pos.bg,
-                  borderColor: "hsl(var(--border))",
-                }}
-              >
-                {/* Sol aksan şeridi */}
-                <div className="absolute inset-y-0 left-0 w-1 rounded-l-2xl" style={{ backgroundColor: pos.accent }} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+             {AD_POSITIONS.map((pos) => (
+                <div key={pos.key} className="premium-card group flex flex-col p-8 bg-paper">
+                   <div className="mb-8 flex items-center justify-between">
+                      <div className="p-3 bg-cream rounded-2xl border border-line-2 group-hover:scale-110 transition-transform duration-500">
+                         <LayoutTemplate className="h-6 w-6 text-walnut" />
+                      </div>
+                      <span className="font-mono text-[9px] uppercase tracking-widest px-2.5 py-1 bg-ink text-cream rounded-full">
+                         {pos.visibility}
+                      </span>
+                   </div>
 
-                <div className="pl-2">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-2xl">{pos.icon}</span>
-                    <span
-                      className="rounded-full px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide"
-                      style={{ backgroundColor: pos.accent, color: "#fff" }}
-                    >
-                      {pos.visibility}
-                    </span>
-                  </div>
+                   <h3 className="font-fraunces text-2xl text-ink mb-3">{pos.label}</h3>
+                   <p className="text-sm text-text-2 leading-relaxed mb-6 flex-grow font-manrope">
+                      {pos.desc}
+                   </p>
 
-                  <h3 className="font-playfair mb-1 text-base font-bold" style={{ color: "hsl(var(--foreground))" }}>
-                    {pos.label}
-                  </h3>
-                  <p className="mb-3 text-xs leading-relaxed" style={{ color: "hsl(var(--muted-foreground))" }}>
-                    {pos.desc}
-                  </p>
-
-                  <div className="mb-3 text-[0.65rem]" style={{ color: "hsl(var(--muted-foreground))" }}>
-                    <span className="font-semibold">Boyut:</span> {pos.size}
-                  </div>
-
-                  {/* Fiyat */}
-                  <div
-                    className="rounded-xl p-3 text-center"
-                    style={{ backgroundColor: "rgba(0,0,0,0.05)" }}
-                  >
-                    <div className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>Başlangıç fiyatı</div>
-                    <div className="font-playfair text-2xl font-black" style={{ color: pos.accent }}>
-                      ₺{pos.priceWeekly}
-                      <span className="text-sm font-normal">/hafta</span>
-                    </div>
-                    <div className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>
-                      ₺{pos.priceMonthly}/ay · ₺{Math.round(pos.priceMonthly * 2.4)}/3ay
-                    </div>
-                  </div>
+                   <div className="mt-auto space-y-4 pt-6 border-t border-line">
+                      <div className="flex justify-between items-center text-[10px] font-mono text-text-3 uppercase tracking-wider">
+                         <span>Boyut</span>
+                         <span className="text-ink font-bold">{pos.size}</span>
+                      </div>
+                      <div className="flex justify-between items-end">
+                         <div className="text-[10px] font-mono uppercase text-text-3 mb-1">Haftalık</div>
+                         <div className="text-3xl font-fraunces text-saffron-2">₺{pos.priceWeekly}</div>
+                      </div>
+                   </div>
                 </div>
-              </div>
-            ))}
+             ))}
           </div>
-
-          <p className="mt-3 text-center text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>
-            * Fiyatlar tahminidir, kesin fiyat için bizimle iletişime geçin.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Nasıl Çalışır ────────────────────────────────────────────── */}
-      <section
-        className="py-12 border-y"
-        style={{ borderColor: "hsl(var(--border))", backgroundColor: "hsl(var(--muted))" }}
-      >
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-8 text-center">
-            <h2 className="font-playfair text-2xl font-bold" style={{ color: "hsl(var(--foreground))" }}>
-              Nasıl Çalışır?
-            </h2>
-            <p className="mt-1 text-sm" style={{ color: "hsl(var(--muted-foreground))" }}>
-              4 adımda reklamınız yayında
-            </p>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((step, i) => (
-              <div key={step.num} className="relative flex flex-col items-center text-center">
-                {/* Bağlantı çizgisi */}
-                {i < STEPS.length - 1 && (
-                  <div
-                    className="absolute left-[calc(50%+28px)] top-7 hidden h-px w-[calc(100%-56px)] lg:block"
-                    style={{ backgroundColor: "hsl(var(--border))" }}
-                  />
-                )}
-
-                <div
-                  className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-black text-white shadow"
-                  style={{ backgroundColor: step.color }}
-                >
-                  {step.num}
-                </div>
-                <h3 className="mb-1 text-sm font-bold" style={{ color: "hsl(var(--foreground))" }}>
-                  {step.title}
-                </h3>
-                <p className="text-xs leading-relaxed" style={{ color: "hsl(var(--muted-foreground))" }}>
-                  {step.desc}
-                </p>
-              </div>
-            ))}
+          
+          <div className="mt-12 text-center">
+             <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-3">
+                * Fiyatlar kampanya dönemlerine göre değişiklik gösterebilir.
+             </p>
           </div>
         </div>
       </section>
 
-      {/* ── Reklam Materyali Gereksinimleri ──────────────────────────── */}
-      <section className="py-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mx-auto max-w-2xl">
-            <h2 className="font-playfair mb-6 text-xl font-bold" style={{ color: "hsl(var(--foreground))" }}>
-              Reklam Materyali
-            </h2>
+      {/* ── 3. Nasıl Çalışır ───────────────────────────────────────── */}
+      <section className="py-24 bg-paper border-y border-line">
+        <div className="container">
+          <div className="text-center mb-16">
+             <div className="eyebrow mb-6">Workflow</div>
+             <h2 className="section-title">Reklam <em>Süreci</em></h2>
+          </div>
 
-            <div
-              className="rounded-2xl border p-6"
-              style={{ borderColor: "hsl(var(--border))", backgroundColor: "hsl(var(--muted))" }}
-            >
-              <p className="mb-4 text-sm" style={{ color: "hsl(var(--muted-foreground))" }}>
-                Reklam yayına alınabilmesi için aşağıdaki bilgileri bize gönderin:
-              </p>
-
-              {[
-                "Başlık (maks. 60 karakter)",
-                "Alt başlık (maks. 60 karakter, opsiyonel)",
-                "Kısa açıklama (maks. 120 karakter, opsiyonel)",
-                "Buton yazısı ve hedef link / telefon numarası",
-                "Arka plan rengi veya görsel (opsiyonel)",
-                "Yayın başlangıç ve bitiş tarihi",
-              ].map((item) => (
-                <div key={item} className="mb-2 flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" style={{ color: "hsl(var(--accent))" }} />
-                  <span className="text-sm" style={{ color: "hsl(var(--foreground))" }}>{item}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+             {STEPS.map((step, idx) => (
+                <div key={idx} className="relative text-center md:text-left">
+                   <div className="font-fraunces text-7xl text-saffron/10 absolute -top-8 left-0 select-none">
+                      {step.num}
+                   </div>
+                   <div className="relative pt-6">
+                      <h3 className="font-fraunces text-xl text-ink mb-3">{step.title}</h3>
+                      <p className="text-sm text-text-2 leading-relaxed font-manrope">
+                         {step.desc}
+                      </p>
+                   </div>
                 </div>
-              ))}
-
-              <div
-                className="mt-4 rounded-xl border-l-4 p-3 text-xs"
-                style={{
-                  borderColor: "hsl(var(--accent))",
-                  backgroundColor: "hsl(var(--background))",
-                  color: "hsl(var(--muted-foreground))",
-                }}
-              >
-                <Zap className="mb-1 h-4 w-4 inline" style={{ color: "hsl(var(--accent))" }} />{" "}
-                <strong>Hızlı yayın:</strong> Bilgileri WhatsApp üzerinden gönderin, ödeme onayından
-                sonra reklamınız aynı gün yayına girer.
-              </div>
-            </div>
+             ))}
           </div>
         </div>
       </section>
 
-      {/* ── İletişim CTA ─────────────────────────────────────────────── */}
-      <section className="py-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <div
-            className="overflow-hidden rounded-3xl p-8 text-center md:p-12"
-            style={{ backgroundColor: "hsl(var(--muted))", border: "1px solid hsl(var(--border))" }}
-          >
-            {/* Dekoratif arka plan dairesi */}
-            <div
-              className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl"
-              aria-hidden
-            >
-              <div
-                className="absolute -right-16 -top-16 h-64 w-64 rounded-full opacity-[0.06]"
-                style={{ backgroundColor: "hsl(var(--accent))" }}
-              />
-              <div
-                className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full opacity-[0.04]"
-                style={{ backgroundColor: "hsl(var(--primary))" }}
-              />
-            </div>
+      {/* ── 4. Gereksinimler & CTA ──────────────────────────────────── */}
+      <section className="py-24">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+             
+             {/* Sol: Teknik Bilgi */}
+             <div>
+                <div className="eyebrow mb-6">Specifications</div>
+                <h2 className="font-fraunces text-4xl text-ink mb-8 leading-tight">
+                  Reklam Materyali <br /><em>Gereksinimleri</em>
+                </h2>
+                <div className="space-y-6">
+                   {[
+                     "Başlık ve kısa açıklama metinleri",
+                     "Yüksek çözünürlüklü .PNG / .JPG görsel",
+                     "Yönlendirilecek web adresi (veya telefon)",
+                     "Hedeflenen yayın başlangıç tarihi"
+                   ].map((item, idx) => (
+                     <div key={idx} className="flex items-center gap-4 group">
+                        <div className="h-2 w-2 rounded-full bg-saffron group-hover:scale-150 transition-transform duration-300" />
+                        <span className="text-text-2 font-manrope">{item}</span>
+                     </div>
+                   ))}
+                </div>
+                
+                <div className="mt-10 p-6 bg-parchment/30 border border-saffron/10 rounded-2xl flex items-start gap-4">
+                   <Zap className="h-5 w-5 text-saffron mt-1 flex-shrink-0" />
+                   <p className="text-xs text-text-3 font-manrope leading-relaxed italic">
+                      <b>Hızlı Yayın Avantajı:</b> Tüm materyaller hazır olduğunda reklamınız ödeme onayı sonrası 24 saat içinde yayına girer.
+                   </p>
+                </div>
+             </div>
 
-            <div className="relative">
-              <span
-                className="mb-4 inline-flex items-center justify-center rounded-full p-3"
-                style={{ backgroundColor: "hsl(var(--accent))", color: "#fff" }}
-              >
-                <Megaphone className="h-6 w-6" />
-              </span>
+             {/* Sağ: CTA Box */}
+             <div className="relative">
+                <div className="absolute inset-0 bg-ink rounded-[40px] rotate-2 scale-105 opacity-5" />
+                <div className="relative bg-ink text-cream p-12 md:p-16 rounded-[40px] shadow-editorial-3 overflow-hidden">
+                   {/* Arka plan süsü */}
+                   <div className="absolute right-[-10%] top-[-10%] w-64 h-64 bg-saffron/10 rounded-full blur-3xl pointer-events-none" />
+                   
+                   <Megaphone className="h-12 w-12 text-saffron mb-8" />
+                   <h2 className="font-fraunces text-4xl md:text-5xl mb-6 tracking-tight">Hemen <br /><em>Başlayalım</em></h2>
+                   <p className="text-parchment/60 font-manrope mb-10 leading-relaxed max-w-sm">
+                      Kaman'da görünürlüğünüzü artırmak ve size özel teklif almak için bizimle iletişime geçin.
+                   </p>
 
-              <h2 className="font-playfair mb-2 text-2xl font-black md:text-3xl" style={{ color: "hsl(var(--foreground))" }}>
-                Hemen Başlayın
-              </h2>
-              <p className="mb-8 text-sm md:text-base" style={{ color: "hsl(var(--muted-foreground))" }}>
-                Reklam konum ve paket seçimi için bizimle iletişime geçin.
-                Size en uygun çözümü birlikte belirleyelim.
-              </p>
+                   <div className="flex flex-col gap-4">
+                      {whatsappLink && (
+                        <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="btn-editorial bg-saffron text-ink">
+                           <span>
+                              <MessageCircle className="h-4 w-4" />
+                              WhatsApp&apos;tan Yazın
+                           </span>
+                        </a>
+                      )}
 
-              <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-                {/* WhatsApp */}
-                {waHref && (
-                  <a
-                    href={waHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-bold shadow transition-all hover:opacity-90 active:scale-95"
-                    style={{ backgroundColor: "#25D366", color: "#FFFFFF" }}
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    WhatsApp'tan Yaz
-                  </a>
-                )}
+                      <Link href={ROUTES.CONTACT} className="btn-editorial bg-transparent border border-cream/20 hover:bg-cream">
+                         <span>
+                            <MessageCircle className="h-4 w-4" />
+                            Mesaj Gönder
+                         </span>
+                      </Link>
 
-                {/* Telefon */}
-                {telHref && (
-                  <a
-                    href={telHref}
-                    className="inline-flex items-center gap-2 rounded-full border px-7 py-3 text-sm font-bold transition-all hover:opacity-80 active:scale-95"
-                    style={{
-                      borderColor: "hsl(var(--border))",
-                      color: "hsl(var(--foreground))",
-                    }}
-                  >
-                    <Phone className="h-4 w-4" />
-                    {phoneDisplay ?? "Telefon ile Ara"}
-                  </a>
-                )}
-
-                {/* Fallback — site ayarları yoksa iletişim sayfasına yönlendir */}
-                {!waHref && !telHref && (
-                  <Link
-                    href={ROUTES.CONTACT}
-                    className="inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-bold transition-all hover:opacity-90 active:scale-95"
-                    style={{ backgroundColor: "hsl(var(--accent))", color: "#FFFFFF" }}
-                  >
-                    <Phone className="h-4 w-4" />
-                    İletişime Geçin
-                  </Link>
-                )}
-              </div>
-            </div>
+                      {!whatsappLink && (
+                        <Link href={ROUTES.CONTACT} className="btn-editorial bg-saffron text-ink">
+                           <span>
+                              İletişime Geçin <ArrowRight className="h-4 w-4" />
+                           </span>
+                        </Link>
+                      )}
+                   </div>
+                </div>
+             </div>
           </div>
         </div>
       </section>
