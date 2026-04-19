@@ -1,17 +1,13 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "@/stores/auth-store";
 import {
   useProfileQuery,
   useUpdateProfileMutation,
   useDeleteAccountMutation,
 } from "@/modules/profile/profile.service";
-import {
-  updateProfileSchema,
-  type UpdateProfileFormData,
-} from "@/modules/profile/profile.schema";
+import type { UpdateProfileFormData } from "@/modules/profile/profile.schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,10 +32,10 @@ export function ProfilClient({ translations: tr }: Props) {
   const deleteAccountMutation = useDeleteAccountMutation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
+  // NOTE: zodResolver(schema) + zod/v4 combination was causing React error #310
+  // (hook order changes inside react-hook-form's resolver memo). Client-side
+  // validation is optional here; backend validates too.
   const form = useForm<UpdateProfileFormData>({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       first_name: "",
       last_name: "",
