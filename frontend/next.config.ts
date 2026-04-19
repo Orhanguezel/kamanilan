@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 const apiUrl =
   process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "https://kamanilan.com/api";
 
-// Backend base URL — /api suffix'i olmadan (/uploads, /static vb. için)
-const backendBase = apiUrl.replace(/\/api$/, "");
+// Backend base URL — /api veya /api/v1 suffix'i olmadan (/uploads, /static vb. için)
+const backendBase = apiUrl.replace(/\/api(\/v\d+)?\/?$/, "");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -52,10 +52,11 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    formats: ["image/avif", "image/webp"],
-    deviceSizes: [360, 640, 828, 1080, 1280, 1920],
-    imageSizes: [48, 64, 96, 128, 256],
-    minimumCacheTTL: 31536000,
+    // Upload'lar rewrite uzerinden backend'e gidiyor. Next'in Image Optimizer'i
+    // internal fetch sirasinda rewrite'lari uygulamadigi icin /uploads icin null
+    // doner. Optimizer'i kapatip Unsplash/Cloudinary'nin kendi CDN donusumlerine
+    // guveniyoruz; logo zaten 58KB'a resize edildi.
+    unoptimized: true,
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com", pathname: "**" },
       { protocol: "http",  hostname: "localhost", port: "8078", pathname: "**" },

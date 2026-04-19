@@ -47,11 +47,22 @@ export const useCartStore = create<CartState>()(
         });
       },
       clearCart: () => set({ items: [] }),
-      totalItems: () => get().items.reduce((acc, i) => acc + i.quantity, 0),
+      totalItems: () =>
+        get().items.filter((i) => i.listing).reduce((acc, i) => acc + i.quantity, 0),
       setItems: (items) => set({ items }),
     }),
     {
       name: "cart-storage",
+      version: 2,
+      migrate: (persisted: unknown, version) => {
+        if (!persisted || typeof persisted !== "object") return { items: [] };
+        if (version < 2) {
+          // v1 → v2: purge items that lost their listing payload after schema changes
+          const state = persisted as { items?: CartItem[] };
+          return { items: (state.items ?? []).filter((i) => i && i.listing) };
+        }
+        return persisted as CartState;
+      },
     }
   )
 );

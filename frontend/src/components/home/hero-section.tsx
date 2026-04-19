@@ -8,6 +8,7 @@ import type { SectionConfig } from "@/modules/theme/theme.type";
 import { useSlidersQuery } from "@/modules/site/site.service";
 import type { SliderItem } from "@/modules/site/site.type";
 import { ROUTES } from "@/config/routes";
+import { useSiteSettingsQuery } from "@/modules/site/site.service";
 
 interface Props {
   config?: SectionConfig;
@@ -140,22 +141,39 @@ export function HeroSection({ config, initialSlides }: Props) {
         </div>
 
         {/* Hero Stats Ribbon */}
-        <div className="mt-20 lg:mt-32 pt-12 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-12">
-           {[
-             { num: "LXX", unit: "+", label: "Aktif İlan" },
-             { num: "MD", unit: "k", label: "Aylık Ziyaret" },
-             { num: "IX", unit: "/X", label: "Memnuniyet" },
-             { num: "XXIV", unit: "h", label: "Destek" }
-           ].map((s, idx) => (
-             <div key={idx} className="flex flex-col items-start gap-3">
-               <div className="font-fraunces text-4xl lg:text-5xl text-ink tracking-tight">
-                 {s.num}<sup className="text-xl italic text-saffron-2 ml-1">{s.unit}</sup>
-               </div>
-               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[hsl(var(--muted-foreground))]">{s.label}</div>
-             </div>
-           ))}
-        </div>
+        <StatsRibbon />
       </div>
     </section>
+  );
+}
+
+function StatsRibbon() {
+  const { data: site } = useSiteSettingsQuery([
+    "stats_active_ads",
+    "stats_monthly_visit",
+    "stats_satisfaction",
+    "stats_support_hours",
+  ]);
+
+  const stats = [
+    { val: (site?.stats_active_ads as string) || "1.250+", label: "Aktif İlan" },
+    { val: (site?.stats_monthly_visit as string) || "45.000+", label: "Aylık Ziyaret" },
+    { val: (site?.stats_satisfaction as string) || "%98", label: "Memnuniyet" },
+    { val: (site?.stats_support_hours as string) || "7/24", label: "Destek" },
+  ];
+
+  return (
+    <div className="mt-20 lg:mt-32 pt-12 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-12">
+      {stats.map((s, idx) => (
+        <div key={idx} className="flex flex-col items-start gap-3">
+          <div className="font-fraunces text-4xl lg:text-5xl text-ink tracking-tight">
+            {s.val}
+          </div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-3">
+            {s.label}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
