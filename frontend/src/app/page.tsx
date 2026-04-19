@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { t } from "@/lib/t";
 import { HomeSections } from "@/components/home/home-sections";
+import { HeroPreload } from "@/components/home/hero-preload";
 
 export const metadata: Metadata = {
   title: { absolute: t("seo.home_title") },
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return <HomeSections />;
+  return (
+    <>
+      <HeroPreload />
+      <HomeSections />
+    </>
+  );
 }

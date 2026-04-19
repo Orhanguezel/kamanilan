@@ -52,6 +52,7 @@ export function Footer() {
     "contact_email",
     "contact_address",
     "contact_whatsapp_link",
+    "contact_whatsapp_display",
     "social_facebook_url",
     "social_instagram_url",
     "social_twitter_url",
@@ -66,6 +67,7 @@ export function Footer() {
   const email            = cfg?.contact_email          as string | undefined;
   const address          = cfg?.contact_address        as string | undefined;
   const whatsapp         = cfg?.contact_whatsapp_link  as string | undefined;
+  const whatsappDisplay  = cfg?.contact_whatsapp_display as string | undefined;
   const facebookUrl      = cfg?.social_facebook_url    as string | undefined;
   const instagramUrl     = cfg?.social_instagram_url   as string | undefined;
   const twitterUrl       = cfg?.social_twitter_url     as string | undefined;
@@ -110,7 +112,7 @@ export function Footer() {
                  </span>
                  <div className="flex items-center gap-2 mt-0.5">
                     <div className="h-px w-3 bg-saffron" />
-                    <small className="font-mono text-[9px] uppercase tracking-[0.25em] text-parchment/40 font-bold">
+                    <small className="font-mono text-[9px] uppercase tracking-[0.25em] text-parchment/80 font-bold">
                        {brandLogoText || "KAMAN İLAN"}
                     </small>
                  </div>
@@ -241,7 +243,7 @@ export function Footer() {
                 <li className="flex items-center gap-3">
                   <MessageCircle className="h-4 w-4 shrink-0 text-[#25D366]" />
                   <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-[#25D366] transition-all">
-                    Destek Hattı (WhatsApp)
+                    {whatsappDisplay || "WhatsApp"}
                   </a>
                 </li>
               )}

@@ -90,6 +90,7 @@ export function Header() {
                   height={48}
                   className="h-full w-full object-contain"
                   decoding="async"
+                  fetchPriority="high"
                 />
               ) : (
                 <span className="font-fraunces text-2xl font-bold leading-none text-ink italic">K</span>

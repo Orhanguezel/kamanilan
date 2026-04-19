@@ -52,24 +52,16 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [360, 640, 828, 1080, 1280, 1920],
+    imageSizes: [48, 64, 96, 128, 256],
+    minimumCacheTTL: 31536000,
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-        pathname: "**",
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "8078",
-        pathname: "**",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        pathname: "**",
-      },
+      { protocol: "https", hostname: "res.cloudinary.com", pathname: "**" },
+      { protocol: "http",  hostname: "localhost", port: "8078", pathname: "**" },
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "**" },
+      { protocol: "https", hostname: "www.kamanilan.com", pathname: "**" },
+      { protocol: "https", hostname: "kamanilan.com", pathname: "**" },
     ],
   },
 };
