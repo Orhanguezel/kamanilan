@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { t, type Locale } from "@/lib/t";
-import { ProfilClient } from "./profil-client";
+import { ProfilClient } from "./profil-client-wrapper";
 
 export const metadata: Metadata = {
   title: "Profil Bilgileri",

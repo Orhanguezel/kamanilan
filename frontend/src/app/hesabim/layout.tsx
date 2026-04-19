@@ -61,8 +61,9 @@ export default function HesabimLayout({ children }: { children: React.ReactNode 
   const logout = useAuthStore((s) => s.logout);
   const { removeToken } = useToken();
   const [mobileOpen, setMobileOpen] = useState(false);
-  // Stable SSR init — client reads cookie in effect to avoid hydration mismatch
-  // (was causing React error #310 hook-order cascade on /hesabim/* pages).
+  // Stable SSR init — client reads cookie in effect to avoid hydration mismatch.
+  // 300ms polling interval was causing React fiber cascade (error #310) on
+  // hesabim pages — replaced with one-shot cookie read + pathname-based re-sync.
   const [locale, setLocale] = useState("tr");
 
   useEffect(() => {
@@ -71,16 +72,11 @@ export default function HesabimLayout({ children }: { children: React.ReactNode 
     }
   }, [isAuthenticated, router]);
 
-  // Read locale on mount + when cookie changes (LanguageSwitcher calls router.refresh)
+  // Read locale on mount + on pathname change (handles LanguageSwitcher→refresh)
   useEffect(() => {
-    const sync = () => {
-      const l = Cookies.get("lang") ?? "tr";
-      setLocale((prev) => (prev !== l ? l : prev));
-    };
-    sync();
-    const id = setInterval(sync, 300);
-    return () => clearInterval(id);
-  }, []);
+    const l = Cookies.get("lang") ?? "tr";
+    setLocale((prev) => (prev !== l ? l : prev));
+  }, [pathname]);
 
   if (!isAuthenticated) return null;
 
