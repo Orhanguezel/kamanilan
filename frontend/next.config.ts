@@ -47,6 +47,11 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
+          // Google OAuth popup uses window.opener to communicate back. Default
+          // COOP "same-origin" breaks the popup close detection, causing the
+          // "window.closed" warning flood. `same-origin-allow-popups` keeps
+          // isolation but lets postMessage + popup lifecycle work.
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
         ],
       },
     ];
