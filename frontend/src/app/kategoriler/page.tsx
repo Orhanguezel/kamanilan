@@ -52,28 +52,30 @@ async function fetchSubCategories(): Promise<ListingSubCategory[]> {
   }
 }
 
+import { PageHeader } from "@/components/layout/page-header";
+
 export default async function CategoriesPage() {
   const [categories, subCategories] = await Promise.all([
     fetchCategories(),
     fetchSubCategories(),
   ]);
 
+  const breadcrumbs = [
+    { label: "Ana Sayfa", href: "/" },
+    { label: "Kategoriler" }
+  ];
+
   return (
-    <div className="bg-[hsl(var(--col-paper))] min-h-screen">
+    <div className="bg-paper min-h-screen">
+      <PageHeader 
+        title={t("category.all_categories")}
+        label="DİZİN"
+        description="Kaman ve çevresindeki tüm yerel pazar kategorilerini keşfedin. İhtiyacınız olan her şey bir tık uzağınızda."
+        breadcrumbs={breadcrumbs}
+      />
+
       <section className="py-20 lg:py-32">
         <div className="container">
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 pb-10 border-b border-border">
-            <div className="max-w-2xl">
-               <div className="eyebrow mb-6">Dizin</div>
-               <h1 className="font-fraunces text-4xl lg:text-6xl font-medium tracking-tight text-[hsl(var(--col-ink))] leading-[1.1]">
-                 {t("category.all_categories")}
-               </h1>
-               <p className="mt-6 text-lg text-[hsl(var(--col-text-2))] leading-relaxed">
-                 Kaman ve çevresindeki tüm yerel pazar kategorilerini keşfedin. İhtiyacınız olan her şey bir tık uzağınızda.
-               </p>
-            </div>
-          </div>
 
           {!categories || categories.length === 0 ? (
             <div className="py-32 text-center bg-white/50 rounded-[32px] border border-dashed border-border">

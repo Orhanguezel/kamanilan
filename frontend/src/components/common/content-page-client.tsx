@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { ChevronRight, ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 
+import { PageHeader } from "@/components/layout/page-header";
+
 interface Breadcrumb {
   label: string;
   href?: string;
@@ -20,40 +22,39 @@ export function ContentPageClient({
   content,
   breadcrumbs,
 }: ContentPageClientProps) {
-  const htmlContent = typeof content === "string" ? content : null;
+  // Helper to extract html from various data formats returned by API
+  const getHtml = (data: any): string | null => {
+    if (!data) return null;
+    if (typeof data === "string") {
+      // If it looks like a JSON string from the editor/Strapi/etc.
+      if (data.trim().startsWith("{") && data.trim().endsWith("}")) {
+        try {
+          const parsed = JSON.parse(data);
+          return parsed.html || parsed.content || data;
+        } catch {
+          return data;
+        }
+      }
+      return data;
+    }
+    if (typeof data === "object") {
+      return data.html || data.content || JSON.stringify(data);
+    }
+    return null;
+  };
+
+  const htmlContent = getHtml(content);
 
   return (
     <div className="bg-paper min-h-screen">
-      {/* ── Editorial Header ── */}
-      <div className="bg-ink py-16 lg:py-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-saffron opacity-5 skew-x-[-15deg] translate-x-12" />
-        
-        <div className="container relative z-10 text-center md:text-left">
-          {/* Breadcrumb (Mono style) */}
-          <nav className="mb-8 flex items-center justify-center md:justify-start gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-parchment opacity-40">
-            {breadcrumbs.map((crumb, i) => (
-              <span key={i} className="flex items-center gap-3">
-                {i > 0 && <span className="opacity-20">/</span>}
-                {crumb.href ? (
-                  <Link href={crumb.href} className="hover:text-saffron transition-colors">
-                    {crumb.label}
-                  </Link>
-                ) : (
-                  <span className="text-white">{crumb.label}</span>
-                )}
-              </span>
-            ))}
-          </nav>
-
-          <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white leading-tight">
-            {title.includes(" ") ? (
-               <>
-                 {title.split(' ')[0]} <em>{title.split(' ').slice(1).join(' ')}</em>
-               </>
-            ) : title}
-          </h1>
-        </div>
-      </div>
+      <PageHeader 
+        title={title.includes(" ") ? (
+          <>
+            {title.split(' ')[0]} <em>{title.split(' ').slice(1).join(' ')}</em>
+          </>
+        ) : title}
+        breadcrumbs={breadcrumbs}
+      />
 
       <div className="container py-20 lg:py-32">
         <div className="max-w-4xl mx-auto">

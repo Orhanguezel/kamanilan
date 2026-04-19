@@ -244,10 +244,24 @@ export function Footer() {
         </div>
 
         {/* ── Alt copyright ─────────────────────────────────────── */}
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-[11px] font-mono uppercase tracking-[0.2em] text-parchment/80 hover:text-parchment transition-colors">
-           <div className="flex items-center gap-2">
-              &copy; {year} {brandDisplayName}. {t("footer.all_rights_reserved")}
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-8 text-[11px] font-mono uppercase tracking-[0.2em] text-parchment/60 transition-colors">
+           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
+              <div className="flex items-center gap-2">
+                &copy; {year} {brandDisplayName}. {t("footer.all_rights_reserved")}
+              </div>
+              <div className="flex items-center gap-6">
+                <Link href={ROUTES.TERMS} className="hover:text-saffron transition-colors border-b border-white/5 hover:border-saffron/30 pb-0.5">
+                  {t("footer.terms")}
+                </Link>
+                <Link href={ROUTES.PRIVACY} className="hover:text-saffron transition-colors border-b border-white/5 hover:border-saffron/30 pb-0.5">
+                  {t("footer.privacy")}
+                </Link>
+                <Link href="/kvkk" className="hover:text-saffron transition-colors border-b border-white/5 hover:border-saffron/30 pb-0.5">
+                  KVKK
+                </Link>
+              </div>
            </div>
+
            <div className="flex items-center gap-2 group">
               <span>DESIGNED BY</span>
               <a 

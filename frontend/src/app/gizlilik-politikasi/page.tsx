@@ -29,7 +29,7 @@ export default async function PrivacyPage() {
   return (
     <ContentPageClient
       title={data?.title || t("pages.privacy")}
-      content={data?.content?.html ?? data?.content}
+      content={data?.content}
       breadcrumbs={[{ label: t("common.home"), href: "/" }, { label: data?.title || t("pages.privacy") }]}
     />
   );

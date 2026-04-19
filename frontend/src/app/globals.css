@@ -217,3 +217,35 @@
     @apply my-16 rounded-[40px] shadow-2xl border border-line mx-auto;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   GOOGLE PLACES AUTOCOMPLETE FIX (FOR MODALS)
+   ══════════════════════════════════════════════════════════════════════ */
+.pac-container {
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2) !important;
+  font-family: inherit;
+  margin-top: 4px;
+}
+
+.pac-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pac-item:first-child { border-top: none; }
+.pac-item:hover { background-color: #fafafa; }
+
+.pac-icon { margin-top: 0; }
+.pac-item-query {
+  font-size: 14px;
+  color: #1a120b;
+  font-weight: 600;
+}

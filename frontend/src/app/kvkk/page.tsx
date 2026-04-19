@@ -14,23 +14,23 @@ async function getPageContent(slug: string) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await getPageContent("kullanim-kosullari");
+  const data = await getPageContent("kvkk-aydinlatma-metni");
   return {
-    title: data?.meta_title || t("seo.terms_title"),
-    description: data?.meta_description || t("seo.terms_description"),
+    title: data?.meta_title || "KVKK Aydınlatma Metni | Kaman İlan",
+    description: data?.meta_description || "KVKK kapsamında kişisel verilerinizin korunması ve işlenmesi hakkında bilgilendirme metni.",
     alternates: {
-      canonical: "/kullanim-kosullari",
+      canonical: "/kvkk",
     },
   };
 }
 
-export default async function TermsPage() {
-  const data = await getPageContent("kullanim-kosullari");
+export default async function KVKKPage() {
+  const data = await getPageContent("kvkk-aydinlatma-metni");
   return (
     <ContentPageClient
-      title={data?.title || t("pages.terms")}
+      title={data?.title || "KVKK Aydınlatma Metni"}
       content={data?.content}
-      breadcrumbs={[{ label: t("common.home"), href: "/" }, { label: data?.title || t("pages.terms") }]}
+      breadcrumbs={[{ label: t("common.home"), href: "/" }, { label: "KVKK" }]}
     />
   );
 }

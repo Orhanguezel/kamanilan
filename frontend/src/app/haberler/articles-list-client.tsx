@@ -44,10 +44,12 @@ const GRID_COLS: Record<number, string> = {
   4: "grid-cols-1 md:grid-cols-2 xl:grid-cols-4",
 };
 
+import { PageHeader } from "@/components/layout/page-header";
+
 export function ArticlesListClient() {
   const [category, setCategory] = React.useState<ArticleCategory | "">("");
   const { data: theme } = useThemeQuery();
-
+  
   /* ── tema ayarları ── */
   const listSections = theme?.newsListSections ?? [];
 
@@ -102,33 +104,18 @@ export function ArticlesListClient() {
   const gridColsClass = GRID_COLS[Math.min(Math.max(gridCols, 1), 4)] ?? GRID_COLS[3];
   const showCarouselFirst = !mainBlocks.length || mainBlocks[0]?.key === "carousel";
 
+  const breadcrumbs = [
+    { label: "Ana Sayfa", href: "/" },
+    { label: "Haberler" }
+  ];
+
   return (
     <div className="bg-paper min-h-screen">
-      {/* ── Page Header (Clean & Newspaper style) ── */}
-      <div className="bg-ink py-8 lg:py-12 border-b-4 border-saffron">
-        <div className="container">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                 <div className="h-1.5 w-1.5 rounded-full bg-saffron" />
-                 <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-saffron/80 font-bold">KAMAN'IN SESİ</span>
-              </div>
-              <h1 className="font-fraunces text-3xl lg:text-5xl font-medium tracking-tight text-white leading-none">
-                Haber <em>Dosyası</em>
-              </h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                type="button"
-                onClick={() => void refetch()}
-                className="h-10 px-6 rounded-full border border-white/10 hover:border-saffron text-[10px] font-mono font-bold uppercase tracking-widest text-parchment/60 hover:text-saffron transition-all inline-flex items-center gap-2"
-              >
-                <RefreshCcw className="size-3" /> YENİLE
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageHeader 
+        title={<>Haber <em>Dosyası</em></>}
+        label="KAMAN'IN SESİ"
+        breadcrumbs={breadcrumbs}
+      />
 
       <div className="container py-8 lg:py-12">
         {/* Category tabs (Subtle & Clean) */}

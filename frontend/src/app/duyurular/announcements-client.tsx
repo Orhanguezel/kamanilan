@@ -21,9 +21,16 @@ function formatDate(iso: string | null) {
   });
 }
 
+import { PageHeader } from "@/components/layout/page-header";
+
 export function AnnouncementsClient() {
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [page, setPage] = useState(1);
+  
+  const breadcrumbs = [
+    { label: "Ana Sayfa", href: "/" },
+    { label: "Duyurular" }
+  ];
 
   const { data, isPending } = useAnnouncementsQuery({
     page,
@@ -42,32 +49,12 @@ export function AnnouncementsClient() {
 
   return (
     <div className="min-h-screen bg-paper">
-      {/* ── Editorial Header ── */}
-      <div className="bg-ink py-20 lg:py-32 relative overflow-hidden">
-        {/* Newspaper decorative stripes */}
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-saffron opacity-5 skew-x-[-15deg] translate-x-24" />
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-white opacity-5 skew-x-[-15deg] translate-x-32" />
-        
-        <div className="container relative z-10">
-          <div className="flex flex-col items-start">
-            <div className="flex items-center gap-3 mb-8">
-              <Megaphone className="h-5 w-5 text-saffron" />
-              <div className="flex flex-col">
-                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.4em] text-saffron leading-none">KAMAN İLAN</span>
-                <span className="font-mono text-[14px] font-black uppercase tracking-[0.2em] text-white">DUYURULAR</span>
-              </div>
-            </div>
-            
-            <h1 className="font-fraunces text-4xl lg:text-8xl font-medium tracking-tight text-white mb-8 max-w-4xl leading-[0.9]">
-              Güncel Duyuru ve <em>Gelişmeler</em>
-            </h1>
-            
-            <p className="text-parchment/60 text-sm md:text-lg max-w-2xl leading-relaxed font-manrope">
-              Platformdaki yeni özellikler, bölgesel düzenlemeler ve hasat dönemi güncellemelerine dair kurumsal bildirim merkezi.
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader 
+        title={<>Güncel Duyuru ve <em>Gelişmeler</em></>}
+        label="KAMAN İLAN DUYURULAR"
+        description="Platformdaki yeni özellikler, bölgesel düzenlemeler ve hasat dönemi güncellemelerine dair kurumsal bildirim merkezi."
+        breadcrumbs={breadcrumbs}
+      />
 
       <div className="container py-12 lg:py-20">
         {/* Kategori filtresi - Editorial Style */}
