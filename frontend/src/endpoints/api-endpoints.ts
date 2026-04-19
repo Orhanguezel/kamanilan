@@ -39,8 +39,8 @@ export const API_ENDPOINTS = {
   SUBCATEGORIES: "/sub-categories",
   LISTING_BRANDS: "/listing-brands",
   LISTING_TAGS: "/listing-tags",
-  CUSTOM_PAGES: "/custom_pages",
-  PAGES: "/custom_pages",
+  CUSTOM_PAGES: "/custom-pages",
+  PAGES: "/custom-pages",
   FAQS: "/faqs",
   COUPONS: "/coupons",
   CONTACTS: "/contacts", // POST → contact form submission

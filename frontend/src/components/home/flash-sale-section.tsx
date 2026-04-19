@@ -136,14 +136,26 @@ export function FlashSaleSection({ config }: Props) {
   const { data: allSales = [], isPending } = useFlashSalesQuery();
   const sale = allSales[instance - 1] ?? null;
 
+  const isSolo = !config?.span || config.span >= 12;
+
   if (isPending) {
     return (
-      <div className="h-full min-h-[400px] w-full animate-pulse bg-muted/10 border border-black/5" />
+      <section className={isSolo ? "container py-12 lg:py-20" : "h-full"}>
+         <div className="h-[400px] w-full animate-pulse bg-ink/5 border border-black/5" />
+      </section>
     );
   }
 
   if (!sale) return null;
 
-  // Layout block mode (container/padding is handled by parent grid in HomeSections)
+  if (isSolo) {
+    return (
+      <section className="container py-12 lg:py-20">
+        <CampaignCard sale={sale} />
+      </section>
+    );
+  }
+
+  // Row mode (handled by grid)
   return <CampaignCard sale={sale} />;
 }

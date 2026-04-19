@@ -46,10 +46,16 @@ INSERT INTO `theme_config` (`id`, `is_active`, `config`, `created_at`, `updated_
     "darkMode":   "light",
     "sections": [
       { "key": "hero", "enabled": true, "order": 1, "variant": "editorial-collage" },
-      { "key": "categories", "enabled": true, "order": 2, "variant": "grid-featured" },
+      { "key": "recent", "enabled": true, "order": 2, "limit": 12 },
       { "key": "featured", "enabled": true, "order": 3, "limit": 6 },
       { "key": "spotlight", "enabled": true, "order": 4, "label": "Kaman Cevizi Spotlight" },
-      { "key": "recent", "enabled": true, "order": 5, "limit": 12 }
+      { "key": "announcements", "enabled": true, "order": 5, "limit": 5 },
+      { "key": "news_feed", "enabled": true, "order": 6, "limit": 4 },
+      { "key": "categories", "enabled": true, "order": 10, "variant": "grid-featured" },
+      { "key": "flash_sale", "enabled": false, "order": 11 },
+      { "key": "banner_row_1", "enabled": false, "order": 12 },
+      { "key": "banner_row_2", "enabled": false, "order": 13 },
+      { "key": "banner_row_3", "enabled": false, "order": 14 }
     ],
     "newsListSections": [
       { "key": "banner_full_1",    "enabled": true, "order": 0,  "label": "Tam Genişlik Reklam 1",  "bannerIds": "52" },

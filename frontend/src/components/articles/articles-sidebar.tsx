@@ -34,7 +34,7 @@ export function SidebarBannerCard({ banner }: { banner: BannerItem }) {
 
   const inner = (
     <div
-      className="group relative overflow-hidden rounded-[32px] transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 border border-black/5"
+      className="group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 border border-black/5"
       style={{ backgroundColor: bg }}
     >
       {bgImage && (
@@ -125,18 +125,18 @@ function BannerSlot({ id }: { id?: string }) {
 
 export function ArticlesSidebar({ latestArticles, sidebarSections }: ArticlesSidebarProps) {
   return (
-    <aside className="flex flex-col gap-10">
+    <aside className="flex flex-col gap-8">
       {sidebarSections.map((sec) => {
         if (sec.key === "sidebar") {
           return latestArticles.length > 0 ? (
-            <div key={sec.key} className="relative p-2">
-              <div className="mb-8 flex items-center gap-3">
-                 <div className="h-px w-6 bg-saffron" />
+            <div key={sec.key} className="relative">
+              <div className="mb-6 flex items-center gap-2">
+                 <div className="h-4 w-1 bg-saffron rounded-full" />
                  <h3 className="font-fraunces text-xl font-medium text-ink">
                     {sec.label || "Son Haberler"}
                  </h3>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col">
                 {latestArticles.map((a) => (
                   <ArticleCard key={a.id} article={a} variant="horizontal" />
                 ))}

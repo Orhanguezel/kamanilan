@@ -30,16 +30,17 @@ export function AnnouncementDetailClient({ slug }: Props) {
 
   if (isPending) {
     return (
-      <div className="container py-16 max-w-3xl mx-auto">
-        <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-gray-200 rounded w-1/4" />
-          <div className="h-10 bg-gray-200 rounded w-3/4" />
-          <div className="h-4 bg-gray-200 rounded w-1/3" />
-          <div className="h-64 bg-gray-200 rounded-2xl" />
-          <div className="space-y-2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-4 bg-gray-200 rounded" />
-            ))}
+      <div className="min-h-screen bg-paper animate-pulse">
+        <div className="h-[40vh] bg-ink/10" />
+        <div className="container py-20 lg:py-32">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <div className="h-20 bg-muted/20 w-3/4" />
+            <div className="h-[400px] bg-muted/10 w-full" />
+            <div className="space-y-4">
+              <div className="h-4 bg-muted/20 w-full" />
+              <div className="h-4 bg-muted/20 w-5/6" />
+              <div className="h-4 bg-muted/20 w-4/6" />
+            </div>
           </div>
         </div>
       </div>
@@ -48,14 +49,14 @@ export function AnnouncementDetailClient({ slug }: Props) {
 
   if (isError || !item) {
     return (
-      <div className="container py-20 text-center">
-        <p className="text-gray-400 text-lg mb-4">Duyuru bulunamadı.</p>
+      <div className="min-h-screen bg-paper flex flex-col items-center justify-center py-20 text-center px-4">
+        <div className="text-8xl mb-8 opacity-10">📄</div>
+        <p className="font-fraunces text-2xl text-ink mb-12 opacity-40">Aradığınız duyuru arşivde bulunamadı.</p>
         <Link
           href={ROUTES.ANNOUNCEMENTS}
-          className="inline-flex items-center gap-2 text-sm font-medium hover:underline"
-          style={{ color: "hsl(var(--primary))" }}
+          className="btn-editorial"
         >
-          <ArrowLeft className="h-4 w-4" /> Duyurulara Geri Dön
+          <span><ArrowLeft className="h-4 w-4" /> DUYURULARA DÖN</span>
         </Link>
       </div>
     );
@@ -64,94 +65,103 @@ export function AnnouncementDetailClient({ slug }: Props) {
   const rssUrl = `${getApiBaseUrl()}${API_ENDPOINTS.ANNOUNCEMENTS_RSS}`;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero bar */}
-      <div
-        className="py-8"
-        style={{ backgroundColor: "hsl(var(--primary))" }}
-      >
-        <div className="container max-w-3xl mx-auto">
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-1.5 text-xs text-white/60 mb-4">
-            <Link href={ROUTES.HOME} className="hover:text-white/90 transition-colors">Ana Sayfa</Link>
-            <ChevronRight className="h-3 w-3" />
-            <Link href={ROUTES.ANNOUNCEMENTS} className="hover:text-white/90 transition-colors">Duyurular</Link>
-            <ChevronRight className="h-3 w-3" />
-            <span className="text-white/90 truncate max-w-xs">{item.title}</span>
+    <div className="min-h-screen bg-paper">
+      {/* ── Editorial Header ── */}
+      <div className="bg-ink relative overflow-hidden pt-20 pb-16 lg:pt-32 lg:pb-24">
+         {/* Decorative News Stripes */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-saffron opacity-5 skew-x-[-15deg] translate-x-24" />
+        <div className="absolute top-0 right-0 w-1/4 h-full bg-white opacity-5 skew-x-[-15deg] translate-x-32" />
+        
+        <div className="container relative z-10">
+          <nav className="mb-10 flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-white opacity-40">
+            <Link href={ROUTES.HOME} className="hover:text-saffron transition-colors">ANA SAYFA</Link>
+            <span className="opacity-20">/</span>
+            <Link href={ROUTES.ANNOUNCEMENTS} className="hover:text-saffron transition-colors">DUYURULAR</Link>
+            <span className="opacity-20">/</span>
+            <span className="text-white tracking-widest truncate max-w-[200px] md:max-w-md">{item.title}</span>
           </nav>
 
-          <div className="flex items-start gap-3">
-            <Megaphone className="h-6 w-6 text-white/70 shrink-0 mt-0.5" />
-            <h1 className="text-2xl font-bold text-white leading-snug">{item.title}</h1>
+          <div className="max-w-5xl">
+            <div className="flex items-center gap-4 mb-8">
+               <div className="flex items-center justify-center w-12 h-12 border border-white/10 bg-white/5">
+                  <Megaphone className="h-5 w-5 text-saffron" />
+               </div>
+               <div className="h-px w-20 bg-saffron" />
+               <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.3em] font-bold">
+                 {CATEGORY_LABELS[item.category as AnnouncementCategory] ?? item.category}
+               </span>
+            </div>
+
+            <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white mb-12 leading-[1] lg:leading-[0.95]">
+              {item.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-8 text-[11px] font-mono uppercase tracking-widest text-parchment/40">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-3.5 w-3.5" />
+                {formatDate(item.published_at ?? item.created_at)}
+              </div>
+              {item.author && (
+                <div className="flex items-center gap-2">
+                  <User className="h-3.5 w-3.5" />
+                  {item.author}
+                </div>
+              )}
+              {item.is_featured && (
+                <div className="flex items-center gap-2 text-saffron">
+                  <div className="h-1.5 w-1.5 rounded-full bg-saffron" />
+                  ÖNE ÇIKAN BİLDİRİM
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container max-w-3xl mx-auto py-8">
-        {/* Meta */}
-        <div className="flex flex-wrap items-center gap-3 mb-6 text-sm text-gray-500">
-          <span
-            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              CATEGORY_COLORS[item.category as AnnouncementCategory] ?? "bg-gray-100 text-gray-600"
-            }`}
-          >
-            <Tag className="h-3 w-3" />
-            {CATEGORY_LABELS[item.category as AnnouncementCategory] ?? item.category}
-          </span>
-          {item.is_featured && (
-            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-700">
-              Öne Çıkan
-            </span>
+      <div className="container py-20 lg:py-32">
+        <div className="max-w-4xl mx-auto">
+          {/* Cover image */}
+          {item.cover_image_url && (
+            <div className="mb-16 lg:mb-24 shadow-3xl overflow-hidden border border-border bg-ink">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.cover_image_url}
+                alt={item.alt ?? item.title}
+                className="w-full max-h-[600px] object-cover opacity-90 transition-transform duration-1000 hover:scale-105"
+              />
+            </div>
           )}
-          <span className="flex items-center gap-1">
-            <Calendar className="h-3.5 w-3.5" />
-            {formatDate(item.published_at ?? item.created_at)}
-          </span>
-          {item.author && (
-            <span className="flex items-center gap-1">
-              <User className="h-3.5 w-3.5" />
-              {item.author}
-            </span>
-          )}
-        </div>
 
-        {/* Kapak görseli */}
-        {item.cover_image_url && (
-          <div className="mb-8 rounded-2xl overflow-hidden shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={item.cover_image_url}
-              alt={item.alt ?? item.title}
-              className="w-full max-h-80 object-cover"
-            />
+          {/* Content */}
+          <div className="space-y-16">
+             <div
+               className="editorial-content"
+               dangerouslySetInnerHTML={{ __html: item.content ?? "<p>İçerik bulunamadı.</p>" }}
+             />
+
+             {/* Footer Actions */}
+             <div className="pt-16 border-t border-black/5 flex flex-col md:flex-row items-center justify-between gap-10">
+                <Link
+                  href={ROUTES.ANNOUNCEMENTS}
+                  className="flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-widest text-ink hover:gap-6 transition-all group"
+                >
+                  <ArrowLeft className="h-4 w-4" /> ARŞİVE GERİ DÖN
+                </Link>
+
+                <div className="flex items-center gap-8">
+                   <a
+                    href={rssUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest text-walnut opacity-40 hover:opacity-100 transition-all"
+                  >
+                    <Rss className="h-3.5 w-3.5" /> RSS TAKİP
+                  </a>
+                  <div className="h-1 w-1 rounded-full bg-saffron" />
+                  <span className="font-mono text-[10px] uppercase tracking-widest opacity-20">PLATFORM BİLDİRİMİ</span>
+                </div>
+             </div>
           </div>
-        )}
-
-        {/* İçerik */}
-        <article
-          className="prose prose-sm max-w-none bg-white rounded-2xl shadow-sm border border-gray-100 px-8 py-8"
-          dangerouslySetInnerHTML={{ __html: item.content ?? "<p>İçerik bulunamadı.</p>" }}
-        />
-
-        {/* Alt linkler */}
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-          <Link
-            href={ROUTES.ANNOUNCEMENTS}
-            className="inline-flex items-center gap-2 text-sm font-medium hover:underline"
-            style={{ color: "hsl(var(--primary))" }}
-          >
-            <ArrowLeft className="h-4 w-4" /> Tüm Duyurulara Dön
-          </Link>
-
-          <a
-            href={rssUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-orange-500 hover:text-orange-600 transition-colors"
-          >
-            <Rss className="h-3.5 w-3.5" />
-            RSS ile Takip Et
-          </a>
         </div>
       </div>
     </div>

@@ -42,50 +42,54 @@ export function AnnouncementsClient() {
 
   return (
     <div className="min-h-screen bg-paper">
-      {/* ── Hero ── */}
+      {/* ── Editorial Header ── */}
       <div className="bg-ink py-20 lg:py-32 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-saffron opacity-5 skew-x-[-20deg] translate-x-12" />
+        {/* Newspaper decorative stripes */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-saffron opacity-5 skew-x-[-15deg] translate-x-24" />
+        <div className="absolute top-0 right-0 w-1/4 h-full bg-white opacity-5 skew-x-[-15deg] translate-x-32" />
         
         <div className="container relative z-10">
           <div className="flex flex-col items-start">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-8">
               <Megaphone className="h-5 w-5 text-saffron" />
-              <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-saffron">Günde/M</span>
+              <div className="flex flex-col">
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.4em] text-saffron leading-none">KAMAN İLAN</span>
+                <span className="font-mono text-[14px] font-black uppercase tracking-[0.2em] text-white">DUYURULAR</span>
+              </div>
             </div>
             
-            <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white mb-6">
-              Platform <em>Duyuruları</em>
+            <h1 className="font-fraunces text-4xl lg:text-8xl font-medium tracking-tight text-white mb-8 max-w-4xl leading-[0.9]">
+              Güncel Duyuru ve <em>Gelişmeler</em>
             </h1>
             
-            <p className="text-parchment opacity-50 text-sm md:text-base max-w-xl leading-relaxed">
-              Kaman İlan platformuna dair güncellemeler, yeni özellikler, özel hasat kampanyaları ve bölgesel önemli haberlerin merkezi.
+            <p className="text-parchment/60 text-sm md:text-lg max-w-2xl leading-relaxed font-manrope">
+              Platformdaki yeni özellikler, bölgesel düzenlemeler ve hasat dönemi güncellemelerine dair kurumsal bildirim merkezi.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="container py-12">
-        {/* Kategori filtresi */}
-        <div className="flex flex-wrap gap-3 mb-16 items-center">
-          <span className="font-mono text-[10px] uppercase tracking-widest opacity-40 mr-4">Filtrele:</span>
+      <div className="container py-12 lg:py-20">
+        {/* Kategori filtresi - Editorial Style */}
+        <div className="flex flex-wrap gap-2 mb-20 items-center justify-center border-b border-ink/5 pb-10">
           <button
             onClick={() => handleCategory("")}
-            className={`rounded-full px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all ${
+            className={`px-8 py-3 text-[10px] font-mono font-bold uppercase tracking-widest transition-all ${
               activeCategory === ""
-                ? "bg-ink text-white shadow-xl"
-                : "bg-white text-ink border border-black/5 hover:border-black/20"
+                ? "bg-ink text-saffron shadow-xl"
+                : "text-ink opacity-40 hover:opacity-100"
             }`}
           >
-            Tümü
+            TÜMÜ
           </button>
           {ALL_CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => handleCategory(cat)}
-              className={`rounded-full px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all ${
+              className={`px-8 py-3 text-[10px] font-mono font-bold uppercase tracking-widest transition-all ${
                 activeCategory === cat
-                  ? "bg-ink text-white shadow-xl"
-                  : "bg-white text-ink border border-black/5 hover:border-black/20"
+                  ? "bg-ink text-saffron shadow-xl"
+                  : "text-ink opacity-40 hover:opacity-100"
               }`}
             >
               {CATEGORY_LABELS[cat as AnnouncementCategory]}
@@ -95,65 +99,65 @@ export function AnnouncementsClient() {
 
         {/* Grid */}
         {isPending ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="animate-pulse aspect-video rounded-[32px] bg-muted/20" />
+              <div key={i} className="animate-pulse flex flex-col gap-6">
+                 <div className="aspect-[16/10] bg-muted/20" />
+                 <div className="h-4 w-1/4 bg-muted/20" />
+                 <div className="h-8 w-3/4 bg-muted/20" />
+              </div>
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="text-center py-32">
-            <Megaphone className="h-16 w-16 mx-auto mb-6 opacity-10 text-ink" />
+          <div className="text-center py-40 border border-dashed border-ink/5">
+            <Megaphone className="h-16 w-16 mx-auto mb-8 opacity-10 text-ink" />
             <p className="font-fraunces text-2xl text-ink opacity-30 italic">Henüz bu kategoride duyuru bulunmuyor.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-20">
             {items.map((item) => (
               <Link
                 key={item.id}
                 href={ROUTES.ANNOUNCEMENT_DETAIL(item.slug)}
-                className="group flex flex-col h-full transition-all duration-500 hover:-translate-y-2"
+                className="group flex flex-col h-full transition-all duration-500 hover:-translate-y-1"
               >
-                {item.cover_image_url ? (
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-[40px] mb-8 bg-muted shadow-xl border border-border">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div className="relative aspect-[16/10] overflow-hidden mb-8 bg-ink border border-border">
+                  {item.cover_image_url ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       src={item.cover_image_url}
                       alt={item.alt ?? item.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90"
                     />
-                    <div className="absolute top-6 left-6">
-                       <span className="bg-saffron text-ink font-mono text-[9px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-2xl">
-                          {CATEGORY_LABELS[item.category as AnnouncementCategory] ?? item.category}
-                       </span>
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center bg-ink">
+                       <Megaphone className="h-16 w-16 text-white/5" />
                     </div>
+                  )}
+                  <div className="absolute top-0 left-0 bg-saffron text-ink font-mono text-[9px] font-bold uppercase tracking-widest px-5 py-2">
+                      {CATEGORY_LABELS[item.category as AnnouncementCategory] ?? item.category}
                   </div>
-                ) : (
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-[40px] mb-8 bg-paper flex items-center justify-center border border-dashed border-black/10 group-hover:border-saffron transition-colors">
-                     <Megaphone className="h-12 w-12 opacity-10 text-ink" />
-                  </div>
-                )}
+                </div>
 
-                <div className="flex flex-col flex-1 px-2">
-                  <div className="flex items-center gap-3 mb-4 font-mono text-[10px] uppercase tracking-widest opacity-40">
+                <div className="flex flex-col flex-1">
+                  <div className="flex items-center gap-3 mb-5 font-mono text-[10px] uppercase tracking-widest opacity-40">
                     <Calendar className="h-3 w-3" />
                     {formatDate(item.published_at ?? item.created_at)}
-                    {item.is_featured && (
-                      <span className="text-saffron-2">· ÖNE ÇIKAN</span>
-                    )}
+                    {item.is_featured && <span className="text-saffron-2 font-bold">· ÖNE ÇIKAN</span>}
                   </div>
 
-                  <h2 className="font-fraunces text-2xl font-medium leading-[1.2] text-ink mb-4 group-hover:text-saffron-2 transition-colors">
+                  <h2 className="font-fraunces text-2xl lg:text-3xl font-medium leading-[1.1] text-ink mb-6 group-hover:text-blue-900 transition-colors">
                     {item.title}
                   </h2>
 
                   {item.excerpt && (
-                    <p className="text-sm text-walnut opacity-60 leading-relaxed line-clamp-2 mb-6 font-manrope">
+                    <p className="text-sm text-walnut opacity-60 leading-relaxed line-clamp-2 mb-8 font-manrope">
                       {item.excerpt}
                     </p>
                   )}
 
-                  <div className="mt-auto pt-6 border-t border-black/5 flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest text-ink group-hover:gap-4 transition-all">
-                    DEVAMINI OKU <ArrowRight className="h-3 w-3 -rotate-45" />
+                  <div className="mt-auto pt-8 border-t border-black/5 flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest text-ink group-hover:gap-4 transition-all">
+                    DOKÜMANI İNCELE <ArrowRight className="h-3 w-3 -rotate-45" />
                   </div>
                 </div>
               </Link>
@@ -163,23 +167,24 @@ export function AnnouncementsClient() {
 
         {/* Sayfalama */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-6 mt-24 pt-12 border-t border-black/5">
+          <div className="flex items-center justify-center gap-8 mt-32 pt-16 border-t border-black/5">
             <button
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
-              className="btn-editorial bg-white border border-border text-ink disabled:opacity-30 disabled:pointer-events-none"
+              className="px-8 py-3 text-[10px] font-mono font-bold uppercase tracking-widest bg-white border border-black/5 text-ink disabled:opacity-20 transition-all hover:bg-ink hover:text-white"
             >
-              <span>Geri</span>
+              <span>GERİ</span>
             </button>
-            <span className="font-mono text-xs uppercase tracking-widest opacity-50">
-              {page} / {totalPages}
-            </span>
+            <div className="flex flex-col items-center">
+               <span className="font-mono text-[10px] uppercase tracking-[0.4em] opacity-20 leading-none mb-1">ARŞİV</span>
+               <span className="font-fraunces text-lg font-medium">{page} / {totalPages}</span>
+            </div>
             <button
               disabled={page >= totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="btn-editorial"
+              className="px-8 py-3 text-[10px] font-mono font-bold uppercase tracking-widest bg-ink text-white disabled:opacity-20 transition-all hover:bg-saffron hover:text-ink"
             >
-              <span>İleri</span>
+              <span>İLERİ</span>
             </button>
           </div>
         )}

@@ -23,8 +23,12 @@ export function CategoriesGrid({ categories, subCategories, listingsPath }: Prop
           <div key={cat.id} className="group relative flex flex-col bg-paper transition-all duration-500 hover:bg-ink hover:text-white">
             {/* Header Area */}
             <div className="p-8 pb-4">
-              <div className="h-16 w-16 flex items-center justify-center rounded-full bg-ivory text-3xl transition-all duration-500 group-hover:bg-saffron group-hover:rotate-[-8deg] group-hover:scale-110 mb-6">
-                {cat.icon || "📦"}
+              <div className="h-16 w-16 flex items-center justify-center rounded-full bg-ivory overflow-hidden border-2 border-white shadow-lg transition-all duration-500 group-hover:bg-saffron group-hover:rotate-[-8deg] group-hover:scale-110 mb-6">
+                {cat.image_url ? (
+                  <img src={cat.image_url} alt={cat.name} className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-3xl">{cat.icon || "📦"}</span>
+                )}
               </div>
               <h3 className="font-fraunces text-2xl font-medium tracking-tight mb-2">
                 {cat.name}

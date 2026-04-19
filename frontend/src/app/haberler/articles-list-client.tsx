@@ -14,7 +14,7 @@ import { ArticlesSidebar, SidebarBannerCard } from "@/components/articles/articl
 function FullWidthNewsBanner({ ids }: { ids?: string }) {
   const { data: banners = [], isPending } = useBannersByIdsQuery(ids, 3);
   if (isPending && ids) {
-    return <div className="my-8 h-[200px] w-full animate-pulse rounded-[32px] bg-muted/20" />;
+    return <div className="my-8 h-[200px] w-full animate-pulse bg-muted/20" />;
   }
   if (!ids || !banners.length) return null;
   const cols = banners.length === 1 ? "" : banners.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3";
@@ -104,44 +104,44 @@ export function ArticlesListClient() {
 
   return (
     <div className="bg-paper min-h-screen">
-      {/* ── Page Header (Editorial) ── */}
-      <div className="bg-ink py-12 lg:py-20 border-b border-white/5">
+      {/* ── Page Header (Clean & Newspaper style) ── */}
+      <div className="bg-ink py-8 lg:py-12 border-b-4 border-saffron">
         <div className="container">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                 <div className="h-2 w-2 rounded-full bg-saffron" />
-                 <span className="font-mono text-[11px] uppercase tracking-[0.4em] text-saffron">HAFTALIK BAKIŞ</span>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                 <div className="h-1.5 w-1.5 rounded-full bg-saffron" />
+                 <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-saffron/80 font-bold">KAMAN'IN SESİ</span>
               </div>
-              <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white leading-none">
-                Kaman <em>Haberleri</em>
+              <h1 className="font-fraunces text-3xl lg:text-5xl font-medium tracking-tight text-white leading-none">
+                Haber <em>Dosyası</em>
               </h1>
             </div>
-            <button
-              type="button"
-              onClick={() => void refetch()}
-              className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest text-parchment opacity-50 hover:opacity-100 transition-all group"
-            >
-              <RefreshCcw className="size-3.5 group-hover:rotate-180 transition-transform duration-500" />
-              YENİLE
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="h-10 px-6 rounded-full border border-white/10 hover:border-saffron text-[10px] font-mono font-bold uppercase tracking-widest text-parchment/60 hover:text-saffron transition-all inline-flex items-center gap-2"
+              >
+                <RefreshCcw className="size-3" /> YENİLE
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container py-12">
-        {/* Category tabs (Premium Editorial) */}
-        <div className="mb-16 flex items-center gap-4 overflow-x-auto pb-4 scrollbar-hide border-b border-black/5">
-          <span className="font-mono text-[10px] uppercase tracking-widest opacity-40 shrink-0">Bölümler:</span>
+      <div className="container py-8 lg:py-12">
+        {/* Category tabs (Subtle & Clean) */}
+        <div className="mb-12 flex items-center gap-2 overflow-x-auto pb-4 scrollbar-hide">
           {CATEGORIES.map((c) => (
             <button
               key={c.value}
               type="button"
               onClick={() => setCategory(c.value)}
-              className={`shrink-0 text-xs font-bold uppercase tracking-widest transition-all px-4 py-2 rounded-full ${
+              className={`shrink-0 text-[10px] font-bold uppercase tracking-[0.2em] transition-all px-5 py-2.5 border ${
                 category === c.value
-                  ? "bg-ink text-white shadow-xl"
-                  : "text-ink hover:bg-black/5"
+                  ? "bg-ink text-white border-ink shadow-lg"
+                  : "text-ink border-black/5 hover:bg-black/5"
               }`}
             >
               {c.label}
@@ -169,7 +169,9 @@ export function ArticlesListClient() {
           <>
             {/* Tam genişlik bannerlar — üst */}
             {fullWidthTop.map((sec) => (
-              <FullWidthNewsBanner key={sec.key} ids={sec.bannerIds} />
+              <div key={sec.key} className="my-6">
+                <FullWidthNewsBanner ids={sec.bannerIds} />
+              </div>
             ))}
 
             <div className={`grid grid-cols-1 gap-12 lg:gap-20 ${sidebarEnabled ? "lg:grid-cols-4" : ""}`}>
@@ -215,7 +217,9 @@ export function ArticlesListClient() {
 
             {/* Tam genişlik bannerlar — alt */}
             {fullWidthBottom.map((sec) => (
-              <FullWidthNewsBanner key={sec.key} ids={sec.bannerIds} />
+              <div key={sec.key} className="my-6">
+                <FullWidthNewsBanner ids={sec.bannerIds} />
+              </div>
             ))}
           </>
         )}

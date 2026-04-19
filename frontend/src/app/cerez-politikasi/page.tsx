@@ -14,23 +14,23 @@ async function getPageContent(slug: string) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await getPageContent("gizlilik-politikasi");
+  const data = await getPageContent("cerez-politikasi");
   return {
-    title: data?.meta_title || t("seo.privacy_title"),
-    description: data?.meta_description || t("seo.privacy_description"),
+    title: data?.meta_title || "Çerez Politikası - Kaman İlan",
+    description: data?.meta_description || "Kaman İlan çerez kullanımı ve politikası hakkında bilgiler.",
     alternates: {
-      canonical: "/gizlilik-politikasi",
+      canonical: "/cerez-politikasi",
     },
   };
 }
 
-export default async function PrivacyPage() {
-  const data = await getPageContent("gizlilik-politikasi");
+export default async function CookiePolicyPage() {
+  const data = await getPageContent("cerez-politikasi");
   return (
     <ContentPageClient
-      title={data?.title || t("pages.privacy")}
+      title={data?.title || "Çerez Politikası"}
       content={data?.content?.html ?? data?.content}
-      breadcrumbs={[{ label: t("common.home"), href: "/" }, { label: data?.title || t("pages.privacy") }]}
+      breadcrumbs={[{ label: t("common.home"), href: "/" }, { label: data?.title || "Çerez Politikası" }]}
     />
   );
 }

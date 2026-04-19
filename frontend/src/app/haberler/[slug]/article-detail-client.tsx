@@ -29,7 +29,7 @@ function FullWidthDetailBanner({ ids }: { ids?: string }) {
   if (!ids || !banners.length) return null;
   const cols = banners.length === 1 ? "" : banners.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3";
   return (
-    <div className={`my-16 grid grid-cols-1 gap-10 ${cols}`}>
+    <div className={`my-8 grid grid-cols-1 gap-8 ${cols}`}>
       {banners.map((b) => <SidebarBannerCard key={b.id} banner={b} />)}
     </div>
   );
@@ -127,49 +127,45 @@ export function ArticleDetailClient({ slug, initialArticle }: ArticleDetailClien
 
   return (
     <div className="bg-[hsl(var(--col-paper))] min-h-screen">
-      {/* ── Page Header ── */}
-      <div className="bg-[hsl(var(--col-ink))] py-12 lg:py-20 border-b border-white/5">
+      {/* ── Page Header (Clean Editorial Header) ── */}
+      <div className="bg-ink pt-8 pb-12 lg:pt-12 lg:pb-20 border-b-4 border-saffron">
         <div className="container">
-          <nav className="mb-10 flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.3em] text-[hsl(var(--col-parchment))] opacity-40">
-            <Link href="/" className="hover:text-[hsl(var(--col-saffron))] transition-colors">Ana Sayfa</Link>
+          <nav className="mb-8 flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-saffron/60">
+            <Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
             <span className="opacity-20">/</span>
-            <Link href="/haberler" className="hover:text-[hsl(var(--col-saffron))] transition-colors">Haberler</Link>
+            <Link href="/haberler" className="hover:text-white transition-colors">Haber Dosyası</Link>
             <span className="opacity-20">/</span>
-            <span className="text-white line-clamp-1">{article.title}</span>
+            <span className="text-white/40 line-clamp-1">{cat}</span>
           </nav>
 
           <div className="flex flex-col gap-8">
-            <div className="inline-flex">
-              <span className="bg-[hsl(var(--col-saffron))] text-[hsl(var(--col-ink))] font-mono text-[9px] font-bold uppercase tracking-widest px-6 py-2 rounded-full shadow-2xl">
-                {cat}
-              </span>
-            </div>
-            
-            <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white leading-[1.1] max-w-5xl">
+            <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white leading-[1.05] max-w-5xl">
                {article.title}
             </h1>
 
             {article.excerpt && (
-              <p className="text-[hsl(var(--col-parchment))] opacity-50 text-base md:text-xl leading-relaxed max-w-4xl font-manrope">
+              <p className="text-parchment/50 text-base md:text-xl leading-relaxed max-w-4xl font-manrope italic border-l-2 border-saffron/30 pl-6 lg:pl-10">
                 {article.excerpt}
               </p>
             )}
 
             {/* Meta Top */}
-            <div className="flex flex-wrap items-center gap-8 pt-6 border-t border-white/10">
-               <div className="flex items-center gap-3 text-[11px] font-mono font-bold uppercase tracking-widest text-[hsl(var(--col-parchment))] opacity-60">
-                  <Calendar className="h-4 w-4" />
+            <div className="flex flex-wrap items-center gap-6 lg:gap-12 pt-8 border-t border-white/10">
+               <div className="flex items-center gap-3 text-[10px] font-mono font-bold uppercase tracking-widest text-parchment/60">
+                  <Calendar className="h-3.5 w-3.5 text-saffron" />
                   {fmtDate(article.published_at ?? article.created_at)}
                </div>
                {article.author && (
-                 <div className="flex items-center gap-3 text-[11px] font-mono font-bold uppercase tracking-widest text-[hsl(var(--col-parchment))] opacity-60">
-                    <User className="h-4 w-4" />
+                 <div className="flex items-center gap-3 text-[10px] font-mono font-bold uppercase tracking-widest text-parchment/60">
+                    <User className="h-3.5 w-3.5 text-saffron" />
                     EDİTÖR: {article.author}
                  </div>
                )}
-               <button className="ml-auto h-12 w-12 rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-[hsl(var(--col-saffron))] hover:text-[hsl(var(--col-ink))] transition-all">
-                  <Share2 className="h-4 w-4" />
-               </button>
+               <div className="flex items-center gap-2 ml-auto">
+                 <button className="h-10 w-10 rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-saffron hover:text-ink transition-all">
+                    <Share2 className="h-3.5 w-3.5" />
+                 </button>
+               </div>
             </div>
           </div>
         </div>
@@ -181,13 +177,13 @@ export function ArticleDetailClient({ slug, initialArticle }: ArticleDetailClien
           <FullWidthDetailBanner key={sec.key} ids={sec.bannerIds} />
         ))}
 
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-4 items-start">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-4 items-start">
           {/* ── Main content ──────────────────────────────────── */}
-          <article className="lg:col-span-3 space-y-12">
+          <article className="lg:col-span-3 space-y-8">
             
             {/* Cover image */}
             {isEnabled("cover") && cover && (
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-[48px] shadow-3xl bg-muted border border-border">
+              <div className="relative aspect-[16/9] w-full overflow-hidden shadow-3xl bg-muted border border-border">
                 <Image
                   src={cover} alt={article.alt ?? article.title}
                   fill sizes="(max-width:768px) 100vw, 75vw"
@@ -199,7 +195,7 @@ export function ArticleDetailClient({ slug, initialArticle }: ArticleDetailClien
 
             {/* Video embed */}
             {isEnabled("video") && article.video_url && (
-              <div className="aspect-video w-full overflow-hidden rounded-[48px] shadow-3xl">
+              <div className="aspect-video w-full overflow-hidden shadow-3xl">
                 <iframe
                   src={article.video_url}
                   title={article.title}
@@ -234,13 +230,13 @@ export function ArticleDetailClient({ slug, initialArticle }: ArticleDetailClien
 
             {/* Source Info */}
             {article.source && (
-               <div className="p-8 rounded-[32px] bg-[hsl(var(--col-ivory))] flex items-center justify-between gap-6 border border-black/5">
+               <div className="p-8 bg-[hsl(var(--col-ivory))] flex items-center justify-between gap-6 border border-black/5">
                   <div className="flex flex-col gap-2">
                      <span className="font-mono text-[9px] font-bold uppercase tracking-widest opacity-40">HABER KAYNAĞI</span>
                      <span className="font-fraunces text-xl font-medium text-[hsl(var(--col-ink))]">{article.source}</span>
                   </div>
                   {article.source_url && (
-                    <a href={article.source_url} target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white flex items-center justify-center hover:bg-[hsl(var(--col-ink))] hover:text-white transition-all shadow-md">
+                    <a href={article.source_url} target="_blank" rel="noopener noreferrer" className="h-10 w-10 bg-white flex items-center justify-center hover:bg-[hsl(var(--col-ink))] hover:text-white transition-all shadow-md">
                        <ExternalLink className="h-4 w-4" />
                     </a>
                   )}
@@ -287,7 +283,11 @@ export function ArticleDetailClient({ slug, initialArticle }: ArticleDetailClien
                 ) : null;
               }
               if (sec.key.startsWith("banner") || sec.key.startsWith("banners_")) {
-                return <BannerSidebarSlot key={sec.key} ids={sec.bannerIds} />;
+                return (
+                  <div key={sec.key} className="my-2">
+                    <BannerSidebarSlot ids={sec.bannerIds} />
+                  </div>
+                );
               }
               return null;
             })}

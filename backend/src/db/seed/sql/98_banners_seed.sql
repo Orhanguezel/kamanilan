@@ -26,64 +26,6 @@
 
 SET NAMES utf8mb4;
 
-DROP TABLE IF EXISTS `banners`;
-CREATE TABLE `banners` (
-  `id`                 INT UNSIGNED   NOT NULL AUTO_INCREMENT,
-  `uuid`               CHAR(36)       NOT NULL,
-  `title`              VARCHAR(255)   NOT NULL,
-  `slug`               VARCHAR(255)   NOT NULL,
-
-  `subtitle`           VARCHAR(255)   DEFAULT NULL,
-  `description`        TEXT           DEFAULT NULL,
-
-  `image_url`          TEXT           DEFAULT NULL,
-  `image_asset_id`     CHAR(36)       DEFAULT NULL,
-  `alt`                VARCHAR(255)   DEFAULT NULL,
-
-  `thumbnail_url`      TEXT           DEFAULT NULL,
-  `thumbnail_asset_id` CHAR(36)       DEFAULT NULL,
-
-  -- Arka plan + metin renkleri (hex veya hsl)
-  `background_color`   VARCHAR(30)    DEFAULT NULL,
-  `title_color`        VARCHAR(30)    DEFAULT NULL,
-  `description_color`  VARCHAR(30)    DEFAULT NULL,
-
-  -- CTA butonu
-  `button_text`        VARCHAR(100)   DEFAULT NULL,
-  `button_color`       VARCHAR(30)    DEFAULT NULL,
-  `button_hover_color` VARCHAR(30)    DEFAULT NULL,
-  `button_text_color`  VARCHAR(30)    DEFAULT NULL,
-
-  `link_url`           VARCHAR(500)   DEFAULT NULL,
-  `link_target`        VARCHAR(20)    NOT NULL DEFAULT '_self',
-
-  `is_active`          TINYINT UNSIGNED NOT NULL DEFAULT 1,
-  `display_order`      INT UNSIGNED   NOT NULL DEFAULT 0,
-
-  -- Ana sayfa satır/sütun yerleşimi
-  `desktop_row`        INT UNSIGNED   NOT NULL DEFAULT 0,
-  `desktop_columns`    TINYINT UNSIGNED NOT NULL DEFAULT 1,
-
-  `start_at`           DATETIME(3)    DEFAULT NULL,
-  `end_at`             DATETIME(3)    DEFAULT NULL,
-
-  -- Reklamveren bilgileri (opsiyonel — admin takibi için)
-  `advertiser_name`    VARCHAR(255)   DEFAULT NULL,
-  `contact_info`       VARCHAR(500)   DEFAULT NULL,
-
-  `created_at`         DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updated_at`         DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uniq_banner_uuid` (`uuid`),
-  UNIQUE KEY `uniq_banner_slug` (`slug`),
-  KEY `idx_banner_active`        (`is_active`),
-  KEY `idx_banner_order`         (`display_order`),
-  KEY `idx_banner_desktop_row`   (`desktop_row`),
-  KEY `idx_banner_image_asset`   (`image_asset_id`),
-  KEY `idx_banner_thumb_asset`   (`thumbnail_asset_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 -- =============================================================
 -- ██  banner_row_1  ██  desktop_row=1, desktop_columns=1
@@ -91,7 +33,7 @@ CREATE TABLE `banners` (
 -- Rezerv: ID 3 (is_active=0, admin aktifleştirir)
 -- =============================================================
 
-INSERT INTO `banners`
+INSERT IGNORE INTO `banners`
 (
   `id`, `uuid`, `title`, `slug`,
   `subtitle`, `description`,
@@ -707,33 +649,33 @@ SET
     ELSE `image_asset_id`
   END,
   `image_url` = CASE `id`
-    WHEN 1  THEN '/uploads/media/assets/images'
-    WHEN 2  THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 3  THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 10 THEN '/uploads/media/assets/images'
-    WHEN 11 THEN '/uploads/media/assets/images'
-    WHEN 12 THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 13 THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 20 THEN '/uploads/media/assets/images'
-    WHEN 21 THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 22 THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 23 THEN '/uploads/media/images/banner-illustration.png'
-    WHEN 24 THEN '/uploads/media/images/banner-illustration.png'
-    WHEN 25 THEN '/uploads/media/images/banner-illustration.png'
-    WHEN 30 THEN '/uploads/media/assets/images'
-    WHEN 31 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 50 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 51 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 52 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 53 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 55 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 56 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 57 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 58 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 60 THEN '/uploads/media/assets/images'
-    WHEN 61 THEN '/uploads/media/assets/images'
-    WHEN 62 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
-    WHEN 63 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&auto=format&q=80'
+    WHEN 1  THEN 'https://images.unsplash.com/photo-1595113316349-9fa4eb24f884?w=1200&h=600&fit=crop&q=80' -- Tarım Koop
+    WHEN 2  THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 3  THEN 'https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=1200&h=600&fit=crop&q=80'
+    WHEN 10 THEN 'https://images.unsplash.com/photo-1530268576203-5cbe015a8d90?w=1200&h=600&fit=crop&q=80' -- Traktör
+    WHEN 11 THEN 'https://images.unsplash.com/photo-1532187875605-2fe358a71428?w=1200&h=600&fit=crop&q=80' -- Veteriner
+    WHEN 12 THEN 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=1200&h=600&fit=crop&q=80' -- Yem
+    WHEN 13 THEN 'https://images.unsplash.com/photo-1558444479-c8f027d3a339?w=1200&h=600&fit=crop&q=80' -- Elektrik
+    WHEN 20 THEN 'https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=1200&h=600&fit=crop&q=80' -- Gübre
+    WHEN 21 THEN 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1200&h=600&fit=crop&q=80' -- Fırın
+    WHEN 22 THEN 'https://images.unsplash.com/photo-1551025537-4d929944de88?w=1200&h=600&fit=crop&q=80' -- Petrol
+    WHEN 23 THEN 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=1200&h=600&fit=crop&q=80' -- Çiçekçi
+    WHEN 24 THEN 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&h=600&fit=crop&q=80' -- Noter
+    WHEN 25 THEN 'https://images.unsplash.com/photo-1533044309907-0fa3413da946?w=1200&h=600&fit=crop&q=80' -- Demir Çelik
+    WHEN 30 THEN 'https://images.unsplash.com/photo-1589923188900-85dae523342b?w=1200&h=600&fit=crop&q=80' -- Gübre Sezon
+    WHEN 31 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 50 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 51 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 52 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 53 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 55 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 56 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 57 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 58 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 60 THEN 'https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=1200&h=600&fit=crop&q=80' -- Ziraat Odası
+    WHEN 61 THEN 'https://images.unsplash.com/photo-1576086213369-97a306d36557?w=1200&h=600&fit=crop&q=80' -- Veteriner İlaç
+    WHEN 62 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
+    WHEN 63 THEN 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=600&fit=crop&q=80'
     ELSE `image_url`
   END
 WHERE `id` IN (

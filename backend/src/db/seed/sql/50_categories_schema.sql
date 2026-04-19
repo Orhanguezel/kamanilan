@@ -121,30 +121,30 @@ INSERT INTO `categories`
    `has_cart`, `is_active`, `is_featured`, `is_unlimited`, `display_order`,
    `whatsapp_number`, `phone_number`)
 VALUES
-  ('10000000-0000-4000-8000-000000000001','general','https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop&auto=format&q=80','Satılık ve kiralık konut ilanları','🏠',0,1,1,0,1,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000002','general','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop&auto=format&q=80','Araç ve motosiklet ilanları','🚗',0,1,1,0,2,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000003','general','https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&auto=format&q=80','İkinci el eşya ilanları','📦',1,1,1,0,3,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000004','general','https://images.unsplash.com/photo-1508349249800-277c55b8e86d?w=400&h=300&fit=crop&auto=format&q=80','Kaman cevizi üreticiden taze','🌰',1,1,1,0,4,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000005','general','https://images.unsplash.com/photo-1500595046743-cd271d694d30?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400','Tarım ve hayvan ilanları','🐄',0,1,1,0,5,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000006','general','https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop&auto=format&q=80','Kaman bölgesi iş ilanları','💼',0,1,1,0,6,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000007','general','https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=300&fit=crop&auto=format&q=80','Taze süt ve süt ürünleri ilanları','🥛',1,1,0,0,7,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000008','general','https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400&h=300&fit=crop&auto=format&q=80','Taze meyve ve sebze ilanları','🍎',1,1,0,0,8,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000009','general','https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=400&h=300&fit=crop&auto=format&q=80','Hububat ve bakliyat ilanları','🌾',1,1,0,0,9,NULL,NULL);
+  ('10000000-0000-4000-8000-000000000001','general','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=450&fit=crop','Satılık ve kiralık konut ilanları','🏠',0,1,1,0,1,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000002','general','https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600&h=450&fit=crop','Araç ve motosiklet ilanları','🚗',0,1,1,0,2,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000003','general','/uploads/categories/ikinci-el.png','İkinci el eşya ilanları','📦',1,1,1,0,3,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000004','general','/uploads/categories/ceviz.png','Kaman cevizi üreticiden taze','🌰',1,1,1,0,4,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000005','general','/uploads/categories/tarim.png','Tarım ve hayvan ilanları','🐄',0,1,1,0,5,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000006','general','https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=450&fit=crop','Kaman bölgesi iş ilanları','💼',0,1,1,0,6,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000007','general','https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&h=450&fit=crop','Taze süt ve süt ürünleri ilanları','🥛',1,1,0,0,7,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000008','general','/uploads/categories/meyve-sebze.png','Taze meyve ve sebze ilanları','🍎',1,1,0,0,8,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000009','general','/uploads/categories/hububat.png','Hububat ve bakliyat ilanları','🌾',1,1,0,0,9,NULL,NULL);
 
 INSERT INTO `categories`
   (`id`, `module_key`, `image_url`, `alt`, `icon`,
    `has_cart`, `is_active`, `is_featured`, `is_unlimited`, `display_order`,
    `whatsapp_number`, `phone_number`)
 VALUES
-  ('10000000-0000-4000-8000-000000000010','general','https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop&auto=format&q=80','Genel satış ilanları','🛒',1,1,0,0,10,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000011','general','https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop&auto=format&q=80','Giyim ve tekstil ilanları','👗',1,1,0,0,11,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000012','general','https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop&auto=format&q=80','Elektronik ürün ilanları','📱',1,1,0,0,12,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000013','general','https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop&auto=format&q=80','Usta ve hizmet ilanları','🛠️',0,1,0,0,13,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000014','general','https://images.unsplash.com/photo-1416664806563-884af9c2a3d4?w=400&h=300&fit=crop&auto=format&q=80','Araç gereç ve alet ilanları','🔧',1,1,0,0,14,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000015','general','https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop&auto=format&q=80','Kiralık işyeri ilanları','🏢',0,1,0,0,15,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000016','general','https://images.unsplash.com/photo-1548550023-2cdb937e3b2d?w=400&h=300&fit=crop&auto=format&q=80','Kümes hayvanları ilanları','🐔',1,1,0,0,16,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000017','general','https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop&auto=format&q=80','Arsa ve tarla ilanları','🛖',0,1,0,0,17,NULL,NULL),
-  ('10000000-0000-4000-8000-000000000018','general',NULL,NULL,'🕊️',0,1,0,1,18,NULL,NULL);
+  ('10000000-0000-4000-8000-000000000010','general','https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=450&fit=crop','Genel satış ilanları','🛒',1,1,0,0,10,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000011','general','https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=450&fit=crop','Giyim ve tekstil ilanları','👗',1,1,0,0,11,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000012','general','https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&h=450&fit=crop','Elektronik ürün ilanları','📱',1,1,0,0,12,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000013','general','https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=450&fit=crop','Usta ve hizmet ilanları','🛠️',0,1,0,0,13,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000014','general','/uploads/categories/tools.png','Araç gereç ve alet ilanları','🔧',1,1,0,0,14,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000015','general','https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=450&fit=crop','Kiralık işyeri ilanları','🏢',0,1,0,0,15,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000016','general','/uploads/categories/kumes.png','Kümes hayvanları ilanları','🐔',1,1,0,0,16,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000017','general','https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=450&fit=crop','Arsa ve tarla ilanları','🛖',0,1,0,0,17,NULL,NULL),
+  ('10000000-0000-4000-8000-000000000018','general','/uploads/categories/cenaze.png','Cenaze ilanları','🕊️',0,1,0,1,18,NULL,NULL);
 
 /* =============================================================
    CATEGORY i18n SEEDS (locale='tr')

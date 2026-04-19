@@ -42,7 +42,7 @@ function LikeButton({ slug }: { slug: string }) {
       type="button"
       onClick={handleLike}
       disabled={toggle.isPending}
-      className={`group flex items-center gap-3 rounded-full border px-6 py-3 text-xs font-mono font-bold uppercase tracking-widest transition-all ${
+      className={`group flex items-center gap-3 border px-6 py-3 text-xs font-mono font-bold uppercase tracking-widest transition-all ${
         likes?.user_liked
           ? "border-[hsl(var(--col-saffron))] bg-[hsl(var(--col-saffron))] text-[hsl(var(--col-ink))]"
           : "border-black/5 bg-white text-[hsl(var(--col-ink))] hover:border-[hsl(var(--col-saffron))] hover:bg-[hsl(var(--col-saffron))] shadow-sm"
@@ -93,7 +93,7 @@ export function ArticleComments({ slug }: { slug: string }) {
       </div>
 
       {/* Comment form */}
-      <div className="rounded-[40px] bg-white border border-black/5 p-8 md:p-12 shadow-3xl relative overflow-hidden">
+      <div className="bg-white border border-black/5 p-8 md:p-12 shadow-3xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-[hsl(var(--col-saffron))] opacity-5 blur-3xl pointer-events-none" />
         
         <h3 className="font-fraunces text-2xl font-medium text-[hsl(var(--col-ink))] mb-8">Fikrinizi Paylaşın</h3>
@@ -108,7 +108,7 @@ export function ArticleComments({ slug }: { slug: string }) {
                 rows={4}
                 maxLength={2000}
                 required
-                className="w-full bg-[hsl(var(--col-paper))] border-none rounded-2xl py-6 px-8 focus:ring-2 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm resize-none"
+                className="w-full bg-[hsl(var(--col-paper))] border-none py-6 px-8 focus:ring-1 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm resize-none"
               />
               <div className="absolute bottom-4 right-6 text-[10px] font-mono font-bold opacity-30">
                 {text.length}/2000
@@ -129,7 +129,7 @@ export function ArticleComments({ slug }: { slug: string }) {
             </div>
           </form>
         ) : (
-          <div className="py-10 text-center bg-[hsl(var(--col-paper))] rounded-3xl border border-dashed border-black/10">
+          <div className="py-10 text-center bg-[hsl(var(--col-paper))] border border-dashed border-black/10">
             <p className="text-[hsl(var(--col-walnut))] opacity-60 text-sm mb-6">
               Tartışmaya katılmak için giriş yapmanız gerekmektedir.
             </p>
@@ -156,9 +156,9 @@ export function ArticleComments({ slug }: { slug: string }) {
         ) : (
           <div className="grid gap-8">
             {rows.map((c) => (
-              <div key={c.id} className="group relative flex gap-6 md:gap-8 items-start p-8 rounded-[32px] bg-white/50 border border-transparent hover:border-black/5 hover:bg-white hover:shadow-2xl transition-all duration-500">
+              <div key={c.id} className="group relative flex gap-6 md:gap-8 items-start p-8 bg-white/50 border border-transparent hover:border-black/5 hover:bg-white hover:shadow-2xl transition-all duration-500">
                 {/* Avatar */}
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[hsl(var(--col-ink))] text-white shadow-lg transition-transform group-hover:scale-110">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-[hsl(var(--col-ink))] text-white shadow-lg transition-transform group-hover:scale-110">
                   <User className="h-5 w-5" />
                 </div>
                 

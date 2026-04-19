@@ -63,7 +63,7 @@ export function ContentPageClient({
               dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
           ) : (
-            <div className="rounded-[40px] border border-dashed border-black/10 p-20 text-center bg-white/50">
+            <div className="border border-dashed border-black/10 p-20 text-center bg-white/50">
               <div className="text-5xl mb-6 opacity-20">📂</div>
               <h2 className="font-fraunces text-2xl font-medium text-ink mb-4">Bu sayfa hazırlanıyor.</h2>
               <p className="text-walnut opacity-50 mb-10">İçerik yakında burada yayında olacak. Lütfen daha sonra tekrar kontrol edin.</p>
