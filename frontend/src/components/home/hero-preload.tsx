@@ -22,15 +22,22 @@ export async function HeroPreload() {
     ? topImage
     : `https://www.kamanilan.com${topImage}`;
 
-  // Point preload to the Next.js image optimizer URL so the preloaded response
-  // is the same one <Image> will request (cache hit instead of redundant download).
-  const optimized = `/_next/image?url=${encodeURIComponent(absolute)}&w=828&q=75`;
+  // Match the actual <Image sizes="(max-width: 1024px) 65vw, 40vw"> srcset picks:
+  // mobile ≈ w=640, desktop ≈ w=828. Preload both via imageSrcSet so browser
+  // picks the exact one that <Image> will request — guaranteed cache hit.
+  const encoded = encodeURIComponent(absolute);
+  const imageSrcSet = [
+    `/_next/image?url=${encoded}&w=640&q=75 640w`,
+    `/_next/image?url=${encoded}&w=828&q=75 828w`,
+    `/_next/image?url=${encoded}&w=1080&q=75 1080w`,
+  ].join(", ");
 
   return (
     <link
       rel="preload"
       as="image"
-      href={optimized}
+      imageSrcSet={imageSrcSet}
+      imageSizes="(max-width: 1024px) 65vw, 40vw"
       fetchPriority="high"
     />
   );

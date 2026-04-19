@@ -57,17 +57,22 @@ export function HeroSection({ config }: Props) {
               {mainSlide.badgeText || "Regional Hub · 2026"}
             </div>
             
-            <h1 className="font-fraunces text-[clamp(48px,7vw,92px)] leading-[0.95] tracking-tight text-ink font-variation-soft-80">
-              {mainSlide.title.split(' ').map((word, i) => (
-                <span key={i}>
-                  {["Kaman", "Cevizi", "Hasat"].includes(word) ? (
-                    <em className="inline-block relative not-italic font-light text-saffron-2">
-                      {word}
-                      <span className="absolute bottom-[0.08em] left-0 right-0 h-1 bg-saffron opacity-30 px-2" />
-                    </em>
-                  ) : word}{" "}
-                </span>
-              ))}
+            <h1 className="font-fraunces text-[clamp(44px,7vw,84px)] leading-[1.05] tracking-tight text-ink">
+              {mainSlide.title.split(' ').map((word, i) => {
+                const cleanWord = word.replace(/[:.,]/g, '');
+                const isHighlighted = ["Kaman", "Cevizi", "Hasat", "Hasadı"].some(h => cleanWord.includes(h));
+                
+                return (
+                  <span key={i}>
+                    {isHighlighted ? (
+                      <em className="inline-block relative not-italic font-medium text-saffron-2">
+                        {word}
+                        <span className="absolute bottom-[0.05em] left-0 right-0 h-[6px] bg-saffron/20 -z-10" />
+                      </em>
+                    ) : word}{" "}
+                  </span>
+                )
+              })}
             </h1>
 
             <p className="mt-8 text-lg md:text-xl leading-relaxed text-text-2 max-w-[540px]">
@@ -78,10 +83,10 @@ export function HeroSection({ config }: Props) {
             <form action={ROUTES.LISTINGS} className="mt-12 w-full max-w-[620px] transition-all duration-300">
                <div className="group relative flex items-center bg-paper rounded-full border border-border p-2 shadow-xl focus-within:border-saffron focus-within:shadow-2xl">
                  <div className="hidden md:flex items-center border-r border-border px-5 py-2">
-                    <select className="bg-transparent text-[13px] font-bold outline-none cursor-pointer text-walnut uppercase tracking-wider">
-                      <option>Tüm İlanlar</option>
-                      <option>Ceviz</option>
-                      <option>Emlak</option>
+                    <select aria-label="Kategori filtresi" name="kategori" className="bg-transparent text-[13px] font-bold outline-none cursor-pointer text-walnut uppercase tracking-wider">
+                      <option value="">Tüm İlanlar</option>
+                      <option value="ceviz">Ceviz</option>
+                      <option value="emlak">Emlak</option>
                     </select>
                  </div>
                  <input 
@@ -109,16 +114,16 @@ export function HeroSection({ config }: Props) {
           <div className="relative h-[480px] md:h-[600px] w-full">
             {/* Main Center Image */}
             <div className="absolute left-0 top-10 z-20 w-[65%] h-[75%] rounded-[32px] overflow-hidden shadow-2xl rotate-[-3deg] transition-all hover:rotate-0 hover:scale-[1.03]">
-               <Image 
-                 src={items[0]?.image || "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb"} 
-                 alt="Kaman 1" fill className="object-cover" priority 
+               <Image
+                 src={items[0]?.image || "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb"}
+                 alt="Kaman 1" fill sizes="(max-width: 1024px) 65vw, 40vw" className="object-cover" priority fetchPriority="high"
                />
             </div>
             {/* Secondary Floating Image */}
             <div className="absolute right-0 top-32 z-10 w-[55%] h-[55%] rounded-[24px] overflow-hidden shadow-2xl rotate-[5deg] transition-all hover:rotate-0 hover:scale-[1.03]">
-               <Image 
-                 src={items[1]?.image || items[0]?.image2 || "https://images.unsplash.com/photo-1570129477492-45c003edd2be"} 
-                 alt="Kaman 2" fill className="object-cover" 
+               <Image
+                 src={mainSlide?.image2 || items[1]?.image || "https://images.unsplash.com/photo-1570129477492-45c003edd2be"}
+                 alt="Kaman 2" fill sizes="(max-width: 1024px) 55vw, 33vw" className="object-cover"
                />
             </div>
             {/* Stats Card Overlay */}

@@ -29,16 +29,24 @@ function markClosed(popup: PopupItem) {
 }
 
 function TopbarBand({ popup }: { popup: PopupItem }) {
-  const [visible, setVisible] = useState(false);
+  // Render immediately for delay_seconds=0 so SSR HTML already includes the band
+  // (no layout shift when client hydrates). Only defer when there's a real delay.
+  const [visible, setVisible] = useState(() => popup.delay_seconds === 0);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    if (!shouldShow(popup)) return;
-    const ms = popup.delay_seconds > 0 ? popup.delay_seconds * 1000 : 0;
-    const t = setTimeout(() => setVisible(true), ms);
-    return () => clearTimeout(t);
+    if (typeof window === "undefined") return;
+    if (!shouldShow(popup)) {
+      setHidden(true);
+      return;
+    }
+    if (popup.delay_seconds > 0) {
+      const t = setTimeout(() => setVisible(true), popup.delay_seconds * 1000);
+      return () => clearTimeout(t);
+    }
   }, [popup.id, popup.delay_seconds, popup]);
 
-  if (!visible) return null;
+  if (hidden || !visible) return null;
 
   // Sync with Editorial Ink/Saffron Theme
   const isGreen = /#(10b981|059669|16a34a|15803d|166534|065f46|064e3b)|green|emerald|teal/i.test(popup.background_color || "");

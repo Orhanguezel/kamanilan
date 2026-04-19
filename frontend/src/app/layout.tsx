@@ -17,15 +17,17 @@ import { Manrope, Fraunces, JetBrains_Mono } from "next/font/google";
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: true,
 });
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
   display: "swap",
-  axes: ["SOFT", "opsz"],
+  weight: ["400", "500", "600", "700"],
+  preload: true,
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -33,12 +35,14 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   display: "swap",
+  preload: false,
 });
 
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kamanilan.com";
-const apiBase =
+const rawApiBase =
   process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "https://kamanilan.com/api";
+const apiBase = rawApiBase.endsWith("/api") ? `${rawApiBase}/v1` : rawApiBase;
 
 // ─── Tip yardımcıları ──────────────────────────────────────────────────────
 
