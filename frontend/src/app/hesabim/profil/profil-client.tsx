@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToken } from "@/lib/use-token";
 import { ROUTES } from "@/config/routes";
@@ -26,6 +26,7 @@ interface Props {
 }
 
 export function ProfilClient({ translations: tr }: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const authUser = useAuthStore((s) => s.user as any);
   const logout = useAuthStore((s) => s.logout);
   const { removeToken } = useToken();
@@ -35,22 +36,41 @@ export function ProfilClient({ translations: tr }: Props) {
   const deleteAccountMutation = useDeleteAccountMutation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const fullName = profile?.full_name || (authUser?.full_name ?? authUser?.name ?? "");
-  const [firstNameDefault, ...lastNameParts] = String(fullName).trim().split(/\s+/).filter(Boolean);
-  const lastNameDefault = lastNameParts.join(" ");
-
   const form = useForm<UpdateProfileFormData>({
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     resolver: zodResolver(updateProfileSchema),
-    values: {
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      phone: "",
+      birth_day: "",
+      gender: undefined,
+    },
+  });
+
+  // Hydrate form once profile/authUser data is available. Using `reset` in effect
+  // instead of `useForm.values` because the latter can trigger React error #310
+  // (hook order change) when form internals re-mount on data arrival.
+  useEffect(() => {
+    const fullName =
+      profile?.full_name || (authUser?.full_name ?? authUser?.name ?? "");
+    const [firstNameDefault, ...lastNameParts] = String(fullName)
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    const lastNameDefault = lastNameParts.join(" ");
+
+    form.reset({
       first_name: firstNameDefault || "",
       last_name: lastNameDefault || "",
       phone: profile?.phone || "",
       birth_day: "",
       gender: undefined,
-    },
-  });
+    });
+    // intentionally excluding form from deps — reset is stable
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.full_name, profile?.phone, authUser?.full_name, authUser?.name]);
 
   const onSubmit = (data: UpdateProfileFormData) => {
     updateProfileMutation.mutate({

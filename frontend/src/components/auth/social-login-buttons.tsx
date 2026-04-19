@@ -99,19 +99,30 @@ function SocialLoginInner({
 
       FB.login(
         (response: FacebookLoginResponse) => {
-          if (response.authResponse) {
-            const accessToken = response.authResponse.accessToken;
-            // Get user email from FB
-            FB.api("/me", { fields: "email" }, (userInfo: FacebookUserInfo) => {
-              if (userInfo.email) {
-                socialLogin.mutate({
-                  email: userInfo.email,
-                  access_token: accessToken,
-                  type: "facebook",
-                });
-              }
-            });
+          if (!response.authResponse) {
+            console.warn("[FB login] user cancelled or denied permissions", response);
+            return;
           }
+          const accessToken = response.authResponse.accessToken;
+
+          // Fetch profile — request email + name + id so backend can always identify user
+          FB.api(
+            "/me",
+            { fields: "email,name,id" },
+            (userInfo: FacebookUserInfo & { id?: string; name?: string }) => {
+              // Even without email (private FB accounts), backend can still issue
+              // a login using FB user id as fallback identifier.
+              const payload = {
+                email: userInfo.email ?? undefined,
+                access_token: accessToken,
+                type: "facebook" as const,
+              };
+              if (!userInfo.email) {
+                console.warn("[FB login] no email returned — sending without email", userInfo);
+              }
+              socialLogin.mutate(payload);
+            }
+          );
         },
         { scope: "email,public_profile" }
       );
