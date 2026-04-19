@@ -322,24 +322,14 @@ INSERT INTO `theme_config` (`id`, `is_active`, `config`, `created_at`, `updated_
     ],
 
     "layout_blocks": [
-      {"id":"hero__1",                    "type":"hero",                    "instance":1,"enabled_disabled":"on", "config":{}},
-      {"id":"category__1",                "type":"category",                "instance":1,"enabled_disabled":"on", "config":{"cols_lg":6}},
+      {"id":"hero__1",                    "type":"hero",                    "instance":1,"enabled_disabled":"on", "config":{"section_span":12}},
+      {"id":"category__1",                "type":"category",                "instance":1,"enabled_disabled":"on", "config":{"section_span":12,"cols_lg":6}},
       {"id":"flash_sale__1",              "type":"flash_sale",              "instance":1,"enabled_disabled":"on", "config":{"flash_sale_span":6}},
       {"id":"flash_sale__2",              "type":"flash_sale",              "instance":2,"enabled_disabled":"on", "config":{"flash_sale_span":6}},
-      {"id":"product_featured__1",        "type":"product_featured",        "instance":1,"enabled_disabled":"on", "config":{"section_span":8,"cols_lg":4,"limit":8}},
-      {"id":"announcements__1",           "type":"announcements",           "instance":1,"enabled_disabled":"on", "config":{"section_span":4,"limit":7}},
-      {"id":"banner_section__1",          "type":"banner_section",          "instance":1,"enabled_disabled":"on", "config":{"banner_span":4}},
-      {"id":"banner_section__2",          "type":"banner_section",          "instance":2,"enabled_disabled":"on", "config":{"banner_span":4}},
-      {"id":"banner_section__3",          "type":"banner_section",          "instance":3,"enabled_disabled":"on", "config":{"banner_span":4}},
-      {"id":"product_top_selling__1",     "type":"product_top_selling",     "instance":1,"enabled_disabled":"on", "config":{"section_span":8,"cols_lg":4,"limit":8}},
-      {"id":"news_feed__1",               "type":"news_feed",               "instance":1,"enabled_disabled":"on", "config":{"section_span":4,"cols_lg":3,"limit":9}},
-      {"id":"banner_section__4",          "type":"banner_section",          "instance":4,"enabled_disabled":"on", "config":{"banner_span":12}},
-      {"id":"product_latest__1",          "type":"product_latest",          "instance":1,"enabled_disabled":"on", "config":{"section_span":8,"cols_lg":4,"limit":8}},
-      {"id":"banner_section__5",          "type":"banner_section",          "instance":5,"enabled_disabled":"on", "config":{"banner_span":4}},
-      {"id":"popular_product_section__1", "type":"popular_product_section", "instance":1,"enabled_disabled":"on", "config":{"section_span":12,"cols_lg":4,"limit":10}},
-      {"id":"banner_section__6",          "type":"banner_section",          "instance":6,"enabled_disabled":"on", "config":{"banner_span":12}},
-      {"id":"top_stores_section__1",      "type":"top_stores_section",      "instance":1,"enabled_disabled":"on", "config":{"section_span":12}},
-      {"id":"newsletters_section__1",     "type":"newsletters_section",     "instance":1,"enabled_disabled":"on", "config":{"section_span":12}}
+      {"id":"product_featured__1",        "type":"product_featured",        "instance":1,"enabled_disabled":"on", "config":{"section_span":12,"cols_lg":4,"limit":8}},
+      {"id":"product_top_selling__1",     "type":"product_top_selling",     "instance":1,"enabled_disabled":"on", "config":{"section_span":12,"cols_lg":4,"limit":8}},
+      {"id":"product_latest__1",          "type":"product_latest",          "instance":1,"enabled_disabled":"on", "config":{"section_span":12,"cols_lg":4,"limit":8}},
+      {"id":"popular_product_section__1", "type":"popular_product_section", "instance":1,"enabled_disabled":"on", "config":{"section_span":12,"cols_lg":4,"limit":10}}
     ]
   }',
   NOW(3),
