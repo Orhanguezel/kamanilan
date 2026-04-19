@@ -89,8 +89,8 @@ export function HeroSection({ config }: Props) {
                    placeholder="Kaman'da ne arıyorsunuz?" 
                    className="flex-1 bg-transparent px-6 py-3 text-sm font-medium outline-none"
                  />
-                 <button className="h-12 w-12 flex items-center justify-center rounded-full bg-ink text-saffron transition-all hover:rotate-[-15deg] hover:bg-saffron hover:text-ink">
-                    <Search className="h-5 w-5" />
+                 <button type="submit" aria-label="Ara" className="h-12 w-12 flex items-center justify-center rounded-full bg-ink text-saffron transition-all hover:rotate-[-15deg] hover:bg-saffron hover:text-ink">
+                    <Search className="h-5 w-5" aria-hidden="true" />
                  </button>
                </div>
             </form>

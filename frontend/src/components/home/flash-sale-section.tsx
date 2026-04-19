@@ -109,7 +109,7 @@ function CampaignCard({ sale }: { sale: FlashSale }) {
               <div key={unit.label} className="flex-1">
                 <div className="bg-white/50 backdrop-blur-sm border border-black/5 rounded-2xl p-4 flex flex-col items-center">
                    <span className="font-fraunces text-2xl font-bold tabular-nums" style={{ color: titleColor }}>{unit.val}</span>
-                   <span className="text-[8px] font-mono font-bold mt-1 opacity-40">{unit.label}</span>
+                   <span className="text-[8px] font-mono font-bold mt-1 text-walnut">{unit.label}</span>
                 </div>
               </div>
             ))}

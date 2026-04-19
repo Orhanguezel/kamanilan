@@ -86,7 +86,7 @@ export function ArticleComments({ slug }: { slug: string }) {
       {/* Interaction row */}
       <div className="flex items-center gap-6">
         <LikeButton slug={slug} />
-        <div className="flex items-center gap-3 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[hsl(var(--col-ink))] opacity-40">
+        <div className="flex items-center gap-3 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-walnut">
           <MessageSquare className="size-4" />
           <span>{rows.length} YORUM</span>
         </div>

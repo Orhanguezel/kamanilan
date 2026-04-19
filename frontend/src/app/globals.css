@@ -23,7 +23,7 @@
 
     /* Accents */
     --col-saffron:    42 77% 45%;    /* #c9931a */
-    --col-saffron-2:  42 81% 37%;    /* #a87611 */
+    --col-saffron-2:  42 85% 26%;    /* #7a5100 — AA on parchment (#f1eada) */
     --col-ember:      18 69% 41%;    /* #b24b22 */
     --col-olive:      76 33% 32%;    /* #5f6d36 */
     --col-moss:       78 33% 21%;    /* #3c4825 */
@@ -42,13 +42,13 @@
     --accent:               var(--col-saffron);
     --accent-foreground:    var(--col-ink);
     --muted:                var(--col-parchment);
-    --muted-foreground:     32 22% 45%;    /* #8b7358 */
+    --muted-foreground:     32 28% 35%;    /* #6f5940 — darker for AA contrast */
     --border:               30 31% 7% / 0.09;
 
     /* Supplementary text + layer tokens */
     --text:                 var(--col-ink);
-    --text-2:               27 32% 27%;    /* #5a4632 */
-    --text-3:               32 22% 45%;    /* #8b7358 */
+    --text-2:               27 32% 25%;    /* #543f2d */
+    --text-3:               32 28% 35%;    /* #6f5940 — AA on cream */
 
     /* Backward-compat alias'lar (raw style={} kullanimlari icin) */
     --col-text-2:           var(--text-2);

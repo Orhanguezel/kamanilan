@@ -94,9 +94,27 @@ export function Footer() {
 
           {/* ── 1. MARKA ──────────────────────────────────────────── */}
           <div>
-            <Link href={ROUTES.HOME} className="inline-block transition-transform hover:scale-105 mb-6">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {brandLogo ? <img src={brandLogo} alt={brandName} className="h-16 w-auto object-contain" /> : <div className="text-3xl font-fraunces font-bold text-saffron">{brandName}</div>}
+            <Link href={ROUTES.HOME} className="flex items-center gap-4 group transition-transform hover:scale-105 mb-8">
+              <div className="relative h-14 w-14 flex-shrink-0 bg-white/5 rounded-full flex items-center justify-center p-1 border border-white/10 group-hover:border-saffron/40 transition-colors">
+                {brandLogo ? (
+                  <img src={brandLogo} alt={brandName} width={48} height={48} className="h-full w-full object-contain" loading="lazy" decoding="async" />
+                ) : (
+                  <span className="font-fraunces text-2xl font-bold text-saffron p-2">K</span>
+                )}
+                <div className="absolute inset-0 rounded-full border border-white/5 group-hover:border-saffron/20 transition-colors" />
+              </div>
+              
+              <div className="flex flex-col">
+                 <span className="font-fraunces text-2xl font-medium tracking-tight text-white leading-tight">
+                    {brandName.split(' ')[0]} <span className="text-saffron">{brandName.split(' ').slice(1).join(' ')}</span>
+                 </span>
+                 <div className="flex items-center gap-2 mt-0.5">
+                    <div className="h-px w-3 bg-saffron" />
+                    <small className="font-mono text-[9px] uppercase tracking-[0.25em] text-parchment/40 font-bold">
+                       {brandLogoText || "KAMAN İLAN"}
+                    </small>
+                 </div>
+              </div>
             </Link>
 
             <p className="mt-4 text-sm leading-relaxed opacity-60 font-manrope">
