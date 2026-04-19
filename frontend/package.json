@@ -11,6 +11,7 @@
     "postinstall": "sh -c '[ -d node_modules/react-hook-form/dist ] && ln -sfn dist node_modules/react-hook-form/src || true'"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.2",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
