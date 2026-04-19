@@ -51,24 +51,24 @@ export function SidebarBannerCard({ banner }: { banner: BannerItem }) {
       )}
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/20 pointer-events-none" />
 
-      <div className="relative flex min-h-[160px] items-center">
-        <div className="flex flex-1 flex-col justify-center py-6 pl-8 pr-6">
+      <div className="relative flex items-center">
+        <div className="flex flex-1 flex-col justify-center py-4 px-4">
           {banner.subtitle && (
-            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] mb-4" style={{ color: btn }}>
+            <span className="font-mono text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color: btn }}>
               {banner.subtitle}
             </span>
           )}
-          <h4 className="font-fraunces text-lg font-medium leading-tight mb-3" style={{ color: titleC }}>
+          <h4 className="font-fraunces text-sm font-medium leading-tight mb-2" style={{ color: titleC }}>
             {banner.title}
           </h4>
           {banner.description && (
-            <p className="line-clamp-2 text-[13px] leading-relaxed opacity-70 mb-6 font-manrope" style={{ color: descC }}>
+            <p className="line-clamp-2 text-[11px] leading-snug opacity-70 mb-2.5 font-manrope" style={{ color: descC }}>
               {banner.description}
             </p>
           )}
           {banner.button_text && (
             <span
-              className="btn-editorial py-2.5 px-6 text-[10px] w-fit"
+              className="btn-editorial py-1.5 px-4 text-[10px] w-fit"
               style={{ backgroundColor: btn, color: "hsl(var(--col-ink))", borderColor: "transparent" }}
             >
               <span>
@@ -80,13 +80,13 @@ export function SidebarBannerCard({ banner }: { banner: BannerItem }) {
         </div>
 
         {thumbImage && (
-          <div className="relative hidden shrink-0 sm:block pr-6" style={{ height: 140, width: 100 }}>
+          <div className="relative hidden shrink-0 sm:block pr-3" style={{ height: 90, width: 70 }}>
             <Image
               src={thumbImage}
               alt={banner.alt ?? banner.title}
               fill
               className="object-contain object-right-bottom drop-shadow-xl transition-transform duration-700 group-hover:scale-110"
-              sizes="100px"
+              sizes="70px"
               unoptimized
             />
           </div>

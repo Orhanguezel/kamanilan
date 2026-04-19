@@ -82,13 +82,13 @@ function HorizontalCard({ article }: { article: Article }) {
   return (
     <Link
       href={`/haberler/${article.slug}`}
-      className="group flex gap-4 py-5 hover:bg-black/5 transition-all px-3 border-b border-black/5 last:border-0"
+      className="group flex gap-3 py-3 hover:bg-black/5 transition-all border-b border-black/5 last:border-0"
     >
-      <div className="relative h-24 w-32 shrink-0 overflow-hidden bg-paper shadow-sm border border-border">
+      <div className="relative h-16 w-20 shrink-0 overflow-hidden bg-paper border border-border rounded-sm">
         {cover ? (
           <Image
             src={cover} alt={article.alt ?? article.title}
-            fill sizes="120px" className="object-cover transition-transform duration-500 group-hover:scale-110"
+            fill sizes="80px" className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <div className="h-full w-full bg-muted/60" />
@@ -96,13 +96,13 @@ function HorizontalCard({ article }: { article: Article }) {
       </div>
 
       <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <div className="flex items-center gap-2 mb-1.5 font-mono text-[8px] font-bold uppercase tracking-widest text-saffron-2">
-           <span className="opacity-50 tracking-normal">#</span> {cat}
+        <div className="font-mono text-[9px] font-bold uppercase tracking-wider text-saffron-2 mb-0.5">
+           {cat}
         </div>
-        <h4 className="font-fraunces text-lg font-medium leading-[1.2] text-ink line-clamp-2 group-hover:text-blue-900 transition-colors mb-2">
+        <h4 className="font-fraunces text-[13px] font-medium leading-[1.25] text-ink line-clamp-2 group-hover:text-saffron-2 transition-colors">
           {article.title}
         </h4>
-        <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-widest opacity-40">
+        <div className="flex items-center gap-1 mt-1 text-[9px] font-mono uppercase opacity-40">
            <Calendar className="size-2.5" />
            {fmtDate(article.published_at ?? article.created_at)}
         </div>
