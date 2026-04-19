@@ -68,6 +68,11 @@ export function OneSignalProvider() {
 
         await OneSignal.logout();
       } catch (error) {
+        // 409 Conflict = external_id already bound to another identity on this
+        // device. OneSignal still merges subscriptions server-side, so the sync
+        // effectively succeeded. Swallow to keep console clean.
+        const msg = error instanceof Error ? error.message : String(error);
+        if (/409|conflict/i.test(msg)) return;
         console.error("OneSignal identity sync failed", error);
       }
     }
