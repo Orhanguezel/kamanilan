@@ -278,6 +278,18 @@ export function LoginClient({ translations: t }: Props) {
               </>
             )}
 
+            <div className="my-6 flex items-center gap-4">
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[hsl(var(--col-walnut))] opacity-60">
+                veya
+              </span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+
+            <Suspense fallback={null}>
+              <SocialLoginButtons translations={{ or: t.or, google: t.google, facebook: t.facebook, social_error: t.social_error }} />
+            </Suspense>
+
             <p className="mt-6 text-center text-sm text-muted-foreground">
               {t.dont_have_account}{" "}
               <Link

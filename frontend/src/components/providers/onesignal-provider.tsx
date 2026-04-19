@@ -19,6 +19,13 @@ export function OneSignalProvider() {
   useEffect(() => {
     if (!appId || typeof window === "undefined") return;
 
+    // OneSignal app is bound to https://www.kamanilan.com in the OneSignal
+    // dashboard. On localhost/dev it throws "Can only be used on: ..." and
+    // floods the console — skip entirely off-prod.
+    const host = window.location.hostname;
+    const isProdHost = host === "www.kamanilan.com" || host === "kamanilan.com";
+    if (!isProdHost) return;
+
     let cancelled = false;
     const currentAppId = appId;
 
@@ -32,7 +39,6 @@ export function OneSignalProvider() {
         window.__onesignalInitialized = true;
         await OneSignal.init({
           appId: currentAppId,
-          allowLocalhostAsSecureOrigin: process.env.NODE_ENV !== "production",
           serviceWorkerPath: "/OneSignalSDKWorker.js",
         });
 
