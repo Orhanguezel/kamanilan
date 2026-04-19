@@ -15,7 +15,7 @@ INSERT INTO users (
   '{{SELLER_ID}}',
   '{{SELLER_EMAIL}}',
   '{{SELLER_PASSWORD_HASH}}',
-  'Test Satici',
+  'Test Satıcı',
   '+905559998877',
   0.00, 1, 1,
   CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)
@@ -32,7 +32,7 @@ ON DUPLICATE KEY UPDATE
 INSERT INTO profiles (id, full_name, phone, created_at, updated_at)
 VALUES (
   '{{SELLER_ID}}',
-  'Test Satici',
+  'Test Satıcı',
   '+905559998877',
   CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)
 )

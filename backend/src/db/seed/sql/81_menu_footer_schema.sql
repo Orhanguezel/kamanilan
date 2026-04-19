@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 81_menu_footer_schema.sql
--- Kaman Ilan - Menu Items + Footer Sections schema
+-- Kaman İlan - Menu Items + Footer Sections schema
 -- =============================================================
 
 DROP TABLE IF EXISTS `menu_items_i18n`;

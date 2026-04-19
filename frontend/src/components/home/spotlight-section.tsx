@@ -22,7 +22,7 @@ export function SpotlightSection() {
             {/* Left: Image & Captions */}
             <div className="relative aspect-[4/5] lg:aspect-[3/4] rounded-[40px] overflow-hidden shadow-3xl">
                <Image 
-                 src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=1200&auto=format&fit=crop&q=80" 
+                 src="/uploads/media/ceviz/kamancevizi24.png" 
                  alt="Kaman Cevizi Spotlight"
                  fill
                  className="object-cover transition-transform duration-1000 hover:scale-105"

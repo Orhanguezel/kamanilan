@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 82_menu_footer_seed.sql
--- Kaman Ilan - Menu Items + Footer links seed
+-- Kaman İlan - Menu Items + Footer links seed
 -- =============================================================
 
 SET NAMES utf8mb4;
@@ -25,8 +25,8 @@ ON DUPLICATE KEY UPDATE
 INSERT INTO `footer_sections_i18n`
 (`id`, `section_id`, `locale`, `title`, `slug`, `description`, `created_at`, `updated_at`)
 VALUES
-('6d4d6f6a-6f2d-4f8d-9f09-5c16d9b91111', @FS_CORPORATE, 'tr', 'Kurumsal', 'kurumsal', 'Kaman Ilan kurumsal sayfalari', NOW(3), NOW(3)),
-('7d4d6f6a-6f2d-4f8d-9f09-5c16d9b92222', @FS_QUICK,     'tr', 'Hizli Erisim', 'hizli-erisim', 'Sik kullanilan hizli linkler', NOW(3), NOW(3)),
+('6d4d6f6a-6f2d-4f8d-9f09-5c16d9b91111', @FS_CORPORATE, 'tr', 'Kurumsal', 'kurumsal', 'Kaman İlan kurumsal sayfalari', NOW(3), NOW(3)),
+('7d4d6f6a-6f2d-4f8d-9f09-5c16d9b92222', @FS_QUICK,     'tr', 'Hızlı Erişim', 'hizli-erisim', 'Sik kullanilan hizli linkler', NOW(3), NOW(3)),
 ('8d4d6f6a-6f2d-4f8d-9f09-5c16d9b93333', @FS_SUPPORT,   'tr', 'Destek', 'destek', 'Destek ve yasal baglantilar', NOW(3), NOW(3))
 ON DUPLICATE KEY UPDATE
   `title` = VALUES(`title`),
@@ -89,7 +89,7 @@ VALUES
 (@MI_SUB_CAMPAIGNS, @MI_PAGES, 'custom', NULL, 'header', NULL, NULL, 60, 1, NOW(3), NOW(3)),
 (@MI_SUB_ADVERTISE,@MI_PAGES, 'custom', NULL, 'header', NULL, NULL, 70, 1, NOW(3), NOW(3)),
 
--- Ilan Ver (moved to footer only in menu_items)
+-- İlan Ver (moved to footer only in menu_items)
 (@MI_POST_LISTING, NULL, 'custom', NULL, 'footer', NULL, NULL, 40, 1, NOW(3), NOW(3)),
 
 (@MI_F_ABOUT,      NULL, 'custom', NULL, 'footer', NULL, @FS_CORPORATE, 10, 1, NOW(3), NOW(3)),
@@ -135,21 +135,21 @@ VALUES
 ('bbbbbbb2-2222-4bcd-8222-2222bbbbbbb2', @MI_SUB_CAMPAIGNS,  'tr', 'Kampanyalar',  '/kampanyalar', NOW(3), NOW(3)),
 ('cccccc3a-3333-4bcd-8333-3333cccccc3a', @MI_SUB_ADVERTISE, 'tr', 'Reklam Ver',    '/reklam-ver',  NOW(3), NOW(3)),
 
-('44444444-dddd-4bcd-8ddd-dddd44444444', @MI_POST_LISTING, 'tr', 'Ilan Ver', '/ilan-ver', NOW(3), NOW(3)),
+('44444444-dddd-4bcd-8ddd-dddd44444444', @MI_POST_LISTING, 'tr', 'İlan Ver', '/ilan-ver', NOW(3), NOW(3)),
 
-('88888888-bcde-4bcd-8bcd-bcde88888888', @MI_F_ABOUT,      'tr', 'Hakkimizda', '/hakkimizda', NOW(3), NOW(3)),
+('88888888-bcde-4bcd-8bcd-bcde88888888', @MI_F_ABOUT,      'tr', 'Hakkımızda', '/hakkimizda', NOW(3), NOW(3)),
 ('99999999-cdef-4bcd-8cde-cdef99999999', @MI_F_MISSION,    'tr', 'Misyon ve Vizyon', '/misyon-vizyon', NOW(3), NOW(3)),
-('aaaaaaa1-def0-4bcd-8def-def0aaaaaaa1', @MI_F_QUALITY,    'tr', 'Kalite Politikamiz', '/kalite-politikamiz', NOW(3), NOW(3)),
+('aaaaaaa1-def0-4bcd-8def-def0aaaaaaa1', @MI_F_QUALITY,    'tr', 'Kalite Politikamız', '/kalite-politikamiz', NOW(3), NOW(3)),
 
-('bbbbbbb2-ef01-4bcd-8ef0-ef01bbbbbbb2', @MI_F_ALL,        'tr', 'Tum Ilanlar', '/ilanlar', NOW(3), NOW(3)),
+('bbbbbbb2-ef01-4bcd-8ef0-ef01bbbbbbb2', @MI_F_ALL,        'tr', 'Tüm İlanlar', '/ilanlar', NOW(3), NOW(3)),
 ('ccccccc3-f012-4bcd-8f01-f012ccccccc3', @MI_F_CATEGORIES, 'tr', 'Kategoriler', '/kategoriler', NOW(3), NOW(3)),
-('ddddddd4-0123-4bcd-8012-0123ddddddd4', @MI_F_POST,       'tr', 'Ilan Ver',    '/ilan-ver',    NOW(3), NOW(3)),
+('ddddddd4-0123-4bcd-8012-0123ddddddd4', @MI_F_POST,       'tr', 'İlan Ver',    '/ilan-ver',    NOW(3), NOW(3)),
 ('13131313-4567-4bcd-8456-456713131313', @MI_F_ADVERTISE,  'tr', 'Reklam Ver',  '/reklam-ver',  NOW(3), NOW(3)),
 ('14141414-5678-4bcd-8567-567814141414', @MI_F_HABERLER,   'tr', 'Haberler',    '/haberler',    NOW(3), NOW(3)),
 
-('eeeeeee5-1234-4bcd-8123-1234eeeee777', @MI_F_TERMS,    'tr', 'Kullanim Kosullari', '/kullanim-kosullari', NOW(3), NOW(3)),
-('fffffff6-2345-4bcd-8234-2345fffff888', @MI_F_PRIVACY,    'tr', 'Gizlilik Politikasi', '/gizlilik-politikasi', NOW(3), NOW(3)),
-('12121212-3456-4bcd-8345-345612121212', @MI_F_CONTACT,    'tr', 'Iletisim', '/iletisim', NOW(3), NOW(3))
+('eeeeeee5-1234-4bcd-8123-1234eeeee777', @MI_F_TERMS,    'tr', 'Kullanım Koşulları', '/kullanim-kosullari', NOW(3), NOW(3)),
+('fffffff6-2345-4bcd-8234-2345fffff888', @MI_F_PRIVACY,    'tr', 'Gizlilik Politikası', '/gizlilik-politikasi', NOW(3), NOW(3)),
+('12121212-3456-4bcd-8345-345612121212', @MI_F_CONTACT,    'tr', 'İletişim', '/iletisim', NOW(3), NOW(3))
 ON DUPLICATE KEY UPDATE
   `title` = VALUES(`title`),
   `url` = VALUES(`url`),

@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 68_listing_tags_seed.sql
--- Kaman Ilan - Ornek Etiket (Tag) Kayitlari
+-- Kaman İlan - Ornek Etiket (Tag) Kayitlari
 -- =============================================================
 
 SET NAMES utf8mb4;
@@ -13,7 +13,7 @@ VALUES
     '68000000-0000-4000-8000-000000000001',
     'Pazarlik Var',
     'pazarlik-var',
-    'Fiyat gorusmeye acik ilanlar',
+    'Fiyat görüşmeye açık ilanlar',
     (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'genel-satis' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
@@ -23,7 +23,7 @@ VALUES
     '68000000-0000-4000-8000-000000000002',
     'Acil Satilik',
     'acil-satilik',
-    'Hizli devir istenen ilanlar',
+    'Hızlı devir istenen ilanlar',
     (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'genel-satis' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
@@ -33,7 +33,7 @@ VALUES
     '68000000-0000-4000-8000-000000000003',
     'Sahibinden',
     'sahibinden',
-    'Araci olmadan dogrudan ilani acanlar',
+    'Aracı olmadan doğrudan ilanı açanlar',
     (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'emlak-kira' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
@@ -43,7 +43,7 @@ VALUES
     '68000000-0000-4000-8000-000000000004',
     'Ekspertizli',
     'ekspertizli',
-    'Ekspertiz raporu bulunan araclar',
+    'Ekspertiz raporu bulunan araçlar',
     (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'arac-motosiklet' AND ci.locale = 'tr' LIMIT 1),
     (SELECT si.sub_category_id FROM sub_category_i18n si WHERE si.slug = 'otomobil' AND si.locale = 'tr' LIMIT 1),
     1,
@@ -53,7 +53,7 @@ VALUES
     '68000000-0000-4000-8000-000000000005',
     'Bakimli',
     'bakimli',
-    'Periyodik bakimlari tamamlanmis ilanlar',
+    'Periyodik bakımları tamamlanmış ilanlar',
     (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'arac-motosiklet' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
@@ -63,7 +63,7 @@ VALUES
     '68000000-0000-4000-8000-000000000006',
     'Ureticiden',
     'ureticiden',
-    'Dogrudan ureticiden satilan urunler',
+    'Doğrudan üreticiden satılan ürünler',
     (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'kaman-cevizi' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
@@ -73,7 +73,7 @@ VALUES
     '68000000-0000-4000-8000-000000000007',
     'Veteriner Kontrollu',
     'veteriner-kontrollu',
-    'Veteriner denetimi yapilmis hayvan ilanlari',
+    'Veteriner denetimi yapılmış hayvan ilanları',
     (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'hayvan-tarim' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,
@@ -83,7 +83,7 @@ VALUES
     '68000000-0000-4000-8000-000000000008',
     'Organik',
     'organik',
-    'Dogal / organik urun ilanlari',
+    'Doğal / organik ürün ilanları',
     (SELECT ci.category_id FROM category_i18n ci WHERE ci.slug = 'meyve-sebze' AND ci.locale = 'tr' LIMIT 1),
     NULL,
     1,

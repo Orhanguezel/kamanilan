@@ -1,4 +1,4 @@
-/* 51_sub_categories_seed.sql — Kaman Ilan
+/* 51_sub_categories_seed.sql — Kaman İlan
    
    NOT: Tum sub_categories ve sub_category_i18n verileri artik
    50_categories_schema.sql icinde parent + i18n olarak tanimlanmistir.

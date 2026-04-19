@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 24_properties_seed_food.sql
--- Kaman Ilan - food / agricultural product listings
+-- Kaman İlan - food / agricultural product listings
 -- CLEAN: type/sub_type/specs_json removed; category_id used
 -- category_id: 10000000-0000-4000-8000-000000000004 (Kaman Cevizi & Gıda)
 -- =============================================================
@@ -30,7 +30,7 @@ VALUES
   @SELLER_ID,
   'Ic Ceviz - Vakumlu 5 KG', 'ic-ceviz-vakumlu-5kg',
   'satilik', '10000000-0000-4000-8000-000000000004', '20000000-0000-4000-8000-000000000041',
-  'Uretici Kooperatifi Deposu', 'Kaman', 'Kirsehir', 'Sofular',
+  'Uretici Kooperatifi Deposu', 'Kaman', 'Kırşehir', 'Sofular',
   'Yeni sezon Kaman cevizi, secilmis ic ceviz.',
   2650.00, 'TRY', 2450.00,
   'KMN-FOD-3001', 'Yeni Sezon', 1,
@@ -43,8 +43,8 @@ VALUES
   @SELLER_ID,
   'Koy Yogurdu - 3 KG', 'koy-yogurdu-3kg',
   'satilik', '10000000-0000-4000-8000-000000000004', '20000000-0000-4000-8000-000000000044',
-  'Sut Toplama Merkezi', 'Kaman', 'Kirsehir', 'Merkez',
-  'Dogal maya ile gunluk uretim koy yogurdu.',
+  'Sut Toplama Merkezi', 'Kaman', 'Kırşehir', 'Merkez',
+  'Doğal maya ile gunluk uretim koy yogurdu.',
   390.00, 'TRY', 350.00,
   'KMN-FOD-3002', 'Gunluk Uretim', 1,
   'https://images.unsplash.com/photo-1488477181946-6428a0291777?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Koy yogurdu',
@@ -56,7 +56,7 @@ VALUES
   @SELLER_ID,
   'Taze Kasar Peyniri - 2 KG', 'taze-kasar-peyniri-2kg',
   'satilik', '10000000-0000-4000-8000-000000000004', '20000000-0000-4000-8000-000000000044',
-  'Mandira Caddesi', 'Kaman', 'Kirsehir', 'Mandira',
+  'Mandira Caddesi', 'Kaman', 'Kırşehir', 'Mandira',
   'Koy sutunden uretim taze kasar.',
   620.00, 'TRY', NULL,
   'KMN-FOD-3003', NULL, 0,
@@ -69,7 +69,7 @@ VALUES
   @SELLER_ID,
   'Elma Kasasi - 18 KG', 'elma-kasasi-18kg',
   'satilik', '10000000-0000-4000-8000-000000000004', '20000000-0000-4000-8000-000000000046',
-  'Meyve Hali 3. Koridor', 'Kaman', 'Kirsehir', 'Pazar',
+  'Meyve Hali 3. Koridor', 'Kaman', 'Kırşehir', 'Pazar',
   'Bahce cikisi taze elma.',
   740.00, 'TRY', NULL,
   'KMN-FOD-3004', NULL, 0,
@@ -82,8 +82,8 @@ VALUES
   @SELLER_ID,
   'Kurutulmus Biber - 1 KG', 'kurutulmus-biber-1kg',
   'satilik', '10000000-0000-4000-8000-000000000004', '20000000-0000-4000-8000-000000000046',
-  'Pazar Alani', 'Kaman', 'Kirsehir', 'Pazar',
-  'Dogal yontemlerle kurutulmus biber.',
+  'Pazar Alani', 'Kaman', 'Kırşehir', 'Pazar',
+  'Doğal yontemlerle kurutulmus biber.',
   310.00, 'TRY', NULL,
   'KMN-FOD-3005', 'Koy Uretimi', 0,
   'https://images.unsplash.com/photo-1583663848850-46af132dc08e?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Kurutulmus biber',
@@ -95,7 +95,7 @@ VALUES
   @SELLER_ID,
   'Nohut - 25 KG Cuval', 'nohut-25kg-cuval',
   'satilik', '10000000-0000-4000-8000-000000000004', '20000000-0000-4000-8000-000000000047',
-  'Tahil Pazari Girisi', 'Kaman', 'Kirsehir', 'Sanayi',
+  'Tahil Pazari Girisi', 'Kaman', 'Kırşehir', 'Sanayi',
   'Kaman ovasi mahsulu nohut.',
   1625.00, 'TRY', 1500.00,
   'KMN-FOD-3006', NULL, 0,
@@ -108,7 +108,7 @@ VALUES
   @SELLER_ID,
   'Tam Bugday Unu - 10 KG', 'tam-bugday-unu-10kg',
   'satilik', '10000000-0000-4000-8000-000000000004', '20000000-0000-4000-8000-000000000047',
-  'Degirmen Sokak', 'Kaman', 'Kirsehir', 'Degirmen',
+  'Degirmen Sokak', 'Kaman', 'Kırşehir', 'Degirmen',
   'Tas degirmende cekilmis tam bugday unu.',
   420.00, 'TRY', NULL,
   'KMN-FOD-3007', 'Yeni Cekim', 0,
@@ -121,7 +121,7 @@ VALUES
   @SELLER_ID,
   'Koy Tereyagi - 1 KG (Tukendi)', 'koy-tereyagi-1kg-tukendi',
   'tukendi', '10000000-0000-4000-8000-000000000004', '20000000-0000-4000-8000-000000000044',
-  'Mandira Caddesi', 'Kaman', 'Kirsehir', 'Mandira',
+  'Mandira Caddesi', 'Kaman', 'Kırşehir', 'Mandira',
   'Son parti satilmistir, yeni uretim yakinda.',
   0.00, 'TRY', NULL,
   'KMN-FOD-3008', 'Tukendi', 0,

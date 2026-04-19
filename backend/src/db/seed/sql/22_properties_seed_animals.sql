@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 22_properties_seed_animals.sql
--- Kaman Ilan - hayvan ilanları (category_id based)
+-- Kaman İlan - hayvan ilanları (category_id based)
 -- =============================================================
 
 SET NAMES utf8mb4;
@@ -27,13 +27,13 @@ VALUES
 (
   '32000000-0000-4000-8000-000000000001',
   @SELLER_ID,
-  'Satilik Simental Duve - 20 Aylik', 'satilik-simental-duve-20-aylik',
+  'Satılık Simental Düve - 20 Aylık', 'satilik-simental-duve-20-aylik',
   '10000000-0000-4000-8000-000000000005', NULL,
   'satilik',
-  'Ciftlik Yolu 5. Km', 'Kaman', 'Kirsehir', 'Ciftlikler',
-  'Asilari tam, veteriner kontrolunden gecmistir.',
+  'Çiftliği Yolu 5. Km', 'Kaman', 'Kırşehir', 'Çiftliğiler',
+  'Aşıları tam, veteriner kontrolunden geçmiştir.',
   138000.00, 'TRY', 129000.00,
-  'KMN-ANM-1001', 'Saglikli', 1,
+  'KMN-ANM-1001', 'Sağlıklı', 1,
   'https://images.unsplash.com/photo-1500595046743-cd271d694d30?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Simental duve',
   101, 1,
   DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 6 DAY), DATE_SUB(CURRENT_TIMESTAMP(3), INTERVAL 1 DAY)
@@ -41,10 +41,10 @@ VALUES
 (
   '32000000-0000-4000-8000-000000000003',
   @CUSTOMER_ID,
-  'Bulundu Kupeli Inek - Sahibi Araniyor', 'bulundu-kupeli-inek-sahibi-araniyor-kaman',
+  'Bulundu Küpeli Inek - Sahibi Aranıyor', 'bulundu-kupeli-inek-sahibi-araniyor-kaman',
   '10000000-0000-4000-8000-000000000005', NULL,
   'bulundu',
-  'Kirsehir Yolu 2. Km', 'Kaman', 'Kirsehir', 'Baglar',
+  'Kırşehir Yolu 2. Km', 'Kaman', 'Kırşehir', 'Baglar',
   'Kulak kupesi mevcut, sahibine teslim edilecektir.',
   0.00, 'TRY', NULL,
   'KMN-ANM-1003', 'Bulundu', 0,
@@ -55,11 +55,11 @@ VALUES
 (
   '32000000-0000-4000-8000-000000000004',
   @SELLER_ID,
-  'Satilik Gezen Tavuk - 50 Adet', 'satilik-gezen-tavuk-50-adet',
+  'Satılık Gezen Tavuk - 50 Adet', 'satilik-gezen-tavuk-50-adet',
   '10000000-0000-4000-8000-000000000005', NULL,
   'satilik',
-  'Kumes Ciftligi Bolgesi', 'Kaman', 'Kirsehir', 'Koy Ici',
-  'Asili gezen tavuklar, toplu satis.',
+  'Kumes Ciftligi Bolgesi', 'Kaman', 'Kırşehir', 'Koy Ici',
+  'Aşılı gezen tavuklar, toplu satis.',
   42500.00, 'TRY', 39000.00,
   'KMN-ANM-1004', 'Toplu', 1,
   'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Gezen tavuk',
@@ -69,11 +69,11 @@ VALUES
 (
   '32000000-0000-4000-8000-000000000005',
   @SELLER_ID,
-  'Satilik Hindi Erkek - 12 Adet', 'satilik-hindi-erkek-12-adet',
+  'Satılık Hindi Erkek - 12 Adet', 'satilik-hindi-erkek-12-adet',
   '10000000-0000-4000-8000-000000000005', NULL,
   'satilik',
-  'Asagi Ciftlik Mevkii', 'Kaman', 'Kirsehir', 'Asagi Ciftlik',
-  'Saglik kontrolleri yapilmis hindiler.',
+  'Aşağı Çiftliği Mevkii', 'Kaman', 'Kırşehir', 'Aşağı Çiftliği',
+  'Saglik kontrolleri yapılmış hindiler.',
   21600.00, 'TRY', NULL,
   'KMN-ANM-1005', NULL, 0,
   'https://images.unsplash.com/photo-1600402872705-a25a8d0fdd3f?fm=jpg&ixlib=rb-4.0.3&q=60&w=2400', 'Hindi surusu',

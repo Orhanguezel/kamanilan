@@ -1,4 +1,4 @@
-/* 50_categories_schema.sql — Kaman Ilan (i18n: parent + child tables) */
+/* 50_categories_schema.sql — Kaman İlan (i18n: parent + child tables) */
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
@@ -291,7 +291,7 @@ INSERT INTO `sub_categories` (`id`,`category_id`,`icon`,`has_cart`,`is_active`,`
   ('20000000-0000-4000-8000-000000000143','10000000-0000-4000-8000-000000000015','🏢',0,1,3),
   ('20000000-0000-4000-8000-000000000144','10000000-0000-4000-8000-000000000015','🌾',0,1,4);
 
--- 16 Kumes Hayvanlari
+-- 16 Kümes Hayvanları
 INSERT INTO `sub_categories` (`id`,`category_id`,`icon`,`has_cart`,`is_active`,`display_order`) VALUES
   ('20000000-0000-4000-8000-000000000151','10000000-0000-4000-8000-000000000016','🐔',1,1,1),
   ('20000000-0000-4000-8000-000000000152','10000000-0000-4000-8000-000000000016','🦃',1,1,2),
@@ -432,7 +432,7 @@ INSERT INTO `sub_category_i18n` (`id`,`sub_category_id`,`locale`,`name`,`slug`) 
 (UUID(),'20000000-0000-4000-8000-000000000143','tr','Ofis','ofis'),
 (UUID(),'20000000-0000-4000-8000-000000000144','tr','Arazi & Çiftlik','arazi-ciftlik');
 
--- 16 Kumes Hayvanlari
+-- 16 Kümes Hayvanları
 INSERT INTO `sub_category_i18n` (`id`,`sub_category_id`,`locale`,`name`,`slug`) VALUES
 (UUID(),'20000000-0000-4000-8000-000000000151','tr','Tavuk & Yumurta','tavuk-yumurta'),
 (UUID(),'20000000-0000-4000-8000-000000000152','tr','Hindi','hindi'),

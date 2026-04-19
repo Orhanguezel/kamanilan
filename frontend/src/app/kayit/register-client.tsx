@@ -24,6 +24,7 @@ import { Eye, EyeOff, User, Mail, Lock, Phone, ChevronRight } from "lucide-react
 import { useThemeConfig } from "@/modules/theme/use-theme-config";
 import { useSiteInfoQuery } from "@/modules/site/site.action";
 import Image from "next/image";
+import { env } from "@/env.mjs";
 import {
   Dialog,
   DialogContent,
@@ -81,8 +82,12 @@ export function RegisterClient({ translations: t }: Props) {
   const isOtpEnabled =
     siteInfo?.com_user_login_otp === "on" ||
     siteInfo?.otp_login_enabled_disable === "on";
-  const showGoogle = siteInfo?.com_google_login_enabled === "on";
-  const showFacebook = siteInfo?.com_facebook_login_enabled === "on";
+  const showGoogle =
+    Boolean(env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) &&
+    siteInfo?.com_google_login_enabled !== "off";
+  const showFacebook =
+    Boolean(env.NEXT_PUBLIC_FACEBOOK_APP_ID) &&
+    siteInfo?.com_facebook_login_enabled !== "off";
   const showSocialButtons = showGoogle || showFacebook;
 
   const {
@@ -105,7 +110,10 @@ export function RegisterClient({ translations: t }: Props) {
   });
 
   const onSubmit = (data: RegisterFormValues) => {
-    registerMutation.mutate(data);
+    registerMutation.mutate({
+      ...data,
+      rules_accepted: registerConfig.termsPageUrl ? agreedTerms : true,
+    });
   };
 
   const openOtpDialog = () => {
@@ -138,39 +146,39 @@ export function RegisterClient({ translations: t }: Props) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 lg:py-10">
-      <nav className="mb-8 flex items-center gap-1.5 text-sm text-muted-foreground">
-        <Link href={ROUTES.HOME} className="hover:text-foreground">
-          {t.home}
-        </Link>
-        <ChevronRight className="h-3.5 w-3.5" />
-        <span className="text-primary">{registerConfig.title || t.register_title}</span>
-      </nav>
+    <>
+      <div className="min-h-screen bg-white flex flex-col">
+      <div className="flex-1 flex flex-col lg:flex-row">
+        {/* Left Side: Flat Illustration */}
+        <div className="hidden lg:flex lg:w-1/2 relative bg-white items-center justify-center p-20 border-r border-black/5">
+          <div className="relative w-full h-full max-h-[600px] max-w-[600px]">
+            <Image
+              src="/images/auth/register.png"
+              alt="Hesap Oluştur"
+              fill
+              className="object-contain transition-transform duration-700 hover:scale-105"
+              priority
+            />
+          </div>
+        </div>
 
-      <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_560px]">
-        <div className="hidden md:block" />
+        {/* Right Side: Register Form */}
+        <div className="flex-1 flex flex-col items-center justify-center p-8 lg:p-24 lg:bg-[hsl(var(--col-paper))]">
+          <div className="w-full max-w-[560px]">
+            <nav className="mb-12 flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[hsl(var(--col-ink))] opacity-30">
+              <Link href={ROUTES.HOME} className="hover:text-ink">{t.home}</Link>
+              <ChevronRight className="h-3 w-3" />
+              <span>HESAP OLUŞTUR</span>
+            </nav>
 
-        <div>
-          <div className="rounded-lg border bg-card p-7 shadow-sm">
-            <h1 className="mb-2 text-center text-[44px] font-semibold leading-none tracking-tight text-foreground md:text-[46px]">
-              {registerConfig.title || t.register_title}
-            </h1>
-            {(registerConfig.subtitle || registerConfig.description) && (
-              <p className="mb-5 text-center text-sm text-muted-foreground">
-                {registerConfig.subtitle}
+            <div className="mb-12 space-y-4">
+              <h1 className="font-fraunces text-5xl lg:text-6xl font-medium tracking-tight text-ink leading-none">
+                {registerConfig.title || t.register_title}
+              </h1>
+              <p className="text-[hsl(var(--col-walnut))] opacity-60 font-manrope">
+                Kaman'ın en büyük yerel pazaryerine katılın, hemen ilanınızı verin.
               </p>
-            )}
-            {registerConfig.imageUrl && (
-              <div className="mb-5 overflow-hidden rounded-md border">
-                <Image
-                  src={registerConfig.imageUrl}
-                  alt={registerConfig.title || t.register_title}
-                  width={520}
-                  height={180}
-                  className="h-auto w-full object-cover"
-                />
-              </div>
-            )}
+            </div>
 
             {registerMutation.isError && (
               <div className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
@@ -386,22 +394,9 @@ export function RegisterClient({ translations: t }: Props) {
               </Link>
             </p>
 
-            {showSocialButtons && (
-              <Suspense>
-                <SocialLoginButtons
-                  translations={{
-                    or: t.or,
-                    google: t.google,
-                    facebook: t.facebook,
-                    social_error: t.social_error,
-                  }}
-                  showGoogle={showGoogle}
-                  showFacebook={showFacebook}
-                />
-              </Suspense>
-            )}
           </div>
         </div>
+      </div>
       </div>
 
       <Dialog open={otpOpen} onOpenChange={setOtpOpen}>
@@ -477,6 +472,6 @@ export function RegisterClient({ translations: t }: Props) {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

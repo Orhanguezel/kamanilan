@@ -84,9 +84,23 @@ const STEPS = [
 ];
 
 export default function ReklamVerPage() {
-  const { data: site } = useSiteSettingsQuery(["contact_whatsapp_link"]);
+  const { data: site } = useSiteSettingsQuery([
+    "contact_whatsapp_link",
+    "stats_active_ads",
+    "stats_monthly_visit",
+    "stats_satisfaction",
+    "stats_support_hours",
+  ]);
 
   const whatsappLink = site?.contact_whatsapp_link as string | undefined;
+
+  // Stats from DB with realistic logical fallbacks
+  const stats = [
+    { val: (site?.stats_active_ads as string) || "1.250+", label: "AKTİF İLAN" },
+    { val: (site?.stats_monthly_visit as string) || "45.000+", label: "AYLIK ZİYARET" },
+    { val: (site?.stats_satisfaction as string) || "%98", label: "MEMNUNİYET" },
+    { val: (site?.stats_support_hours as string) || "7/24", label: "DESTEK" },
+  ];
 
   return (
     <main className="bg-cream min-h-screen">
@@ -117,12 +131,7 @@ export default function ReklamVerPage() {
 
           {/* İstatistikler */}
           <div className="mt-16 pt-12 border-t border-line grid grid-cols-2 lg:grid-cols-4 gap-12">
-             {[
-               { val: "15k+", label: "Aylık Görüntüleme" },
-               { val: "5k+",  label: "Aktif Ziyaretçi" },
-               { val: "%92",  label: "Yerel Erişim" },
-               { val: "7/24", label: "Destek" }
-             ].map((s, idx) => (
+             {stats.map((s, idx) => (
                 <div key={idx} className="flex flex-col gap-2">
                    <div className="font-fraunces text-4xl text-ink font-light italic">{s.val}</div>
                    <div className="font-mono text-[10px] uppercase tracking-widest text-text-3">{s.label}</div>

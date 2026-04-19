@@ -12,7 +12,9 @@ export const env = createEnv({
     NEXT_PUBLIC_REST_API_ENDPOINT: z.url(),
     NEXT_PUBLIC_SITE_URL: z.url(),
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string().optional(),
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().optional(),
     NEXT_PUBLIC_FACEBOOK_APP_ID: z.string().optional(),
+    NEXT_PUBLIC_ONESIGNAL_APP_ID: z.string().optional(),
   },
 
   runtimeEnv: {
@@ -20,7 +22,9 @@ export const env = createEnv({
     NEXT_PUBLIC_REST_API_ENDPOINT: process.env.NEXT_PUBLIC_REST_API_ENDPOINT,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     NEXT_PUBLIC_FACEBOOK_APP_ID: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID,
+    NEXT_PUBLIC_ONESIGNAL_APP_ID: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

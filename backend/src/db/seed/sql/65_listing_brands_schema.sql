@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 65_listing_brands_schema.sql
--- Kaman Ilan - Listing Brands (Kategori / Alt kategori bazli)
+-- Kaman İlan - Listing Brands (Kategori / Alt kategori bazli)
 -- =============================================================
 
 SET NAMES utf8mb4;

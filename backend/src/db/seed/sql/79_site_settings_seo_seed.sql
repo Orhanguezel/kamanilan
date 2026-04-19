@@ -1,4 +1,4 @@
-/* 79_site_settings_seo_seed.sql — Site media + SEO defaults (Kaman Ilan, i18n uyumlu) */
+/* 79_site_settings_seo_seed.sql — Site media + SEO defaults (Kaman İlan, i18n uyumlu) */
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
@@ -23,29 +23,29 @@ ON DUPLICATE KEY UPDATE
    ============================================================= */
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_at`) VALUES
   (UUID(), 'public_base_url', '*', '"http://localhost:3000"', NOW(3), NOW(3)),
-  (UUID(), 'site_title',      '*', '"Kaman Ilan"', NOW(3), NOW(3)),
-  (UUID(), 'company_brand',   '*', '{"name":"Kaman Ilan","shortName":"Kaman Ilan"}', NOW(3), NOW(3)),
-  (UUID(), 'socials',         '*', '{"instagram":"https://www.instagram.com/kamanilan","facebook":"https://www.facebook.com/kamanilan"}', NOW(3), NOW(3))
+  (UUID(), 'site_title',      '*', '"Kaman İlan"', NOW(3), NOW(3)),
+  (UUID(), 'company_brand',   '*', '{"name":"Kaman İlan","shortName":"Kaman İlan"}', NOW(3), NOW(3)),
+  (UUID(), 'socials',         '*', '{"instagram":"https://www.instagram.com/kamanilan","facebook":"https://www.facebook.com/profile.php?id=61586451088043"}', NOW(3), NOW(3))
 ON DUPLICATE KEY UPDATE
   `value` = VALUES(`value`),
   `updated_at` = NOW(3);
 
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_at`) VALUES
   (UUID(), 'seo_defaults', '*',
-   '{"canonicalBase":"https://kamanilan.com","siteName":"Kaman Ilan","description":"Kaman ve cevresinde satilik, kiralik ve takas ilanlari.","ogLocale":"tr_TR","author":"Kaman Ilan","themeColor":"#2D6A4F","twitterCard":"summary_large_image","robots":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1","googlebot":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}',
+   '{"canonicalBase":"https://kamanilan.com","siteName":"Kaman İlan","description":"Kaman ve çevresinde satılık, kiralık ve takas ilanlari.","ogLocale":"tr_TR","author":"Kaman İlan","themeColor":"#2D6A4F","twitterCard":"summary_large_image","robots":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1","googlebot":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}',
    NOW(3), NOW(3)),
   (UUID(), 'seo_app_icons', '*',
    '{"appleTouchIcon":"/uploads/media/logo/logo_light.png","favicon":"/uploads/media/logo/logo_light.png","logoIcon192":"/uploads/media/logo/logo_light.png","logoIcon512":"/uploads/media/logo/logo_light.png"}',
    NOW(3), NOW(3)),
   (UUID(), 'seo_social_same_as', '*',
-   '["https://www.instagram.com/kamanilan","https://www.facebook.com/kamanilan"]',
+   '["https://www.instagram.com/kamanilan","https://www.facebook.com/profile.php?id=61586451088043"]',
    NOW(3), NOW(3)),
   (UUID(), 'seo_amp_google_client_id_api', '*', '"googleanalytics"', NOW(3), NOW(3)),
   (UUID(), 'site_meta_default', '*',
-   '{"title":"Kaman Ilan","description":"Kaman ve cevresinde ilan platformu","image":"/uploads/media/logo/og-image.png"}',
+   '{"title":"Kaman İlan","description":"Kaman ve çevresinde ilan platformu","image":"/uploads/media/logo/og-image.png"}',
    NOW(3), NOW(3)),
   (UUID(), 'site_seo', '*',
-   '{"title_default":"Kaman Ilan","title_template":"{{title}} | Kaman Ilan","description":"Kaman ve cevresinde ilan platformu","robots":"index, follow"}',
+   '{"title_default":"Kaman İlan","title_template":"{{title}} | Kaman İlan","description":"Kaman ve çevresinde ilan platformu","robots":"index, follow"}',
    NOW(3), NOW(3))
 ON DUPLICATE KEY UPDATE
   `value` = VALUES(`value`),
@@ -61,8 +61,8 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_a
      "theme":{"mode":"light","preset":"soft-pop","font":"inter"},
      "layout":{"sidebar_variant":"inset","sidebar_collapsible":"icon","navbar_style":"sticky","content_layout":"full-width"},
      "branding":{
-       "app_name":"Kaman Ilan Admin Panel",
-       "app_copyright":"Kaman Ilan",
+       "app_name":"Kaman İlan Admin Panel",
+       "app_copyright":"Kaman İlan",
        "html_lang":"tr",
        "theme_color":"#2D6A4F",
        "favicon":"/uploads/media/logo/logo_light.png",
@@ -70,17 +70,29 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_a
        "logo":"/uploads/media/logo/logo_light.png",
        "logo_dark":"/uploads/media/logo/logo_dark.png",
        "meta":{
-         "title":"Kaman Ilan Admin Panel",
-         "description":"Kaman Ilan yonetim paneli",
+         "title":"Kaman İlan Admin Panel",
+         "description":"Kaman İlan yönetim paneli",
          "og_url":"https://kamanilan.com/admin",
-         "og_title":"Kaman Ilan Admin Panel",
-         "og_description":"Kaman Ilan yonetim paneli",
+         "og_title":"Kaman İlan Admin Panel",
+         "og_description":"Kaman İlan yönetim paneli",
          "og_image":"/uploads/media/logo/og-image.png",
          "twitter_card":"summary_large_image"
        }
      }
    }',
    NOW(3), NOW(3))
+ON DUPLICATE KEY UPDATE
+  `value` = VALUES(`value`),
+  `updated_at` = NOW(3);
+
+/* =============================================================
+   EDITORIAL STATS (used by Advertise Page)
+   ============================================================= */
+INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_at`) VALUES
+  (UUID(), 'stats_active_ads',    '*', '"1.250+"',  NOW(3), NOW(3)),
+  (UUID(), 'stats_monthly_visit', '*', '"45.000+"',   NOW(3), NOW(3)),
+  (UUID(), 'stats_satisfaction',  '*', '"%98"',  NOW(3), NOW(3)),
+  (UUID(), 'stats_support_hours', '*', '"7/24"', NOW(3), NOW(3))
 ON DUPLICATE KEY UPDATE
   `value` = VALUES(`value`),
   `updated_at` = NOW(3);

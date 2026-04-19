@@ -187,22 +187,10 @@ function SocialLoginWithGoogle(props: Props) {
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       if (!tokenResponse.access_token) return;
-      const userInfoResp = await fetch(
-        "https://www.googleapis.com/oauth2/v3/userinfo",
-        {
-          headers: {
-            Authorization: `Bearer ${tokenResponse.access_token}`,
-          },
-        }
-      );
-      const userInfo = await userInfoResp.json();
-      if (userInfo?.email) {
-        socialLogin.mutate({
-          email: userInfo.email,
-          access_token: tokenResponse.access_token,
-          type: "google",
-        });
-      }
+      socialLogin.mutate({
+        access_token: tokenResponse.access_token,
+        type: "google",
+      });
     },
     onError: () => {
       // Error handled by mutation
@@ -222,15 +210,15 @@ function SocialLoginWithGoogle(props: Props) {
 
 export function SocialLoginButtons(props: Props) {
   const googleClientId = env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-  const canUseGoogle = props.showGoogle ?? true;
-  const canUseFacebook = props.showFacebook ?? true;
+  const facebookAppId = env.NEXT_PUBLIC_FACEBOOK_APP_ID;
+  const canUseGoogle = Boolean(googleClientId) && (props.showGoogle ?? true);
+  const canUseFacebook = Boolean(facebookAppId) && (props.showFacebook ?? true);
 
   if (!canUseGoogle && !canUseFacebook) {
     return null;
   }
 
-  // If Google client ID exists and Google is enabled, use OAuth provider
-  if (googleClientId && canUseGoogle) {
+  if (canUseGoogle && googleClientId) {
     return (
       <GoogleOAuthProvider clientId={googleClientId}>
         <SocialLoginWithGoogle {...props} />
@@ -238,7 +226,6 @@ export function SocialLoginButtons(props: Props) {
     );
   }
 
-  // Show buttons (Google visible but non-functional without client ID)
   return (
     <SocialLoginInner
       {...props}

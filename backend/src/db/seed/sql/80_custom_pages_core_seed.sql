@@ -1,4 +1,4 @@
-/* 80_custom_pages_core_seed.sql — Kaman Ilan (i18n split) */
+/* 80_custom_pages_core_seed.sql — Kaman İlan (i18n split) */
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';

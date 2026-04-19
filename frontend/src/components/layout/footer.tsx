@@ -223,14 +223,6 @@ export function Footer() {
                   <span className="opacity-70 leading-relaxed max-w-[200px]">{address}</span>
                 </li>
               )}
-              {phoneDisplay && (
-                <li className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 shrink-0 text-saffron" />
-                  <a href={`tel:${phoneTel || phoneDisplay}`} className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">
-                    {phoneDisplay}
-                  </a>
-                </li>
-              )}
               {email && (
                 <li className="flex items-center gap-3">
                   <Mail className="h-4 w-4 shrink-0 text-saffron" />
@@ -243,7 +235,7 @@ export function Footer() {
                 <li className="flex items-center gap-3">
                   <MessageCircle className="h-4 w-4 shrink-0 text-[#25D366]" />
                   <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 hover:text-[#25D366] transition-all">
-                    {whatsappDisplay || "WhatsApp"}
+                    WhatsApp
                   </a>
                 </li>
               )}

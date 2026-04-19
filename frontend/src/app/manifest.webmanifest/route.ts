@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-const apiBase =
+const rawApiBase =
   process.env.NEXT_PUBLIC_REST_API_ENDPOINT ?? "https://kamanilan.com/api";
+const apiBase = rawApiBase.endsWith("/api") ? `${rawApiBase}/v1` : rawApiBase;
 
 interface SettingRecord {
   key: string;

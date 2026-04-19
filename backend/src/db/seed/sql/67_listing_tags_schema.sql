@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 67_listing_tags_schema.sql
--- Kaman Ilan - Listing Tags (Kategori / Alt kategori bazli)
+-- Kaman İlan - Listing Tags (Kategori / Alt kategori bazli)
 -- =============================================================
 
 SET NAMES utf8mb4;

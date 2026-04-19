@@ -1,4 +1,4 @@
-/* 85_reviews.sql — Kaman Ilan (i18n: parent + review_i18n) */
+/* 85_reviews.sql — Kaman İlan (i18n: parent + review_i18n) */
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';

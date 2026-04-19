@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 71_properties_brand_seed.sql
--- Kaman Ilan - Ornek property.brand_id atamalari
+-- Kaman İlan - Ornek property.brand_id atamalari
 -- =============================================================
 
 SET NAMES utf8mb4;

@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito, Playfair_Display } from "next/font/google";
 import { QueryProvider } from "@/lib/query-provider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Header } from "@/components/layout/header";
@@ -7,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { TopbarPopup } from "@/components/layout/topbar-popup";
 import { SidebarPopups } from "@/components/layout/sidebar-popups";
+import { OneSignalProvider } from "@/components/providers/onesignal-provider";
 import { t } from "@/lib/t";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
@@ -225,6 +225,7 @@ export default function RootLayout({
         <JsonLd data={[orgJsonLd, websiteJsonLd]} id="site" />
         <QueryProvider>
           <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
+            <OneSignalProvider />
             <div className="flex min-h-screen flex-col">
               <TopbarPopup />
               <Header />

@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 64_units_variants_seed.sql
--- Kaman Ilan - Units + Variants initial data
+-- Kaman İlan - Units + Variants initial data
 -- =============================================================
 
 SET NAMES utf8mb4;
@@ -57,7 +57,7 @@ VALUES
 -- ── Hayvan & Tarim ───────────────────────────────────────────
 (
   '64100000-0000-4000-8000-000000000004',
-  'Hayvan Irki','hayvan-irki','Buyukbas/kucukbas irk bilgisi','text',
+  'Hayvan Irki','hayvan-irki','Büyükbaş/kucukbas irk bilgisi','text',
   '10000000-0000-4000-8000-000000000005',NULL,NULL,NULL,
   0,1,1,1
 ),

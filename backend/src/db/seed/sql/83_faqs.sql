@@ -1,4 +1,4 @@
-/* 83_faqs.sql — Kaman Ilan (i18n: parent + faqs_i18n) */
+/* 83_faqs.sql — Kaman İlan (i18n: parent + faqs_i18n) */
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';

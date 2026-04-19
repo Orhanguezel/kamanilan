@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 66_listing_brands_seed.sql
--- Kaman Ilan - Ornek Marka Kayitlari
+-- Kaman İlan - Ornek Marka Kayitlari
 -- =============================================================
 
 SET NAMES utf8mb4;

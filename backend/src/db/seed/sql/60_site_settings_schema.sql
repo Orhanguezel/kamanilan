@@ -1,4 +1,4 @@
-/* 60_site_settings_schema.sql — Kaman Ilan (i18n uyumlu: locale kolonu) */
+/* 60_site_settings_schema.sql — Kaman İlan (i18n uyumlu: locale kolonu) */
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
@@ -68,7 +68,8 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_a
 (UUID(), 'contact_email',          '*', '"info@kamanilan.com"', NOW(3), NOW(3)),
 (UUID(), 'contact_to_email',       '*', '"info@kamanilan.com"', NOW(3), NOW(3)),
 (UUID(), 'contact_address',        '*', '"Kaman, Kırşehir, Türkiye"', NOW(3), NOW(3)),
-(UUID(), 'contact_whatsapp_link',  '*', '"https://wa.me/903120000000"', NOW(3), NOW(3));
+(UUID(), 'contact_whatsapp_display', '*', '"+49 172 384 60 68"', NOW(3), NOW(3)),
+(UUID(), 'contact_whatsapp_link',  '*', '"https://wa.me/491723846068"', NOW(3), NOW(3));
 
 -- =============================================================
 -- STORAGE / UPLOAD CONFIG (locale='*' — global)
@@ -161,11 +162,11 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_a
 (UUID(), 'public_base_url', '*', '"http://localhost:3000"', NOW(3), NOW(3)),
 (UUID(), 'site_title', '*', '"Kaman İlan"', NOW(3), NOW(3)),
 (UUID(), 'company_brand', '*', '{"name":"Kaman İlan","shortName":"Kaman İlan"}', NOW(3), NOW(3)),
-(UUID(), 'socials', '*', '{"instagram":"https://www.instagram.com/kamanilan","facebook":"https://www.facebook.com/kamanilan","twitter":"https://www.twitter.com/kamanilan"}', NOW(3), NOW(3)),
-(UUID(), 'social_facebook_url',  '*', '"https://www.facebook.com/kamanilan"',  NOW(3), NOW(3)),
+(UUID(), 'socials', '*', '{"instagram":"https://www.instagram.com/kamanilan","facebook":"https://www.facebook.com/profile.php?id=61586451088043","twitter":"https://www.twitter.com/kamanilan"}', NOW(3), NOW(3)),
+(UUID(), 'social_facebook_url',  '*', '"https://www.facebook.com/profile.php?id=61586451088043"',  NOW(3), NOW(3)),
 (UUID(), 'social_instagram_url', '*', '"https://www.instagram.com/kamanilan"', NOW(3), NOW(3)),
 (UUID(), 'social_twitter_url',   '*', '"https://www.twitter.com/kamanilan"',   NOW(3), NOW(3)),
-(UUID(), 'seo_social_same_as', '*', '["https://www.instagram.com/kamanilan","https://www.facebook.com/kamanilan"]', NOW(3), NOW(3)),
+(UUID(), 'seo_social_same_as', '*', '["https://www.instagram.com/kamanilan","https://www.facebook.com/profile.php?id=61586451088043"]', NOW(3), NOW(3)),
 (UUID(), 'seo_app_icons', '*',
  '{"appleTouchIcon":"/uploads/media/logo/logo_light.png","favicon":"/uploads/media/logo/logo_light.png","logoIcon192":"/uploads/media/logo/logo_light.png","logoIcon512":"/uploads/media/logo/logo_light.png"}',
  NOW(3), NOW(3)),
@@ -195,9 +196,9 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_a
 -- JSON-LD (locale='*' — global)
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_at`) VALUES
-(UUID(), 'seo_local_business', '*',
- '{"@context":"https://schema.org","@type":"LocalBusiness","name":"Kaman İlan","description":"Kaman ve çevresinde ücretsiz ilan verme ve arama platformu","url":"https://kamanilan.com","telephone":"+90-312-000-0000","address":{"@type":"PostalAddress","addressLocality":"Kaman","addressRegion":"Kırşehir","addressCountry":"TR"},"geo":{"@type":"GeoCoordinates","latitude":39.3553,"longitude":33.7239},"sameAs":["https://www.instagram.com/kamanilan","https://www.facebook.com/kamanilan"]}',
- NOW(3), NOW(3));
+ (UUID(), 'seo_local_business', '*',
+  '{"@context":"https://schema.org","@type":"LocalBusiness","name":"Kaman İlan","description":"Kaman ve çevresinde ücretsiz ilan verme ve arama platformu","url":"https://kamanilan.com","telephone":"+90-312-000-0000","address":{"@type":"PostalAddress","addressLocality":"Kaman","addressRegion":"Kırşehir","addressCountry":"TR"},"geo":{"@type":"GeoCoordinates","latitude":39.3553,"longitude":33.7239},"sameAs":["https://www.instagram.com/kamanilan","https://www.facebook.com/profile.php?id=61586451088043"]}',
+  NOW(3), NOW(3));
 
 -- =============================================================
 -- HOMEPAGE SECTIONS (locale='*' — global)

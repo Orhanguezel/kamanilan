@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 70_property_tag_links_seed.sql
--- Kaman Ilan - Ornek property <-> tag iliskileri
+-- Kaman İlan - Ornek property <-> tag iliskileri
 -- =============================================================
 
 SET NAMES utf8mb4;

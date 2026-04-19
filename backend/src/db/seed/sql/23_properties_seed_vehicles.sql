@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 23_properties_seed_vehicles.sql
--- Kaman Ilan - vehicle listings
+-- Kaman İlan - vehicle listings
 -- CLEAN: type/sub_type/specs_json removed; category_id used
 -- category_id: 10000000-0000-4000-8000-000000000002 (Araç & Motosiklet)
 -- =============================================================
@@ -30,7 +30,7 @@ VALUES
   @SELLER_ID,
   '2021 Fiat Egea 1.6 Multijet - Tramer Kayitsiz', '2021-fiat-egea-1-6-multijet-tramer-kayitsiz',
   'satilik', '10000000-0000-4000-8000-000000000002', '20000000-0000-4000-8000-000000000011',
-  'Sanayi Sitesi B Blok', 'Kaman', 'Kirsehir', 'Sanayi',
+  'Sanayi Sitesi B Blok', 'Kaman', 'Kırşehir', 'Sanayi',
   'Yetkili servis bakimli, masrafsiz aile araci.',
   915000.00, 'TRY', 875000.00,
   'KMN-VHC-2001', 'Temiz', 1,
@@ -41,9 +41,9 @@ VALUES
 (
   '33000000-0000-4000-8000-000000000002',
   @SELLER_ID,
-  'Massey Ferguson 285 S Traktor - Bakimli', 'massey-ferguson-285s-traktor-bakimli',
+  'Massey Ferguson 285 S Traktor - Bakımlı', 'massey-ferguson-285s-traktor-bakimli',
   'satilik', '10000000-0000-4000-8000-000000000002', '20000000-0000-4000-8000-000000000013',
-  'Koy Garaji', 'Kaman', 'Kirsehir', 'Yukaribey',
+  'Koy Garaji', 'Kaman', 'Kırşehir', 'Yukaribey',
   'Tarla islerinde aktif kullanilmis, motoru sorunsuz.',
   1290000.00, 'TRY', NULL,
   'KMN-VHC-2002', NULL, 0,
@@ -56,7 +56,7 @@ VALUES
   @CUSTOMER_ID,
   'Kiralik Renault Clio - Gunluk Haftalik', 'kiralik-renault-clio-gunluk-haftalik-kaman',
   'kiralik', '10000000-0000-4000-8000-000000000002', '20000000-0000-4000-8000-000000000011',
-  'Otogar Karsisi', 'Kaman', 'Kirsehir', 'Merkez',
+  'Otogar Karsisi', 'Kaman', 'Kırşehir', 'Merkez',
   'Bireysel kiralama, temiz teslim.',
   1850.00, 'TRY', NULL,
   'KMN-VHC-2003', 'Kiralik', 0,
@@ -67,9 +67,9 @@ VALUES
 (
   '33000000-0000-4000-8000-000000000004',
   @CUSTOMER_ID,
-  'Satilik Honda PCX 125 - Duzgun Kullanildi', 'satilik-honda-pcx-125-duzgun-kullanildi',
+  'Satılık Honda PCX 125 - Duzgun Kullanildi', 'satilik-honda-pcx-125-duzgun-kullanildi',
   'satilik', '10000000-0000-4000-8000-000000000002', '20000000-0000-4000-8000-000000000012',
-  'Carsi Girisi', 'Kaman', 'Kirsehir', 'Carsi',
+  'Carsi Girisi', 'Kaman', 'Kırşehir', 'Carsi',
   'Sehir ici kullanim icin ekonomik motosiklet.',
   142000.00, 'TRY', 135000.00,
   'KMN-VHC-2004', NULL, 0,
@@ -82,7 +82,7 @@ VALUES
   @SELLER_ID,
   'Is Makinesi Mini Ekskavator - 2023 Model', 'is-makinesi-mini-ekskavator-2023-model',
   'satilik', '10000000-0000-4000-8000-000000000002', '20000000-0000-4000-8000-000000000014',
-  'Organize Sanayi Alani', 'Kaman', 'Kirsehir', 'OSB',
+  'Organize Sanayi Alani', 'Kaman', 'Kırşehir', 'OSB',
   'Saha islerinde kullanima hazir mini ekskavator.',
   1860000.00, 'TRY', NULL,
   'KMN-VHC-2005', 'Dusuk Saat', 1,

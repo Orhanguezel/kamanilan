@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash     VARCHAR(255)   NOT NULL,
   full_name         VARCHAR(255)   DEFAULT NULL,
   phone             VARCHAR(50)    DEFAULT NULL,
+  ecosystem_id      CHAR(36)       DEFAULT NULL,
   wallet_balance    DECIMAL(10,2)  NOT NULL DEFAULT 0.00,
   is_active         TINYINT(1)     NOT NULL DEFAULT 1,
   email_verified    TINYINT(1)     NOT NULL DEFAULT 0,
@@ -23,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at        DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at        DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   last_sign_in_at   DATETIME(3)    DEFAULT NULL,
+  rules_accepted_at DATETIME(3)    DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY users_email_unique (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,6 +1,6 @@
 -- =============================================================
 -- FILE: 63_units_variants_schema.sql
--- Kaman Ilan - Units + Listing Variants + Property Variant Values
+-- Kaman İlan - Units + Listing Variants + Property Variant Values
 -- =============================================================
 
 SET NAMES utf8mb4;

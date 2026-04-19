@@ -16,6 +16,7 @@ import type {
   RegisterResponse,
   ForgotPasswordInput,
   ResetPasswordInput,
+  SocialLoginInput,
   User,
 } from "./auth.type";
 
@@ -56,7 +57,14 @@ export function useRegisterMutation() {
 
   return useMutation({
     mutationFn: async (data: RegisterInput) => {
-      const res = await api.post<RegisterResponse>(API_ENDPOINTS.REGISTER, data);
+      const payload = {
+        email: data.email,
+        password: data.password,
+        full_name: `${data.first_name} ${data.last_name}`.trim(),
+        phone: data.phone,
+        rules_accepted: data.rules_accepted === true,
+      };
+      const res = await api.post<RegisterResponse>(API_ENDPOINTS.REGISTER, payload);
       return res.data;
     },
     onSuccess: (data) => {
@@ -133,16 +141,18 @@ export function useOtpLoginVerifyMutation() {
 
 export function useSocialLoginMutation() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const setUser = useAuthStore((s) => s.setUser);
 
   return useMutation({
-    mutationFn: async (data: { email: string; access_token: string; type: "google" | "facebook" }) => {
+    mutationFn: async (data: SocialLoginInput) => {
       const res = await api.post<LoginResponse>("/auth/social-login", data);
       return res.data;
     },
     onSuccess: (data) => {
       persistAuth(data, setUser);
-      router.push("/");
+      const redirectTo = searchParams.get("redirect");
+      router.push(redirectTo || "/");
     },
   });
 }

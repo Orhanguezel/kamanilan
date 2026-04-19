@@ -16,10 +16,13 @@ export interface LoginInput {
 }
 
 export interface RegisterInput {
+  first_name: string;
+  last_name: string;
   email: string;
+  phone: string;
   password: string;
-  full_name?: string;
-  phone?: string;
+  password_confirmation: string;
+  rules_accepted?: boolean;
 }
 
 export interface LoginResponse {
@@ -43,4 +46,11 @@ export interface ResetPasswordInput {
 export interface ChangePasswordInput {
   current_password: string;
   new_password: string;
+}
+
+export interface SocialLoginInput {
+  type: "google" | "facebook";
+  access_token?: string;
+  id_token?: string;
+  email?: string;
 }

@@ -1,4 +1,4 @@
-/* 76_custom_pages_schema.sql — Kaman Ilan (i18n: parent + custom_pages_i18n) */
+/* 76_custom_pages_schema.sql — Kaman İlan (i18n: parent + custom_pages_i18n) */
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
