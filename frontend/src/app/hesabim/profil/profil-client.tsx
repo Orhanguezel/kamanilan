@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToken } from "@/lib/use-token";
 import { ROUTES } from "@/config/routes";
+import { MyListingsSection } from "@/components/profile/my-listings-section";
 
 interface Props {
   translations: Record<string, string>;
@@ -86,6 +87,7 @@ export function ProfilClient({ translations: tr }: Props) {
   };
 
   return (
+    <div className="space-y-6">
     <div className="rounded-lg border bg-card p-6">
       <h2 className="mb-6 text-lg font-semibold">{tr.profile}</h2>
 
@@ -205,6 +207,9 @@ export function ProfilClient({ translations: tr }: Props) {
           </div>
         </div>
       )}
+    </div>
+
+    <MyListingsSection />
     </div>
   );
 }
