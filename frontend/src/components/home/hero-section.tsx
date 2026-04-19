@@ -11,10 +11,11 @@ import { ROUTES } from "@/config/routes";
 
 interface Props {
   config?: SectionConfig;
+  initialSlides?: SliderItem[];
 }
 
-export function HeroSection({ config }: Props) {
-  const { data: slides = [], isPending } = useSlidersQuery();
+export function HeroSection({ config, initialSlides }: Props) {
+  const { data: slides = initialSlides ?? [], isPending } = useSlidersQuery(initialSlides);
   const items = slides as SliderItem[];
 
   if (isPending) {

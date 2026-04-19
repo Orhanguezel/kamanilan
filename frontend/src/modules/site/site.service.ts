@@ -43,7 +43,7 @@ export function useSiteSettingsQuery(keys?: string[]) {
   });
 }
 
-export function useSlidersQuery() {
+export function useSlidersQuery(initialData?: SliderItem[]) {
   return useQuery({
     queryKey: ["sliders"],
     queryFn: async () => {
@@ -52,6 +52,7 @@ export function useSlidersQuery() {
       return Array.isArray(data) ? data : (data as any)?.data ?? [];
     },
     staleTime: 1000 * 60 * 30,
+    initialData,
   });
 }
 
