@@ -50,6 +50,28 @@ INSERT INTO `theme_config` (`id`, `is_active`, `config`, `created_at`, `updated_
       { "key": "featured", "enabled": true, "order": 3, "limit": 6 },
       { "key": "spotlight", "enabled": true, "order": 4, "label": "Kaman Cevizi Spotlight" },
       { "key": "recent", "enabled": true, "order": 5, "limit": 12 }
+    ],
+    "newsListSections": [
+      { "key": "banner_full_1",    "enabled": true, "order": 0,  "label": "Tam Genişlik Reklam 1",  "bannerIds": "52" },
+      { "key": "carousel",         "enabled": true, "order": 1,  "label": "Carousel",               "count": 6 },
+      { "key": "grid",             "enabled": true, "order": 2,  "label": "Haber Listesi",          "cols":  3 },
+      { "key": "banner_sidebar_1", "enabled": true, "order": 3,  "label": "Sidebar Üst Reklam",     "bannerIds": "50" },
+      { "key": "sidebar",          "enabled": true, "order": 4,  "label": "Kenar Çubuğu",           "count": 8 },
+      { "key": "banner_sidebar_2", "enabled": true, "order": 5,  "label": "Sidebar Alt Reklam",     "bannerIds": "51" },
+      { "key": "banner_full_2",    "enabled": true, "order": 10, "label": "Tam Genişlik Reklam 2",  "bannerIds": "53" }
+    ],
+    "newsDetailSections": [
+      { "key": "banner_full_1",    "enabled": true, "order": 0,  "label": "Makale Üstü Tam Reklam", "bannerIds": "57" },
+      { "key": "cover",            "enabled": true, "order": 1,  "label": "Kapak Görseli" },
+      { "key": "meta",             "enabled": true, "order": 2,  "label": "Yazar & Tarih" },
+      { "key": "body",             "enabled": true, "order": 3,  "label": "Makale İçeriği" },
+      { "key": "video",            "enabled": true, "order": 4,  "label": "Video Embed" },
+      { "key": "tags",             "enabled": true, "order": 5,  "label": "Etiketler" },
+      { "key": "comments",         "enabled": true, "order": 6,  "label": "Yorumlar" },
+      { "key": "banners_top",      "enabled": true, "order": 7,  "label": "Sidebar Üst Reklam",     "bannerIds": "55" },
+      { "key": "related",          "enabled": true, "order": 8,  "label": "İlgili Haberler",        "count": 7 },
+      { "key": "banners_bottom",   "enabled": true, "order": 9,  "label": "Sidebar Alt Reklam",     "bannerIds": "56" },
+      { "key": "banner_full_2",    "enabled": true, "order": 10, "label": "Makale Altı Tam Reklam", "bannerIds": "58" }
     ]
   }',
   NOW(3),
