@@ -20,12 +20,42 @@ import { Textarea } from "@/components/ui/textarea";
 import { LocationAutocomplete, type ResolvedLocation } from "@/components/location/location-autocomplete";
 
 const MAX_IMAGES = 8;
-const MAX_FILE_SIZE_MB = 5;
+const MAX_FILE_SIZE_MB = 15;
 
 interface LocalImage {
   id: string;
   file: File;
   preview: string;
+}
+
+/**
+ * Safe filename for backend storage:
+ *  - strip diacritics (Türkçe karakter, vs.)
+ *  - keep only [a-zA-Z0-9.-_]
+ *  - collapse spaces/dashes
+ *  - prepend timestamp so aynı ad (ör. "screenshot.png") ile 409 çakışması yok
+ */
+function sanitizeFilename(original: string): string {
+  const dotIdx = original.lastIndexOf(".");
+  const name = dotIdx > 0 ? original.slice(0, dotIdx) : original;
+  const extRaw = dotIdx > 0 ? original.slice(dotIdx + 1).toLowerCase() : "jpg";
+  const ext = extRaw.replace(/[^a-z0-9]/g, "").slice(0, 5) || "jpg";
+
+  const slug = name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9-_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40)
+    .toLowerCase() || "image";
+
+  const stamp = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  return `${stamp}-${slug}.${ext}`;
+}
+
+function renameFile(file: File, newName: string): File {
+  return new File([file], newName, { type: file.type, lastModified: file.lastModified });
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -195,6 +225,7 @@ export function PostListingClient({ translations: tr }: Props) {
   const [selectedCategory, setSelectedCategory] = React.useState<ListingCategory | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = React.useState<ListingSubCategory | null>(null);
   const [limitError, setLimitError] = React.useState(false);
+  const subCategoriesRef = React.useRef<HTMLDivElement>(null);
 
   const [form, setForm] = React.useState({
     title: "",
@@ -237,17 +268,20 @@ export function PostListingClient({ translations: tr }: Props) {
 
     const accepted: LocalImage[] = [];
     const rejected: string[] = [];
-    Array.from(files).slice(0, remaining).forEach((file) => {
-      if (!file.type.startsWith("image/")) {
-        rejected.push(`${file.name}: geçerli bir görsel değil`);
+    Array.from(files).slice(0, remaining).forEach((raw) => {
+      if (!raw.type.startsWith("image/")) {
+        rejected.push(`${raw.name}: geçerli bir görsel değil`);
         return;
       }
-      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-        rejected.push(`${file.name}: ${MAX_FILE_SIZE_MB}MB üzerinde`);
+      if (raw.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        rejected.push(`${raw.name}: ${MAX_FILE_SIZE_MB}MB üzerinde`);
         return;
       }
+      // Filename'i backend-safe hale getir + timestamp ekle (409 çakışmasını önler)
+      const safeName = sanitizeFilename(raw.name);
+      const file = renameFile(raw, safeName);
       accepted.push({
-        id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`,
+        id: `${safeName}-${Math.random().toString(36).slice(2, 8)}`,
         file,
         preview: URL.createObjectURL(file),
       });
@@ -271,6 +305,10 @@ export function PostListingClient({ translations: tr }: Props) {
     } else {
       setSelectedCategory(cat);
       setSelectedSubCategory(null);
+      // Kategori seçildikten sonra alt kategori bölümüne kaydır
+      setTimeout(() => {
+        subCategoriesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     }
   };
 
@@ -315,9 +353,30 @@ export function PostListingClient({ translations: tr }: Props) {
           uploadedUrls = results.map((r) => r.url);
         } catch (uploadErr) {
           console.error("image upload failed", uploadErr);
+          const errObj = uploadErr as {
+            response?: { status?: number; data?: { message?: string; error?: { code?: string; message?: string } } };
+            message?: string;
+          };
+          const status = errObj?.response?.status;
+          const backendMsg =
+            errObj?.response?.data?.error?.message ??
+            errObj?.response?.data?.message ??
+            errObj?.message;
+
+          const reason =
+            status === 501
+              ? "Sunucuda depolama servisi yapılandırılmamış. Destek ekibine bildirin."
+              : status === 413
+              ? `Dosya çok büyük. Max ${MAX_FILE_SIZE_MB}MB.`
+              : status === 409
+              ? "Aynı isimli dosya daha önce yüklenmiş. Sayfayı yenileyip tekrar deneyin."
+              : status === 401
+              ? "Oturumunuz sona erdi. Tekrar giriş yapın."
+              : backendMsg || "Görseller yüklenemedi. Lütfen tekrar deneyin.";
+
           setSubmitState("error");
-          setSubmitError("Görseller yüklenemedi. Lütfen tekrar deneyin veya daha küçük dosyalar seçin.");
-          toast.error("Görseller yüklenemedi.");
+          setSubmitError(reason);
+          toast.error(reason);
           window.scrollTo({ top: 0, behavior: "smooth" });
           return;
         }
@@ -505,7 +564,10 @@ export function PostListingClient({ translations: tr }: Props) {
 
         {/* Sub-categories (shown after category selected) */}
         {selectedCategory && (
-          <div className="space-y-8 rounded-[40px] border-2 border-line bg-ivory/50 p-10 md:p-14 animate-in zoom-in-95 duration-500 shadow-inner">
+          <div
+            ref={subCategoriesRef}
+            className="space-y-8 rounded-[40px] border-2 border-line bg-ivory/50 p-10 md:p-14 animate-in zoom-in-95 duration-500 shadow-inner scroll-mt-24"
+          >
             <div className="flex flex-col gap-3 text-center mb-8">
               <div className="h-px w-20 bg-saffron/40 mx-auto" />
               <h4 className="font-fraunces text-2xl text-ink">{selectedCategory.name} <em className="italic opacity-60">Alt Kategorileri</em></h4>
