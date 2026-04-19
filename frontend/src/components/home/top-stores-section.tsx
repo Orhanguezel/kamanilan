@@ -34,7 +34,7 @@ export function TopStoresSection({ config }: Props) {
   if (!isPending && categories.length === 0) return null;
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-12 md:py-16 bg-white">
       <div className="container px-4">
         
         {/* Section Header */}

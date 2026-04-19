@@ -24,7 +24,7 @@ export function FeaturedListingsSection({ config }: Props) {
   const items = data?.items ?? [];
 
   return (
-    <section className="py-24 md:py-32 bg-paper">
+    <section className="py-12 md:py-16 bg-paper">
       <div className="container">
         <SectionHeader
           title={config?.label || t("home.featured_title")}

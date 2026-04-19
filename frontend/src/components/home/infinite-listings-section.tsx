@@ -112,7 +112,7 @@ export function InfiniteListingsSection({ config }: Props) {
 
   return (
     <section
-      className="py-24 bg-white border-t border-black/5"
+      className="py-12 md:py-16 bg-white border-t border-black/5"
     >
       <div className="container mx-auto px-4">
         <SectionHeader

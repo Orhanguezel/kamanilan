@@ -22,7 +22,7 @@ export function RecentListingsSection({ config }: Props) {
   const items = data?.items ?? [];
 
   return (
-    <section className="py-24 md:py-32 bg-ivory">
+    <section className="py-12 md:py-16 bg-ivory">
       <div className="container">
         <SectionHeader
           title={config?.label || t("home.recent_title")}

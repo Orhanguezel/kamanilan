@@ -22,7 +22,7 @@ export function CategoriesSection({ config }: Props) {
   if (!activeCategories.length) return null;
 
   return (
-    <section className="py-24 lg:py-32 bg-paper relative">
+    <section className="py-12 md:py-16 bg-paper relative">
       <div className="container">
         {/* Editorial Section Header */}
         <div className="section-header">
@@ -57,8 +57,12 @@ export function CategoriesSection({ config }: Props) {
                     <span className="text-[200px] font-fraunces italic select-none pointer-events-none">C</span>
                   </div>
                   
-                  <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-saffron text-ink text-3xl shadow-xl transition-all group-hover:rotate-[-8deg] group-hover:scale-110">
-                    {cat.icon || "🌰"}
+                  <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-saffron overflow-hidden border-2 border-white shadow-xl transition-all group-hover:rotate-[-8deg] group-hover:scale-110">
+                    {cat.image_url ? (
+                      <img src={cat.image_url} alt={cat.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="text-3xl text-ink">{cat.icon || "🌰"}</span>
+                    )}
                   </div>
 
                   <div className="relative z-10 flex flex-col gap-3">
@@ -82,8 +86,12 @@ export function CategoriesSection({ config }: Props) {
                 href={`${ROUTES.LISTINGS}?category=${cat.slug}`}
                 className="group relative p-8 flex flex-col justify-between bg-paper transition-all duration-500 hover:bg-ink hover:text-white"
               >
-                <div className="h-14 w-14 flex items-center justify-center rounded-full bg-ivory text-2xl transition-all duration-500 group-hover:bg-saffron group-hover:rotate-[-8deg] group-hover:scale-110">
-                  {cat.icon || "📦"}
+                <div className="h-14 w-14 flex items-center justify-center bg-ivory overflow-hidden border-2 border-white shadow-xl transition-all duration-500 group-hover:bg-saffron group-hover:rotate-[-8deg] group-hover:scale-110">
+                  {cat.image_url ? (
+                    <img src={cat.image_url} alt={cat.name} className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="text-2xl">{cat.icon || "📦"}</span>
+                  )}
                 </div>
 
                 <div className="mt-8">

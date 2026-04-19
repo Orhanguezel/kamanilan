@@ -33,7 +33,7 @@ export function AnnouncementsSection({ config }: Props) {
   const rssUrl = `${getApiBaseUrl()}${API_ENDPOINTS.ANNOUNCEMENTS_RSS}`;
 
   return (
-    <section className="py-16 bg-paper overflow-hidden">
+    <section className="py-12 md:py-16 bg-paper overflow-hidden">
       <div className="container px-4">
         <div className="flex flex-col lg:flex-row gap-16">
           

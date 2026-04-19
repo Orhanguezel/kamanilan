@@ -23,7 +23,7 @@ export function NewsletterSection({ config }: Props) {
   };
 
   return (
-    <section className="py-24 bg-ivory relative overflow-hidden">
+    <section className="py-12 md:py-16 bg-ivory relative overflow-hidden">
       {/* Editorial Decorative Background */}
       <div className="absolute top-0 right-0 w-1/3 h-full bg-saffron opacity-[0.03] skew-x-[-12deg] translate-x-12" />
       

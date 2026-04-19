@@ -33,7 +33,7 @@ function BannerCard({ banner }: { banner: BannerItem }) {
 
   return (
     <div
-      className="group relative overflow-hidden rounded-[32px] border border-border shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 w-full h-full flex flex-col md:flex-row items-center"
+      className="group relative overflow-hidden border border-border shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 w-full h-full flex flex-col md:flex-row items-center"
       style={{ backgroundColor: bg }}
     >
       {/* Editorial Decorative Element */}

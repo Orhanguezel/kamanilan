@@ -12,7 +12,7 @@ export function SpotlightSection() {
   const cevizCat = (categories as CategoryItem[]).find(c => c.slug.includes("ceviz"));
 
   return (
-    <section className="py-24 lg:py-40 bg-cream relative overflow-hidden">
+    <section className="py-12 md:py-16 bg-cream relative overflow-hidden">
        {/* Background Decoration */}
        <div className="absolute top-0 right-0 w-[40%] h-full bg-ivory pointer-events-none hidden lg:block" />
        
