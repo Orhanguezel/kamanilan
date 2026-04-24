@@ -44,6 +44,7 @@ type DraftState = {
 const PRESET_PROVIDERS = [
   'geliver',
   'google',
+  'google_ads',
   'google_maps',
   'facebook',
   'ai',
@@ -468,6 +469,31 @@ export function IntegrationSettingsTab({ locale }: IntegrationSettingsTabProps) 
                                   disabled={busy}
                                 />
                               </div>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  ) : provider === 'google_ads' ? (
+                    <div className="space-y-4">
+                      {(() => {
+                        const settings = parseSettingsSafe(draft.settingsText);
+                        return (
+                          <>
+                            <div className="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+                              Google Ads dönüşüm takibi için Measurement ID girin. Örnek: <code className="font-mono">AW-18115197942</code>
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Google Ads Measurement ID</Label>
+                              <Input
+                                value={asText(settings.measurement_id)}
+                                onChange={(e) => updateSettingField(provider, 'measurement_id', e.target.value)}
+                                placeholder="AW-XXXXXXXXX"
+                                disabled={busy}
+                              />
+                              <p className="text-xs text-muted-foreground">
+                                Google Ads {'>'} Araçlar {'>'} Dönüşümler sayfasından bulabilirsiniz.
+                              </p>
                             </div>
                           </>
                         );

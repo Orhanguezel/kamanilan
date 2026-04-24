@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { QueryProvider } from "@/lib/query-provider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Header } from "@/components/layout/header";
@@ -190,11 +191,73 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const SITE_NAME = "Kamanilan";
 
-export default function RootLayout({
+const googleAdsSettingKeys = [
+  "google_ads_conversion_id",
+  "google_ads_tag_id",
+  "google_ads_gtag_id",
+].join(",");
+
+function normalizeGoogleAdsId(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+
+  const raw = value.trim();
+  if (!raw) return null;
+
+  const candidate = raw.toUpperCase().startsWith("AW-")
+    ? raw.toUpperCase()
+    : `AW-${raw.replace(/^AW-/i, "")}`;
+
+  return /^AW-\d+$/.test(candidate) ? candidate : null;
+}
+
+async function fetchGoogleAdsId(): Promise<string | null> {
+  const envId = normalizeGoogleAdsId(
+    process.env.NEXT_PUBLIC_GOOGLE_ADS_MEASUREMENT_ID ||
+      process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID ||
+      process.env.NEXT_PUBLIC_GOOGLE_ADS_TAG_ID
+  );
+  if (envId) return envId;
+
+  try {
+    const res = await fetch(`${apiBase}/integration-settings/google_ads`, {
+      next: { revalidate: 300 },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const id =
+        normalizeGoogleAdsId(data?.settings?.measurement_id) ||
+        normalizeGoogleAdsId(data?.settings?.conversion_id) ||
+        normalizeGoogleAdsId(data?.settings?.tag_id);
+      if (data?.enabled && id) return id;
+    }
+  } catch {
+    // Entegrasyon endpoint'i erişilemezse site_settings fallback'i denenir.
+  }
+
+  try {
+    const res = await fetch(`${apiBase}/site_settings?key_in=${googleAdsSettingKeys}`, {
+      next: { revalidate: 300 },
+    });
+    if (res.ok) {
+      const records: SettingRecord[] = await res.json();
+      for (const key of googleAdsSettingKeys.split(",")) {
+        const id = normalizeGoogleAdsId(records.find((r) => r.key === key)?.value);
+        if (id) return id;
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const googleAdsId = await fetchGoogleAdsId();
+
   const orgJsonLd = buildOrganizationJsonLd({
     name:        SITE_NAME,
     legalName:   "Kaman İlan",
@@ -222,6 +285,18 @@ export default function RootLayout({
         className={`${manrope.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
+        {googleAdsId && (
+          <>
+            <Script
+              id="google-ads-loader"
+              src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
+              strategy="beforeInteractive"
+            />
+            <Script id="google-ads-init" strategy="beforeInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleAdsId}');`}
+            </Script>
+          </>
+        )}
         <JsonLd data={[orgJsonLd, websiteJsonLd]} id="site" />
         <QueryProvider>
           <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
