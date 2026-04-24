@@ -210,6 +210,43 @@ function normalizeGoogleAdsId(value: unknown): string | null {
   return /^AW-\d+$/.test(candidate) ? candidate : null;
 }
 
+
+async function fetchGtmId(): Promise<string | null> {
+  try {
+    const res = await fetch(`${apiBase}/integration-settings/google_tag_manager`, {
+      next: { revalidate: 300 },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const id = typeof data?.settings?.container_id === "string"
+        ? data.settings.container_id.trim()
+        : null;
+      if (data?.enabled && id && /^GTM-[A-Z0-9]+$/.test(id)) return id;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchGa4Id(): Promise<string | null> {
+  try {
+    const res = await fetch(`${apiBase}/integration-settings/google_analytics`, {
+      next: { revalidate: 300 },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const id = typeof data?.settings?.measurement_id === "string"
+        ? data.settings.measurement_id.trim()
+        : null;
+      if (data?.enabled && id && /^G-[A-Z0-9]+$/.test(id)) return id;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 async function fetchGoogleAdsId(): Promise<string | null> {
   const envId = normalizeGoogleAdsId(
     process.env.NEXT_PUBLIC_GOOGLE_ADS_MEASUREMENT_ID ||
@@ -256,7 +293,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const googleAdsId = await fetchGoogleAdsId();
+  const [googleAdsId, gtmId, ga4Id] = await Promise.all([
+    fetchGoogleAdsId(),
+    fetchGtmId(),
+    fetchGa4Id(),
+  ]);
 
   const orgJsonLd = buildOrganizationJsonLd({
     name:        SITE_NAME,
@@ -285,7 +326,12 @@ export default async function RootLayout({
         className={`${manrope.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
-        {googleAdsId && (
+        {gtmId && (
+        <Script id="google-tag-manager" strategy="beforeInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`}
+        </Script>
+      )}
+      {(googleAdsId || ga4Id) && (
           <>
             <Script
               id="google-ads-loader"
@@ -293,10 +339,20 @@ export default async function RootLayout({
               strategy="beforeInteractive"
             />
             <Script id="google-ads-init" strategy="beforeInteractive">
-              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleAdsId}');`}
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());${googleAdsId?'gtag(\'config\',\''+googleAdsId+'\');':''}${ga4Id?'gtag(\'config\',\''+ga4Id+'\');':''}`}
             </Script>
           </>
         )}
+      {gtmId && (
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+      )}
         <JsonLd data={[orgJsonLd, websiteJsonLd]} id="site" />
         <QueryProvider>
           <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
