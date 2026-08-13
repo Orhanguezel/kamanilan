@@ -30,7 +30,7 @@ export default function AdsPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${BASE_URL}/admin/banners?limit=100`, { credentials: 'include' });
+      const response = await fetch(`${BASE_URL}/admin/ads/banners?limit=100`, { credentials: 'include' });
       if (!response.ok) throw new Error(`Reklamlar alınamadı (${response.status})`);
       const payload = (await response.json()) as { items?: AdSummary[] };
       setItems(payload.items ?? []);

@@ -28,7 +28,7 @@ export function BannerDetailClient({ id }: { id: string }) {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    void fetch(`${BASE_URL}/admin/banners/${encodeURIComponent(id)}`, { credentials: 'include' })
+    void fetch(`${BASE_URL}/admin/ads/banners/${encodeURIComponent(id)}`, { credentials: 'include' })
       .then(async (response) => {
         if (!response.ok) throw new Error(`Reklam alınamadı (${response.status})`);
         return response.json() as Promise<{ item?: AdDetail; data?: AdDetail }>;
@@ -42,7 +42,7 @@ export function BannerDetailClient({ id }: { id: string }) {
     if (!item) return;
     setSaving(true);
     try {
-      const response = await fetch(`${BASE_URL}/admin/banners/${encodeURIComponent(id)}`, {
+      const response = await fetch(`${BASE_URL}/admin/ads/banners/${encodeURIComponent(id)}`, {
         method: 'PATCH', credentials: 'include', headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ title: item.title, advertiser: item.advertiser, imageUrl: item.imageUrl, linkUrl: item.linkUrl, caption: item.caption, ctaLabel: item.ctaLabel }),
       });

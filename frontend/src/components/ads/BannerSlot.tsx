@@ -4,7 +4,7 @@ import { getCategoryThumbnailUrl as resolveImageUrl } from "@/lib/image-url";
 import TemplateBanner from "./TemplateBanner";
 import ResilientAdImage from "./ResilientAdImage";
 
-const SIDEBAR_POSITIONS = new Set(["prices_sidebar", "analiz_sidebar", "urun_sidebar", "hal_sidebar", "listing_detail_sidebar", "firm_detail_sidebar"]);
+const SIDEBAR_POSITIONS = new Set(["listings_sidebar", "listing_detail_sidebar", "news_detail_sidebar", "store_detail_sidebar"]);
 
 function deviceClass(device: PublicBanner["device"]): string {
   if (device === "desktop") return "hidden md:block";
@@ -13,7 +13,7 @@ function deviceClass(device: PublicBanner["device"]): string {
 }
 
 function clickHref(banner: PublicBanner): string | null {
-  return banner.linkUrl || banner.sourceType === "listing" ? `/api/v1/banners/${banner.id}/click` : null;
+  return banner.linkUrl || banner.sourceType === "listing" ? `/api/v1/ads/banners/${banner.id}/click` : null;
 }
 
 export function bannerColumnsClass(columns: number) {
@@ -23,12 +23,13 @@ export function bannerColumnsClass(columns: number) {
 }
 
 function inferredPageType(position: string) {
-  if (position.startsWith("firm_")) return "firm_detail";
+  if (position.startsWith("store_")) return "store_detail";
   if (position.startsWith("listing_")) return "listing_detail";
-  if (position.startsWith("analiz_")) return "analysis";
-  if (position.startsWith("prices_")) return "prices";
-  if (position.startsWith("urun_")) return "product_detail";
-  if (position.startsWith("hal_")) return "market_detail";
+  if (position.startsWith("listings_")) return "listings";
+  if (position.startsWith("category_")) return "category";
+  if (position.startsWith("news_detail_")) return "news_detail";
+  if (position.startsWith("news_")) return "news";
+  if (position.startsWith("announcements_")) return "announcements";
   if (position.startsWith("home_")) return "home";
   return "global";
 }
@@ -85,7 +86,7 @@ export function BannerCreative({ banner, sidebar }: { banner: PublicBanner; side
 
   if (banner.sourceType === "listing" && banner.listing) {
     const listing = banner.listing;
-    const listingHref = `/api/v1/banners/${banner.id}/click`;
+    const listingHref = `/api/v1/ads/banners/${banner.id}/click`;
     const price = listing.priceMin == null ? "Fiyat için iletişime geçin" : `${Number(listing.priceMin).toLocaleString("tr-TR")} ${listing.currency}/${listing.priceUnit}`;
     return (
       <a href={listingHref} target={target} rel={rel} className={`${deviceClass(banner.device)} group flex min-h-28 overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) text-(--color-foreground) shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg`.trim()}>

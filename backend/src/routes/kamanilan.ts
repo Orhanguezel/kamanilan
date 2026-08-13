@@ -9,6 +9,7 @@ import { registerVariants } from '@/modules/variants/router';
 import { registerListingBrands } from '@/modules/listingBrands/router';
 import { registerListingTags } from '@/modules/listingTags/router';
 import { registerBanners } from '@/modules/banner/router';
+import { registerBanners as registerAds, registerBannersAdmin as registerAdsAdmin } from '@/modules/ads';
 import { registerMyListings } from '@/modules/myListings/router';
 import { registerArticles } from '@/modules/articles/router';
 import { registerNews } from '@/modules/news/router';
@@ -47,6 +48,7 @@ export async function registerKamanilanRoutes(api: FastifyInstance) {
   await registerListingBrands(api);
   await registerListingTags(api);
   await registerBanners(api);
+  await api.register(registerAds, { prefix: '/ads' });
   await registerMyListings(api);
   await registerArticles(api);
   await registerNews(api);
@@ -80,4 +82,5 @@ export async function registerKamanilanAdmin(adminApi: FastifyInstance) {
   ]) {
     await adminApi.register(reg);
   }
+  await adminApi.register(registerAdsAdmin, { prefix: '/ads' });
 }

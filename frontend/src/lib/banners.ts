@@ -6,9 +6,9 @@ export type PublicBanner = {
   id: number;
   position: string;
   type: "image" | "code";
-  sourceType?: "custom" | "listing" | "firm" | "code";
-  listingId?: number | null;
-  firmId?: number | null;
+  sourceType?: "custom" | "listing" | "seller" | "code";
+  listingId?: string | null;
+  sellerId?: string | null;
   title: string;
   advertiser: string | null;
   imageUrl: string | null;
@@ -19,7 +19,7 @@ export type PublicBanner = {
   code: string | null;
   caption: string | null;
   ctaLabel: string | null;
-  creativeTemplate?: "image" | "firm" | "listing" | "sponsorship" | "leaderboard" | "split" | "mpu" | "mobile";
+  creativeTemplate?: "image" | "seller" | "listing" | "sponsorship" | "leaderboard" | "split" | "mpu" | "mobile";
   creativeConfig?: {
     backgroundColor?: string; textColor?: string; accentColor?: string; animation?: boolean;
     logoUrl?: string; backgroundImageUrl?: string; description?: string;
@@ -29,7 +29,7 @@ export type PublicBanner = {
   desktopRow?: number;
   desktopColumns?: number;
   listing?: {
-    id: number;
+    id: string;
     slug: string;
     title: string;
     productName: string;
@@ -48,8 +48,7 @@ export type BannerContext = {
   district?: string | null;
   product?: string | null;
   category?: string | null;
-  market?: string | null;
-  firm?: number | string | null;
+  seller?: string | null;
   listing?: number | string | null;
 };
 
@@ -63,7 +62,7 @@ function bannerUrl(path: string, position: string, context: BannerContext = {}) 
 
 export async function fetchBanner(position: string, context: BannerContext = {}, requestHeaders?: HeadersInit): Promise<PublicBanner | null> {
   try {
-    const res = await fetch(bannerUrl("banners", position, context), {
+    const res = await fetch(bannerUrl("ads/banners", position, context), {
       cache: requestHeaders ? "no-store" : "force-cache",
       headers: requestHeaders,
       ...(requestHeaders ? {} : { next: { revalidate: 120 } }),
@@ -78,7 +77,7 @@ export async function fetchBanner(position: string, context: BannerContext = {},
 
 export async function fetchBanners(position: string, context: BannerContext = {}, requestHeaders?: HeadersInit): Promise<PublicBanner[]> {
   try {
-    const res = await fetch(bannerUrl("banners/grid", position, context), {
+    const res = await fetch(bannerUrl("ads/banners/grid", position, context), {
       cache: requestHeaders ? "no-store" : "force-cache",
       headers: requestHeaders,
       ...(requestHeaders ? {} : { next: { revalidate: 60 } }),
