@@ -4,11 +4,11 @@ import {
   adMetricScope,
   isNonHumanAdTraffic,
   safeAdDestination,
-} from "@/modules/banners";
+} from "@/modules/ads";
 import {
   adClickCooldownAllows,
   summarizeCampaignMetrics,
-} from "@/modules/banners/repository";
+} from "@/modules/ads/repository";
 
 describe("reklam trafik ölçüm filtresi", () => {
   test("bot, eksik user-agent ve düşük bot skorunu filtreler", () => {

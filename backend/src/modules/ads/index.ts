@@ -192,7 +192,7 @@ export const bannerUpsertSchema = z.object({
     imageBytes: z.coerce.number().int().nonnegative().optional(),
   }).nullable().optional(),
   qualityOverrideReason: z.string().trim().max(500).nullable().optional(),
-  listingId: z.coerce.number().int().positive().nullable().optional(),
+  listingId: z.string().trim().min(1).max(36).nullable().optional(),
   sellerId: z.string().trim().min(1).max(36).nullable().optional(),
   sponsorshipId: z.coerce.number().int().positive().nullable().optional(),
   imageUrl: z.string().trim().max(512).nullable().optional(),
@@ -326,7 +326,7 @@ function colorLuminance(hex: string) {
 async function creativeQualityReport(input: {
   position: string; type?: string; sourceType?: string; imageUrl?: string | null; alt?: string | null;
   title?: string; caption?: string | null; ctaLabel?: string | null; linkUrl?: string | null; rel?: string;
-  listingId?: number | null; sellerId?: string | null; sponsorshipId?: number | null; endAt?: Date | string | null;
+  listingId?: string | null; sellerId?: string | null; sponsorshipId?: number | null; endAt?: Date | string | null;
   creativeTemplate?: string; creativeConfig?: {
     backgroundColor?: string; textColor?: string; animation?: boolean;
     imageWidth?: number; imageHeight?: number; imageBytes?: number;
@@ -1138,7 +1138,7 @@ export async function registerBannersAdmin(app: FastifyInstance) {
     title: z.string().trim().min(2).max(190),
     advertiser: z.string().trim().max(160).nullable().optional(),
     sourceType: sourceTypeSchema.optional(),
-    listingId: z.coerce.number().int().positive().nullable().optional(),
+    listingId: z.string().trim().min(1).max(36).nullable().optional(),
     sellerId: z.string().trim().min(1).max(36).nullable().optional(),
     device: deviceSchema.optional(),
     preferredStartAt: z.string().datetime().nullable().optional(),

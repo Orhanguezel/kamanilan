@@ -4,19 +4,19 @@ import {
   bannerTargetsCanOverlap,
   bannerTargetsMatchContext,
   type BannerTarget,
-} from "@/modules/banners/repository";
+} from "@/modules/ads/repository";
 
 const target = (scopeType: BannerTarget["scopeType"], scopeValue?: string): BannerTarget => ({ scopeType, scopeValue });
 
 describe("banner hedef kapsamı çakışması", () => {
   test("global hedef her kapsamla çakışır", () => {
     expect(bannerTargetsCanOverlap([target("global")], [target("city", "denizli")])).toBe(true);
-    expect(bannerTargetsCanOverlap([], [target("firm", "12")])).toBe(true);
+    expect(bannerTargetsCanOverlap([], [target("seller", "12")])).toBe(true);
   });
 
   test("aynı türde ayrık değerler aynı kapasiteyi işgal etmez", () => {
     expect(bannerTargetsCanOverlap([target("city", "denizli")], [target("city", "antalya")])).toBe(false);
-    expect(bannerTargetsCanOverlap([target("firm", "12")], [target("firm", "13")])).toBe(false);
+    expect(bannerTargetsCanOverlap([target("seller", "12")], [target("seller", "13")])).toBe(false);
   });
 
   test("aynı değerli ve kesişebilen çoklu kapsamlar çakışır", () => {
@@ -48,9 +48,9 @@ describe("banner hedef kabul kriterleri", () => {
   });
 
   test("firma reklamı yalnız seçilen firma sayfasında görünür", () => {
-    const targets = [target("firm", "42")];
-    expect(bannerTargetsMatchContext(targets, { firm: "42" })).toBe(true);
-    expect(bannerTargetsMatchContext(targets, { firm: "43" })).toBe(false);
+    const targets = [target("seller", "42")];
+    expect(bannerTargetsMatchContext(targets, { seller: "42" })).toBe(true);
+    expect(bannerTargetsMatchContext(targets, { seller: "43" })).toBe(false);
   });
 
   test("çoklu farklı tür hedeflerinin tamamı eşleşmelidir", () => {

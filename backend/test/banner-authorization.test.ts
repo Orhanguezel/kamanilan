@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import Fastify, { type FastifyInstance } from "fastify";
-import { requireAdmin } from "@agro/shared-backend/middleware/roles";
-import { registerBannersAdmin } from "@/modules/banners";
-import { canManageFirmCampaign } from "@/modules/banners/repository";
+import { requireAdmin } from "@vps/shared-backend/middleware/roles";
+import { registerBannersAdmin } from "@/modules/ads";
+import { canManageFirmCampaign } from "@/modules/ads/repository";
 
 let app: FastifyInstance;
 
@@ -70,13 +70,13 @@ describe("reklam yönetimi rol sınırları", () => {
 
 describe("reklam veren firma izolasyonu", () => {
   test("başka firmanın kampanyasını yönetemez", () => {
-    const access = { firmId: 12, role: "manager" };
-    expect(canManageFirmCampaign(access, 12, 12)).toBeTrue();
-    expect(canManageFirmCampaign(access, 12, 13)).toBeFalse();
-    expect(canManageFirmCampaign(access, 13, 13)).toBeFalse();
+    const access = { sellerId: "seller-12", role: "manager" };
+    expect(canManageFirmCampaign(access, "seller-12", "seller-12")).toBeTrue();
+    expect(canManageFirmCampaign(access, "seller-12", "seller-13")).toBeFalse();
+    expect(canManageFirmCampaign(access, "seller-13", "seller-13")).toBeFalse();
   });
 
   test("salt izleyici değişiklik talebi oluşturamaz", () => {
-    expect(canManageFirmCampaign({ firmId: 12, role: "viewer" }, 12, 12)).toBeFalse();
+    expect(canManageFirmCampaign({ sellerId: "seller-12", role: "viewer" }, "seller-12", "seller-12")).toBeFalse();
   });
 });

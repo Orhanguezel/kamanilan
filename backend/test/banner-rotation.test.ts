@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { deliveryWeight, isVisitorFrequencyBlocked, pickWeightedBanner } from "../src/modules/banners/repository";
+import { deliveryWeight, isVisitorFrequencyBlocked, pickWeightedBanner } from "../src/modules/ads/repository";
 
 describe("banner weighted rotation", () => {
   test("returns null for an empty candidate list", () => {

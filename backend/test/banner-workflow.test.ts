@@ -5,11 +5,11 @@ import {
   bannerUpsertSchema,
   canTransitionBannerLifecycle,
   normalizeBannerLifecycle,
-} from "@/modules/banners";
+} from "@/modules/ads";
 import {
   layoutCapacityConflicts,
   validateBannerSourceState,
-} from "@/modules/banners/repository";
+} from "@/modules/ads/repository";
 
 const base = {
   position: "global_footer",
@@ -31,24 +31,24 @@ describe("banner kaynak türleri", () => {
     const result = bannerUpsertSchema.safeParse({
       ...base,
       sourceType: "listing",
-      listingId: 42,
+      listingId: "listing-42",
       creativeTemplate: "listing",
     });
     expect(result.success).toBeTrue();
-    if (result.success) expect(result.data.listingId).toBe(42);
+    if (result.success) expect(result.data.listingId).toBe("listing-42");
   });
 
   test("firma ve sponsorluk bağlantısını kabul eder", () => {
     const result = bannerUpsertSchema.safeParse({
       ...base,
-      sourceType: "firm",
-      firmId: 18,
+      sourceType: "seller",
+      sellerId: "seller-18",
       sponsorshipId: 7,
       creativeTemplate: "sponsorship",
     });
     expect(result.success).toBeTrue();
     if (result.success) {
-      expect(result.data.firmId).toBe(18);
+      expect(result.data.sellerId).toBe("seller-18");
       expect(result.data.sponsorshipId).toBe(7);
     }
   });
@@ -78,7 +78,7 @@ describe("banner yaşam döngüsü", () => {
 
   test("slot taşıma ve tarih uzatma patch alanları doğrulanır", () => {
     const moved = bannerUpsertSchema.partial().safeParse({
-      position: "analiz_sidebar",
+      position: "news_detail_sidebar",
       endAt: "2026-09-30T23:59:59.000Z",
     });
     expect(moved.success).toBeTrue();
@@ -144,7 +144,7 @@ describe("banner kapasite ve kaynak engelleri", () => {
   test("onaysız ilanı reklam kaynağı olarak reddeder", () => {
     const issues = validateBannerSourceState(
       { sourceType: "listing", endAt: "2026-08-10T00:00:00.000Z" },
-      { listing: { status: "pending", isSuspicious: 0, validUntil: "2026-09-01", contactPhone: "555" } },
+      { listing: { status: "pending", isSuspicious: 0, validUntil: "2026-09-01" } },
     );
     expect(issues.some((item) => item.code === "listing_invalid" && item.severity === "error")).toBeTrue();
   });
@@ -152,7 +152,7 @@ describe("banner kapasite ve kaynak engelleri", () => {
   test("süresi reklamdan önce dolan ilanı reddeder", () => {
     const issues = validateBannerSourceState(
       { sourceType: "listing", endAt: "2026-08-10T00:00:00.000Z" },
-      { listing: { status: "approved", isSuspicious: 0, validUntil: "2026-08-01", contactPhone: "555" } },
+      { listing: { status: "approved", isSuspicious: 0, validUntil: "2026-08-01" } },
     );
     expect(issues.some((item) => item.code === "listing_duration" && item.severity === "error")).toBeTrue();
   });
@@ -160,9 +160,9 @@ describe("banner kapasite ve kaynak engelleri", () => {
   test("iptal edilmiş veya tarih dışı sponsorluğu reddeder", () => {
     const now = new Date("2026-07-27T12:00:00.000Z");
     const cancelled = validateBannerSourceState(
-      { sourceType: "firm" },
+      { sourceType: "seller" },
       {
-        firm: { status: "approved", isActive: 1, phone: "555", contactPerson: null },
+        seller: { isActive: 1 },
         sponsorship: {
           isActive: 0,
           startsAt: new Date("2026-07-01T00:00:00.000Z"),
@@ -172,9 +172,9 @@ describe("banner kapasite ve kaynak engelleri", () => {
       now,
     );
     const expired = validateBannerSourceState(
-      { sourceType: "firm" },
+      { sourceType: "seller" },
       {
-        firm: { status: "approved", isActive: 1, phone: "555", contactPerson: null },
+        seller: { isActive: 1 },
         sponsorship: {
           isActive: 1,
           startsAt: new Date("2026-06-01T00:00:00.000Z"),

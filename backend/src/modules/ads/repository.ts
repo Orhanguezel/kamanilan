@@ -74,7 +74,7 @@ export type BannerInput = {
     imageWidth?: number; imageHeight?: number; imageBytes?: number;
   } | null;
   qualityOverrideReason?: string | null;
-  listingId?: number | null;
+  listingId?: string | null;
   sellerId?: string | null;
   sponsorshipId?: number | null;
   dealId?: number | null;
@@ -1144,7 +1144,7 @@ export function validateBannerSourceState(
 }
 
 export async function validateBannerSource(input: {
-  sourceType?: string; listingId?: number | null; sellerId?: string | null; sponsorshipId?: number | null; endAt?: Date | string | null;
+  sourceType?: string; listingId?: string | null; sellerId?: string | null; sponsorshipId?: number | null; endAt?: Date | string | null;
 }) {
   const listing = input.sourceType === "listing" && input.listingId
     ? await getListingCreative(input.listingId)
@@ -1361,7 +1361,7 @@ export type WaitlistInput = {
   title: string;
   advertiser?: string | null;
   sourceType?: "custom" | "listing" | "seller" | "code";
-  listingId?: number | null;
+  listingId?: string | null;
   sellerId?: string | null;
   device?: BannerDevice;
   preferredStartAt?: string | Date | null;

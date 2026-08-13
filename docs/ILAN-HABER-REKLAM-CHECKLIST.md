@@ -78,21 +78,21 @@
 
 ## WP-3 — Konsolide DB şemaları (ALTER'sız)
 
-- [ ] `HF/backend/src/db/seed/sql/040 + 058–079` (22 dosya) oku; her tablonun **nihai**
+- [x] `HF/backend/src/db/seed/sql/040 + 058–079` (22 dosya) oku; her tablonun **nihai**
       kolon setini çıkar (ALTER'lar dahil edilmiş hali)
-- [ ] KI'ye yeni seri yaz (CREATE TABLE IF NOT EXISTS, nihai kolonlar, index'ler):
-  - [ ] `130_ads_core_schema.sql` — ads_banners, ads_slots, ads_targets
-  - [ ] `131_ads_commerce_schema.sql` — ads_packages, ads_package_slots, ads_payments,
+- [x] KI'ye yeni seri yaz (CREATE TABLE IF NOT EXISTS, nihai kolonlar, index'ler):
+  - [x] `130_ads_core_schema.sql` — ads_banners, ads_slots, ads_targets
+  - [x] `131_ads_commerce_schema.sql` — ads_packages, ads_package_slots, ads_payments,
         ads_price_overrides, ads_waitlist
-  - [ ] `132_ads_metrics_schema.sql` — ads_daily_metrics, ads_metric_uniques,
+  - [x] `132_ads_metrics_schema.sql` — ads_daily_metrics, ads_metric_uniques,
         ads_visitor_frequency, ads_conversions
-  - [ ] `133_ads_selfservice_audit_schema.sql` — seller_members, ads_self_service_requests,
+  - [x] `133_ads_selfservice_audit_schema.sql` — seller_members, ads_self_service_requests,
         ads_audit_logs
-  - [ ] `134_ads_slots_seed.sql` — 14 slot kaydı (label, pageType, kapasiteler,
+  - [x] `134_ads_slots_seed.sql` — 14 slot kaydı (label, pageType, kapasiteler,
         mobileBehavior, recommendedSize, taban fiyat: makul TRY başlangıç değerleri)
-- [ ] `db:seed` index'ine yeni dosyaları kaydet; `bun run db:seed:fresh` hatasız
-- [ ] 5 test dosyasını yeni tablo/enum isimlerine uyarla; **testler yeşil**
-- [ ] Kabul: fresh kurulum + testler + typecheck
+- [x] `db:seed` index'ine yeni dosyaları kaydet; `bun run db:seed:fresh` hatasız
+- [x] 5 test dosyasını yeni tablo/enum isimlerine uyarla; **testler yeşil**
+- [x] Kabul: fresh kurulum + testler + typecheck
 
 ## WP-4 — Frontend/admin bağlama
 
