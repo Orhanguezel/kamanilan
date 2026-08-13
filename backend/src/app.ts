@@ -2,6 +2,7 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import cookie from '@fastify/cookie';
 import multipart from '@fastify/multipart';
+import rateLimit from '@fastify/rate-limit';
 import authPlugin from './plugins/authPlugin';
 import mysqlPlugin from '@/plugins/mysql';
 import staticUploads from './plugins/staticUploads';
@@ -47,11 +48,8 @@ export async function createApp() {
     exposedHeaders: ['x-total-count', 'content-range', 'range'],
   });
 
-  const cookieSecret =
-    (globalThis as any).Bun?.env?.COOKIE_SECRET ?? process.env.COOKIE_SECRET ?? (() => { throw new Error('Missing required env: COOKIE_SECRET'); })();
-
   await app.register(cookie, {
-    secret: cookieSecret,
+    secret: env.COOKIE_SECRET,
     hook: 'onRequest',
     parseOptions: {
       httpOnly: true,
@@ -64,6 +62,10 @@ export async function createApp() {
   await app.register(jwt, {
     secret: env.JWT_SECRET,
     cookie: { cookieName: 'access_token', signed: false },
+  });
+
+  await app.register(rateLimit, {
+    global: false,
   });
 
   app.addHook('onRequest', localeMiddleware);

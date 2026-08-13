@@ -59,6 +59,26 @@ copy_next_standalone "admin_panel"
 cp -R "$ROOT_DIR/backend/dist" "$RELEASE_DIR/backend/dist"
 cp -R "$ROOT_DIR/backend/node_modules" "$RELEASE_DIR/backend/node_modules"
 cp "$ROOT_DIR/backend/package.json" "$RELEASE_DIR/backend/package.json"
+cp "$ROOT_DIR/backend/bun.lock" "$RELEASE_DIR/backend/bun.lock"
+
+# Bun hoists some workspace dependencies to the workspace node_modules. Copy the
+# production packages that are not present in the project-local runtime tree.
+WORKSPACE_NODE_MODULES="$(cd "$ROOT_DIR/.." && pwd)/node_modules"
+for package_name in \
+  fast-xml-parser strnum xlsx adler-32 cfb codepage crc-32 ssf wmf word frac \
+  sanitize-html htmlparser2 parse-srcset postcss domelementtype domhandler domutils \
+  entities nanoid picocolors source-map-js toad-cache; do
+  if [[ ! -e "$RELEASE_DIR/backend/node_modules/$package_name" ]] && \
+     [[ -e "$WORKSPACE_NODE_MODULES/$package_name" ]]; then
+    cp -R "$WORKSPACE_NODE_MODULES/$package_name" "$RELEASE_DIR/backend/node_modules/$package_name"
+  fi
+done
+
+if [[ ! -e "$RELEASE_DIR/backend/node_modules/@fastify/rate-limit" ]]; then
+  mkdir -p "$RELEASE_DIR/backend/node_modules/@fastify"
+  cp -R "$WORKSPACE_NODE_MODULES/@fastify/rate-limit" \
+    "$RELEASE_DIR/backend/node_modules/@fastify/rate-limit"
+fi
 
 # Deploy scripts and metadata
 cp -R "$ROOT_DIR/deploy" "$RELEASE_DIR/deploy"

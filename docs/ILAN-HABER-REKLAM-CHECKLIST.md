@@ -34,15 +34,15 @@
 
 ## WP-0 — Hazırlık (küçük)
 
-- [ ] `KI/backend`: `bun add sanitize-html @fastify/rate-limit && bun add -d @types/sanitize-html`
-- [ ] `@fastify/rate-limit` app.ts'te kayıtlı değilse global değil **route-config** modunda ekle
+- [x] `KI/backend`: `bun add sanitize-html @fastify/rate-limit && bun add -d @types/sanitize-html`
+- [x] `@fastify/rate-limit` app.ts'te kayıtlı değilse global değil **route-config** modunda ekle
   (HF banners `config.rateLimit` kullanıyor)
-- [ ] `KI/backend/src/core` (veya eşdeğeri) `requireEnv` var mı kontrol et; `COOKIE_SECRET`
+- [x] `KI/backend/src/core` (veya eşdeğeri) `requireEnv` var mı kontrol et; `COOKIE_SECRET`
   requireEnv'e bağla, `@fastify/cookie`'ye `secret` ver (imzalı cookie dönüşüm atıfı için şart)
-- [ ] `@vps/shared-backend`'de `isBotUserAgent` var mı bak; yoksa
+- [x] `@vps/shared-backend`'de `isBotUserAgent` var mı bak; yoksa
   `HF/backend/../@agro/shared-backend/modules/audit/helpers.ts`'ten fonksiyonu
   `KI/backend/src/modules/_shared/botDetect.ts` olarak kopyala
-- [ ] Kabul: typecheck yeşil, mevcut davranış değişmedi
+- [x] Kabul: typecheck yeşil, mevcut davranış değişmedi
 
 ## WP-1 — Reklam motoru RAW KOPYA
 
