@@ -67,12 +67,19 @@ WORKSPACE_NODE_MODULES="$(cd "$ROOT_DIR/.." && pwd)/node_modules"
 for package_name in \
   fast-xml-parser strnum xlsx adler-32 cfb codepage crc-32 ssf wmf word frac \
   sanitize-html htmlparser2 parse-srcset postcss domelementtype domhandler domutils \
-  entities nanoid picocolors source-map-js toad-cache; do
+  entities nanoid picocolors source-map-js toad-cache sharp; do
   if [[ ! -e "$RELEASE_DIR/backend/node_modules/$package_name" ]] && \
      [[ -e "$WORKSPACE_NODE_MODULES/$package_name" ]]; then
     cp -R "$WORKSPACE_NODE_MODULES/$package_name" "$RELEASE_DIR/backend/node_modules/$package_name"
   fi
 done
+
+if [[ -d "$WORKSPACE_NODE_MODULES/@img" ]]; then
+  mkdir -p "$RELEASE_DIR/backend/node_modules/@img"
+  cp -R "$WORKSPACE_NODE_MODULES/@img/." "$RELEASE_DIR/backend/node_modules/@img/"
+fi
+
+mkdir -p "$RELEASE_DIR/backend/content-images/gelen" "$RELEASE_DIR/backend/content-images/islendi"
 
 if [[ ! -e "$RELEASE_DIR/backend/node_modules/@fastify/rate-limit" ]]; then
   mkdir -p "$RELEASE_DIR/backend/node_modules/@fastify"

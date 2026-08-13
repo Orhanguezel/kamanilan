@@ -19,6 +19,8 @@ mkdir -p \
   "$SHARED_DIR/frontend" \
   "$SHARED_DIR/admin_panel" \
   "$SHARED_DIR/backend" \
+  "$SHARED_DIR/content-images/gelen" \
+  "$SHARED_DIR/content-images/islendi" \
   "$SHARED_DIR/uploads"
 
 ensure_shared_file() {
@@ -62,6 +64,8 @@ ln -sfn "$SHARED_DIR/admin_panel/.env" "$RELEASE_DIR/admin_panel/.env"
 ln -sfn "$SHARED_DIR/backend/.env" "$RELEASE_DIR/backend/.env"
 rm -rf "$RELEASE_DIR/backend/uploads"
 ln -sfn "$SHARED_DIR/uploads" "$RELEASE_DIR/backend/uploads"
+rm -rf "$RELEASE_DIR/backend/content-images"
+ln -sfn "$SHARED_DIR/content-images" "$RELEASE_DIR/backend/content-images"
 
 ln -sfn "$RELEASE_DIR" "$CURRENT_LINK"
 
