@@ -1,16 +1,17 @@
 import { and, asc, eq, like, or, sql } from "drizzle-orm";
 import { db, pool } from "@/db/client";
-import { hfAdAuditLogs, hfAdPackages, hfAdPackageSlots, hfAdPayments, hfAdPriceOverrides, hfAdSelfServiceRequests, hfAdSlots, hfAdWaitlist, hfBanners, hfBannerConversions, hfBannerDailyMetrics, hfBannerMetricUniques, hfBannerTargets, hfBannerVisitorFrequency, hfFirmDeals, hfFirmMembers, hfFirmSponsorships, hfFirms, hfMarkets, hfProducts } from "@/db/schema";
+import { hfAdAuditLogs, hfAdPackages, hfAdPackageSlots, hfAdPayments, hfAdPriceOverrides, hfAdSelfServiceRequests, hfAdSlots, hfAdWaitlist, hfBanners, hfBannerConversions, hfBannerDailyMetrics, hfBannerMetricUniques, hfBannerTargets, hfBannerVisitorFrequency, hfFirmDeals, hfFirmMembers, hfFirmSponsorships, hfFirms, hfProducts } from "@/db/schema";
 import { hfListings } from "@/modules/listings/schema";
+import { getListingCreative } from "@/modules/ads/listingSource";
 import { CITY_DISTRICT_SLUGS, isValidCitySlug } from "@/data/turkey-city-slugs";
 import { sendEmailAlert } from "@/modules/alerts/email";
-import { createUserNotification } from "@agro/shared-backend/modules/notifications/service";
-import { repoGetUserById } from "@agro/shared-backend/modules/auth/repository";
+import { createUserNotification } from "@vps/shared-backend/modules/notifications/service";
+import { repoGetUserById } from "@vps/shared-backend/modules/auth/repository";
 
 export type BannerRow = typeof hfBanners.$inferSelect;
 export type BannerDevice = "all" | "desktop" | "mobile";
 export type BannerLifecycleStatus = "draft" | "proposal" | "reserved" | "payment_pending" | "scheduled" | "live" | "completed" | "cancelled" | "problem" | "archived";
-export type BannerScopeType = "global" | "page_type" | "city" | "district" | "product" | "category" | "market" | "firm" | "listing";
+export type BannerScopeType = "global" | "page_type" | "city" | "district" | "product" | "category" | "seller" | "listing";
 export type BannerTarget = { scopeType: BannerScopeType; scopeValue?: string | null };
 export type BannerContext = Partial<Record<Exclude<BannerScopeType, "global">, string>>;
 
@@ -53,7 +54,7 @@ export type BannerInput = {
   advertiser?: string | null;
   notes?: string | null;
   type?: "image" | "code";
-  sourceType?: "custom" | "listing" | "firm" | "code";
+  sourceType?: "custom" | "listing" | "seller" | "code";
   lifecycleStatus?: BannerLifecycleStatus;
   paymentStatus?: "unpaid" | "partial" | "paid" | "waived" | "refunded" | "cancelled";
   paymentOverride?: boolean;
@@ -74,7 +75,7 @@ export type BannerInput = {
   } | null;
   qualityOverrideReason?: string | null;
   listingId?: number | null;
-  firmId?: number | null;
+  sellerId?: string | null;
   sponsorshipId?: number | null;
   dealId?: number | null;
   imageUrl?: string | null;
@@ -116,43 +117,43 @@ export type BannerListFilters = {
   q?: string;
   limit?: number;
   offset?: number;
-  firmId?: number;
+  sellerId?: string;
 };
 
-export async function firmAdAccess(userId: string) {
-  const owned = await db.select({ firm: hfFirms }).from(hfFirms).where(eq(hfFirms.ownerUserId, userId));
+export async function sellerAdAccess(userId: string) {
+  const owned = await db.select({ seller: hfFirms }).from(hfFirms).where(eq(hfFirms.ownerUserId, userId));
   const memberships = await db.select({
-    firm: hfFirms,
+    seller: hfFirms,
     role: hfFirmMembers.role,
     canViewFinancials: hfFirmMembers.canViewFinancials,
   }).from(hfFirmMembers)
-    .innerJoin(hfFirms, eq(hfFirms.id, hfFirmMembers.firmId))
+    .innerJoin(hfFirms, eq(hfFirms.id, hfFirmMembers.sellerId))
     .where(and(eq(hfFirmMembers.userId, userId), eq(hfFirmMembers.isActive, 1)));
-  const byId = new Map<number, { firm: typeof hfFirms.$inferSelect; role: string; canViewFinancials: boolean }>();
-  for (const item of owned) byId.set(item.firm.id, { firm: item.firm, role: "owner", canViewFinancials: true });
-  for (const item of memberships) if (!byId.has(item.firm.id)) {
-    byId.set(item.firm.id, { firm: item.firm, role: item.role, canViewFinancials: Boolean(item.canViewFinancials) });
+  const byId = new Map<string, { seller: typeof hfFirms.$inferSelect; role: string; canViewFinancials: boolean }>();
+  for (const item of owned) byId.set(item.seller.id, { seller: item.seller, role: "owner", canViewFinancials: true });
+  for (const item of memberships) if (!byId.has(item.seller.id)) {
+    byId.set(item.seller.id, { seller: item.seller, role: item.role, canViewFinancials: Boolean(item.canViewFinancials) });
   }
   return [...byId.values()];
 }
 
 export async function listSelfServiceCampaigns(userId: string) {
-  const access = await firmAdAccess(userId);
-  const firmIds = access.map((item) => item.firm.id);
-  if (!firmIds.length) return { firms: [], campaigns: [] };
+  const access = await sellerAdAccess(userId);
+  const sellerIds = access.map((item) => item.seller.id);
+  if (!sellerIds.length) return { firms: [], campaigns: [] };
   const campaigns = await db.select().from(hfBanners)
-    .where(sql`${hfBanners.firmId} IN (${sql.join(firmIds.map((id) => sql`${id}`), sql`,`)})`)
+    .where(sql`${hfBanners.sellerId} IN (${sql.join(sellerIds.map((id) => sql`${id}`), sql`,`)})`)
     .orderBy(sql`${hfBanners.createdAt} DESC`);
-  const financeByFirm = new Map(access.map((item) => [item.firm.id, item.canViewFinancials]));
+  const financeByFirm = new Map(access.map((item) => [item.seller.id, item.canViewFinancials]));
   return {
-    firms: access.map((item) => ({ id: item.firm.id, name: item.firm.name, slug: item.firm.slug, role: item.role, canViewFinancials: item.canViewFinancials })),
+    firms: access.map((item) => ({ id: item.seller.id, name: item.seller.name, slug: item.seller.slug, role: item.role, canViewFinancials: item.canViewFinancials })),
     campaigns: campaigns.map((banner) => ({
-      id: banner.id, firmId: banner.firmId, title: banner.title, position: banner.position,
+      id: banner.id, sellerId: banner.sellerId, title: banner.title, position: banner.position,
       lifecycleStatus: banner.lifecycleStatus, imageUrl: banner.imageUrl, caption: banner.caption,
       ctaLabel: banner.ctaLabel, linkUrl: banner.linkUrl, device: banner.device,
       startAt: banner.startAt, endAt: banner.endAt, impressions: banner.impressions, clicks: banner.clicks,
       performanceStatus: banner.performanceStatus,
-      ...(banner.firmId && financeByFirm.get(banner.firmId) ? {
+      ...(banner.sellerId && financeByFirm.get(banner.sellerId) ? {
         paymentStatus: banner.paymentStatus, totalAmount: banner.totalAmount,
         invoiceNumber: banner.invoiceNumber, invoiceUrl: banner.invoiceUrl,
         contractFileUrl: banner.contractFileUrl,
@@ -162,26 +163,26 @@ export async function listSelfServiceCampaigns(userId: string) {
 }
 
 export async function listSelfServiceRequests(userId: string) {
-  const access = await firmAdAccess(userId);
-  const firmIds = access.map((item) => item.firm.id);
-  if (!firmIds.length) return [];
+  const access = await sellerAdAccess(userId);
+  const sellerIds = access.map((item) => item.seller.id);
+  if (!sellerIds.length) return [];
   return db.select().from(hfAdSelfServiceRequests)
-    .where(sql`${hfAdSelfServiceRequests.firmId} IN (${sql.join(firmIds.map((id) => sql`${id}`), sql`,`)})`)
+    .where(sql`${hfAdSelfServiceRequests.sellerId} IN (${sql.join(sellerIds.map((id) => sql`${id}`), sql`,`)})`)
     .orderBy(sql`${hfAdSelfServiceRequests.createdAt} DESC`);
 }
 
 export async function createSelfServiceRequest(userId: string, input: {
-  firmId: number;
+  sellerId: string;
   bannerId?: number | null;
   requestType: "creative_change" | "extension" | "new_slot" | "support";
   payload: Record<string, unknown>;
   requesterNote?: string | null;
 }) {
-  const access = (await firmAdAccess(userId)).find((item) => item.firm.id === input.firmId);
-  if (!canManageFirmCampaign(access ? { firmId: access.firm.id, role: access.role } : null, input.firmId)) return null;
+  const access = (await sellerAdAccess(userId)).find((item) => item.seller.id === input.sellerId);
+  if (!canManageFirmCampaign(access ? { sellerId: access.seller.id, role: access.role } : null, input.sellerId)) return null;
   if (input.bannerId) {
     const banner = await getBannerById(input.bannerId);
-    if (!banner || !canManageFirmCampaign({ firmId: input.firmId, role: access!.role }, input.firmId, banner.firmId)) return null;
+    if (!banner || !canManageFirmCampaign({ sellerId: input.sellerId, role: access!.role }, input.sellerId, banner.sellerId)) return null;
   }
   const result = await db.insert(hfAdSelfServiceRequests).values({
     ...input,
@@ -193,11 +194,11 @@ export async function createSelfServiceRequest(userId: string, input: {
 }
 
 export function canManageFirmCampaign(
-  access: { firmId: number; role: string } | null,
-  requestedFirmId: number,
-  campaignFirmId?: number | null,
+  access: { sellerId: string; role: string } | null,
+  requestedFirmId: string,
+  campaignFirmId?: string | null,
 ): boolean {
-  if (!access || access.role === "viewer" || access.firmId !== requestedFirmId) return false;
+  if (!access || access.role === "viewer" || access.sellerId !== requestedFirmId) return false;
   return campaignFirmId === undefined || campaignFirmId === null || campaignFirmId === requestedFirmId;
 }
 
@@ -205,14 +206,14 @@ export async function listAdminSelfServiceRequests(status?: string) {
   const condition = status ? eq(hfAdSelfServiceRequests.status, status as typeof hfAdSelfServiceRequests.$inferSelect.status) : undefined;
   const rows = await db.select({
     request: hfAdSelfServiceRequests,
-    firmName: hfFirms.name,
+    sellerName: hfFirms.name,
     bannerTitle: hfBanners.title,
   }).from(hfAdSelfServiceRequests)
-    .innerJoin(hfFirms, eq(hfFirms.id, hfAdSelfServiceRequests.firmId))
+    .innerJoin(hfFirms, eq(hfFirms.id, hfAdSelfServiceRequests.sellerId))
     .leftJoin(hfBanners, eq(hfBanners.id, hfAdSelfServiceRequests.bannerId))
     .where(condition)
     .orderBy(sql`${hfAdSelfServiceRequests.createdAt} DESC`);
-  return rows.map((row) => ({ ...row.request, firmName: row.firmName, bannerTitle: row.bannerTitle }));
+  return rows.map((row) => ({ ...row.request, sellerName: row.sellerName, bannerTitle: row.bannerTitle }));
 }
 
 export async function reviewSelfServiceRequest(id: number, input: {
@@ -225,22 +226,20 @@ export async function reviewSelfServiceRequest(id: number, input: {
   if (input.status === "approved") {
     if (request.requestType === "creative_change" && request.bannerId) {
       const imageUrl = typeof request.payload.requestedCreativeUrl === "string" ? request.payload.requestedCreativeUrl.trim() : "";
-      if (imageUrl) await db.update(hfBanners).set({ imageUrl, qualityCheckedAt: null }).where(and(eq(hfBanners.id, request.bannerId), eq(hfBanners.firmId, request.firmId)));
+      if (imageUrl) await db.update(hfBanners).set({ imageUrl, qualityCheckedAt: null }).where(and(eq(hfBanners.id, request.bannerId), eq(hfBanners.sellerId, request.sellerId)));
     }
     if (request.requestType === "extension" && request.bannerId) {
       const endAt = typeof request.payload.requestedEndAt === "string" ? toDate(request.payload.requestedEndAt) : null;
-      if (endAt) await db.update(hfBanners).set({ endAt }).where(and(eq(hfBanners.id, request.bannerId), eq(hfBanners.firmId, request.firmId)));
+      if (endAt) await db.update(hfBanners).set({ endAt }).where(and(eq(hfBanners.id, request.bannerId), eq(hfBanners.sellerId, request.sellerId)));
       await db.insert(hfFirmDeals).values({
-        firmId: request.firmId, status: "lead", dealType: "reklam",
+        sellerId: request.sellerId, status: "lead", dealType: "reklam",
         notes: `Self-servis kampanya uzatma talebi #${request.id}${request.requesterNote ? `: ${request.requesterNote}` : ""}`,
-        nextActionAt: new Date(),
       });
     }
     if (request.requestType === "new_slot") {
       await db.insert(hfFirmDeals).values({
-        firmId: request.firmId, status: "lead", dealType: "reklam",
+        sellerId: request.sellerId, status: "lead", dealType: "reklam",
         notes: `Self-servis yeni slot talebi #${request.id}${request.requesterNote ? `: ${request.requesterNote}` : ""}`,
-        nextActionAt: new Date(),
       });
     }
   }
@@ -349,7 +348,7 @@ function mapInsert(input: BannerInput) {
     creativeConfig: input.creativeConfig ?? null,
     qualityOverrideReason: input.qualityOverrideReason ?? null,
     listingId: input.listingId ?? null,
-    firmId: input.firmId ?? null,
+    sellerId: input.sellerId ?? null,
     sponsorshipId: input.sponsorshipId ?? null,
     dealId: input.dealId ?? null,
     imageUrl: input.imageUrl ?? null,
@@ -393,7 +392,7 @@ export async function listBanners(filters: BannerListFilters): Promise<BannerRow
     const term = `%${filters.q}%`;
     where.push(or(like(hfBanners.title, term), like(hfBanners.advertiser, term)));
   }
-  if (filters.firmId) where.push(eq(hfBanners.firmId, filters.firmId));
+  if (filters.sellerId) where.push(eq(hfBanners.sellerId, filters.sellerId));
   return db
     .select()
     .from(hfBanners)
@@ -435,7 +434,7 @@ export async function updateBanner(id: number, patch: Partial<BannerInput>): Pro
   if (patch.creativeConfig !== undefined) set.creativeConfig = patch.creativeConfig;
   if (patch.qualityOverrideReason !== undefined) set.qualityOverrideReason = patch.qualityOverrideReason || null;
   if (patch.listingId !== undefined) set.listingId = patch.listingId;
-  if (patch.firmId !== undefined) set.firmId = patch.firmId;
+  if (patch.sellerId !== undefined) set.sellerId = patch.sellerId;
   if (patch.sponsorshipId !== undefined) set.sponsorshipId = patch.sponsorshipId;
   if (patch.dealId !== undefined) set.dealId = patch.dealId;
   if (patch.imageUrl !== undefined) set.imageUrl = patch.imageUrl || null;
@@ -487,7 +486,7 @@ export async function replaceBannerTargets(bannerId: number, targets: BannerTarg
   })));
 }
 
-const validPageTypes = new Set(["global", "home", "prices", "analysis", "product_detail", "market_detail", "firm_detail", "listing_detail"]);
+const validPageTypes = new Set(["global", "home", "listings", "listing_detail", "category", "news", "news_detail", "announcements", "store_detail"]);
 
 export async function validateBannerTargets(targets: BannerTarget[]): Promise<string[]> {
   const invalid: string[] = [];
@@ -500,7 +499,7 @@ export async function validateBannerTargets(targets: BannerTarget[]): Promise<st
     }
     if (target.scopeType === "page_type" && !validPageTypes.has(value)) invalid.push(`page_type:${value}`);
     if (target.scopeType === "city" && !isValidCitySlug(value)) invalid.push(`city:${value}`);
-    if (target.scopeType === "district" && !Object.values(CITY_DISTRICT_SLUGS).some((districts) => districts.has(value))) invalid.push(`district:${value}`);
+    if (target.scopeType === "district" && !Object.values(CITY_DISTRICT_SLUGS).some((districts) => districts.includes(value))) invalid.push(`district:${value}`);
     if (target.scopeType === "product") {
       const [row] = await db.select({ id: hfProducts.id }).from(hfProducts).where(and(
         or(eq(hfProducts.slug, value), eq(hfProducts.canonicalSlug, value)),
@@ -512,18 +511,12 @@ export async function validateBannerTargets(targets: BannerTarget[]): Promise<st
       const [row] = await db.select({ id: hfProducts.id }).from(hfProducts).where(and(eq(hfProducts.categorySlug, value), eq(hfProducts.isActive, 1))).limit(1);
       if (!row) invalid.push(`category:${value}`);
     }
-    if (target.scopeType === "market") {
-      const [row] = await db.select({ id: hfMarkets.id }).from(hfMarkets).where(and(eq(hfMarkets.slug, value), eq(hfMarkets.isActive, 1))).limit(1);
-      if (!row) invalid.push(`market:${value}`);
-    }
-    if (target.scopeType === "firm") {
-      const id = Number(value);
-      const [row] = Number.isInteger(id) ? await db.select({ id: hfFirms.id }).from(hfFirms).where(and(eq(hfFirms.id, id), eq(hfFirms.isActive, 1), eq(hfFirms.status, "approved"))).limit(1) : [];
-      if (!row) invalid.push(`firm:${value}`);
+    if (target.scopeType === "seller") {
+      const [row] = await db.select({ id: hfFirms.id }).from(hfFirms).where(and(eq(hfFirms.id, value), eq(hfFirms.isActive, 1))).limit(1);
+      if (!row) invalid.push(`seller:${value}`);
     }
     if (target.scopeType === "listing") {
-      const id = Number(value);
-      const [row] = Number.isInteger(id) ? await db.select({ id: hfListings.id }).from(hfListings).where(and(eq(hfListings.id, id), eq(hfListings.status, "approved"))).limit(1) : [];
+      const [row] = await db.select({ id: hfListings.id }).from(hfListings).where(and(eq(hfListings.id, value), eq(hfListings.status, "approved"), eq(hfListings.is_active, 1))).limit(1);
       if (!row) invalid.push(`listing:${value}`);
     }
   }
@@ -548,22 +541,19 @@ export async function searchBannerTargetOptions(type: BannerScopeType, query = "
   if (type === "product") {
     const rows = await db.select({ value: hfProducts.slug, label: hfProducts.nameTr, reach: hfProducts.searchVolume }).from(hfProducts)
       .where(and(eq(hfProducts.isActive, 1), q ? or(like(hfProducts.slug, `%${q}%`), like(hfProducts.nameTr, `%${q}%`)) : sql`1=1`)).limit(30);
-    return rows.map((row) => ({ ...row, reach: Number(row.reach ?? 0), exampleUrl: `/urun/${row.value}` }));
+    return rows.filter((row): row is typeof row & { value: string; label: string } => Boolean(row.value && row.label))
+      .map((row) => ({ ...row, reach: Number(row.reach ?? 0), exampleUrl: `/kategori/${row.value}` }));
   }
   if (type === "category") {
     const rows = await db.select({ value: hfProducts.categorySlug, reach: sql<number>`COUNT(*)` }).from(hfProducts)
       .where(and(eq(hfProducts.isActive, 1), q ? like(hfProducts.categorySlug, `%${q}%`) : sql`1=1`)).groupBy(hfProducts.categorySlug).limit(30);
-    return rows.map((row) => ({ value: row.value, label: row.value, reach: Number(row.reach) * 1000, exampleUrl: `/fiyatlar?category=${encodeURIComponent(row.value)}` }));
+    return rows.filter((row): row is typeof row & { value: string } => Boolean(row.value))
+      .map((row) => ({ value: row.value, label: row.value, reach: Number(row.reach) * 1000, exampleUrl: `/kategori/${encodeURIComponent(row.value)}` }));
   }
-  if (type === "market") {
-    const rows = await db.select({ value: hfMarkets.slug, label: hfMarkets.name }).from(hfMarkets)
-      .where(and(eq(hfMarkets.isActive, 1), q ? or(like(hfMarkets.slug, `%${q}%`), like(hfMarkets.name, `%${q}%`)) : sql`1=1`)).limit(30);
-    return rows.map((row) => ({ ...row, reach: 2000, exampleUrl: `/hal/${row.value}` }));
-  }
-  if (type === "firm") {
+  if (type === "seller") {
     const rows = await db.select({ id: hfFirms.id, label: hfFirms.name, slug: hfFirms.slug }).from(hfFirms)
-      .where(and(eq(hfFirms.isActive, 1), eq(hfFirms.status, "approved"), q ? or(like(hfFirms.name, `%${q}%`), like(hfFirms.slug, `%${q}%`)) : sql`1=1`)).limit(30);
-    return rows.map((row) => ({ value: String(row.id), label: row.label, reach: 500, exampleUrl: `/firma/${row.slug}` }));
+      .where(and(eq(hfFirms.isActive, 1), q ? or(like(hfFirms.name, `%${q}%`), like(hfFirms.slug, `%${q}%`)) : sql`1=1`)).limit(30);
+    return rows.map((row) => ({ value: row.id, label: row.label, reach: 500, exampleUrl: `/magazalar/${row.slug}` }));
   }
   const rows = await db.select({ id: hfListings.id, label: hfListings.title, slug: hfListings.slug }).from(hfListings)
     .where(and(eq(hfListings.status, "approved"), q ? like(hfListings.title, `%${q}%`) : sql`1=1`)).limit(30);
@@ -976,7 +966,7 @@ export async function calculateAdPrice(input: AdPriceQuoteInput) {
     : input.device === "desktop"
       ? Number(slot.desktopMultiplier)
       : (Number(slot.mobileMultiplier) + Number(slot.desktopMultiplier)) / 2;
-  const narrowTargets = new Set(["district", "product", "market", "firm", "listing"]);
+  const narrowTargets = new Set(["district", "product", "seller", "listing"]);
   const targetTypes = [...new Set(input.targetTypes ?? [])].filter((type) => type !== "global");
   const targeting = targetTypes.length
     ? 1 + targetTypes.reduce((sum, type) => sum + (narrowTargets.has(type) ? 0.12 : 0.06), 0)
@@ -1115,13 +1105,9 @@ type BannerSourceValidationState = {
     status: string;
     isSuspicious: number | boolean;
     validUntil: string;
-    contactPhone: string | null;
   } | null;
-  firm?: {
-    status: string;
+  seller?: {
     isActive: number | boolean;
-    phone: string | null;
-    contactPerson: string | null;
   } | null;
   sponsorship?: {
     isActive: number | boolean;
@@ -1142,13 +1128,11 @@ export function validateBannerSourceState(
     else {
       const bannerEnd = input.endAt ? new Date(input.endAt).toISOString().slice(0, 10) : null;
       if (bannerEnd && listing.validUntil < bannerEnd) issues.push({ code: "listing_duration", message: "İlan süresi reklam bitiş tarihini karşılamıyor.", severity: "error" });
-      if (!listing.contactPhone) issues.push({ code: "listing_contact", message: "İlanda iletişim telefonu bulunmuyor.", severity: "warning" });
     }
   }
-  if (input.sourceType === "firm") {
-    const firm = state.firm;
-    if (!firm || !firm.isActive || firm.status !== "approved") issues.push({ code: "firm_invalid", message: "Firma aktif ve onaylı değil.", severity: "error" });
-    else if (!firm.phone && !firm.contactPerson) issues.push({ code: "firm_contact", message: "Firmada iletişim bilgisi bulunmuyor.", severity: "warning" });
+  if (input.sourceType === "seller") {
+    const seller = state.seller;
+    if (!seller || !seller.isActive) issues.push({ code: "seller_invalid", message: "Mağaza aktif değil.", severity: "error" });
   }
   if (state.sponsorship !== undefined) {
     const sponsorship = state.sponsorship;
@@ -1160,20 +1144,14 @@ export function validateBannerSourceState(
 }
 
 export async function validateBannerSource(input: {
-  sourceType?: string; listingId?: number | null; firmId?: number | null; sponsorshipId?: number | null; endAt?: Date | string | null;
+  sourceType?: string; listingId?: number | null; sellerId?: string | null; sponsorshipId?: number | null; endAt?: Date | string | null;
 }) {
-  const [listing] = input.sourceType === "listing" && input.listingId ? await db.select({
-    status: hfListings.status,
-    isSuspicious: hfListings.isSuspicious,
-    validUntil: hfListings.validUntil,
-    contactPhone: hfListings.contactPhone,
-  }).from(hfListings).where(eq(hfListings.id, input.listingId)).limit(1) : [];
-  const [firm] = input.sourceType === "firm" && input.firmId ? await db.select({
-    status: hfFirms.status,
+  const listing = input.sourceType === "listing" && input.listingId
+    ? await getListingCreative(input.listingId)
+    : undefined;
+  const [seller] = input.sourceType === "seller" && input.sellerId ? await db.select({
     isActive: hfFirms.isActive,
-    phone: hfFirms.phone,
-    contactPerson: hfFirms.contactPerson,
-  }).from(hfFirms).where(eq(hfFirms.id, input.firmId)).limit(1) : [];
+  }).from(hfFirms).where(eq(hfFirms.id, input.sellerId)).limit(1) : [];
   const [sponsorship] = input.sponsorshipId
     ? await db.select({
       isActive: hfFirmSponsorships.isActive,
@@ -1183,7 +1161,7 @@ export async function validateBannerSource(input: {
     : [];
   return validateBannerSourceState(input, {
     listing: input.sourceType === "listing" ? listing ?? null : undefined,
-    firm: input.sourceType === "firm" ? firm ?? null : undefined,
+    seller: input.sourceType === "seller" ? seller ?? null : undefined,
     sponsorship: input.sponsorshipId ? sponsorship ?? null : undefined,
   });
 }
@@ -1382,9 +1360,9 @@ export type WaitlistInput = {
   position: string;
   title: string;
   advertiser?: string | null;
-  sourceType?: "custom" | "listing" | "firm" | "code";
+  sourceType?: "custom" | "listing" | "seller" | "code";
   listingId?: number | null;
-  firmId?: number | null;
+  sellerId?: string | null;
   device?: BannerDevice;
   preferredStartAt?: string | Date | null;
   preferredEndAt?: string | Date | null;
@@ -1404,7 +1382,7 @@ export async function createWaitlistItem(input: WaitlistInput) {
     advertiser: input.advertiser ?? null,
     sourceType: input.sourceType ?? "custom",
     listingId: input.listingId ?? null,
-    firmId: input.firmId ?? null,
+    sellerId: input.sellerId ?? null,
     device: input.device ?? "all",
     preferredStartAt: toDate(input.preferredStartAt),
     preferredEndAt: toDate(input.preferredEndAt),
@@ -1548,8 +1526,8 @@ export async function bannerMetricsReport(from: string, to: string, bannerId?: n
 
 export async function recordBannerConversion(input: {
   bannerId: number;
-  eventType: "listing_view" | "offer_submit" | "phone_click" | "whatsapp_click" | "firm_contact" | "directions_click" | "favorite_add";
-  entityType: "listing" | "firm" | "product";
+  eventType: "listing_view" | "offer_submit" | "phone_click" | "whatsapp_click" | "seller_contact" | "directions_click" | "favorite_add";
+  entityType: "listing" | "seller" | "product";
   entityId: string;
   visitorHash: string;
   sourcePosition: string;
@@ -1608,7 +1586,7 @@ export async function bannerRevenueReport(from: string, to: string) {
     const revenue = Number(banner.totalAmount);
     return {
       bannerId: banner.id, title: banner.title, advertiser: banner.advertiser,
-      position: banner.position, firmId: banner.firmId, revenue, collected,
+      position: banner.position, sellerId: banner.sellerId, revenue, collected,
       outstanding: Math.max(0, revenue - collected), impressions, clicks, conversions: conversionCount,
       cpm: impressions ? revenue / impressions * 1000 : null,
       cpc: clicks ? revenue / clicks : null,
@@ -1653,7 +1631,7 @@ export async function bannerRevenueReport(from: string, to: string) {
     },
     campaigns: campaignRows,
     slots: slotRevenue,
-    firms: group((row) => row.firmId),
+    firms: group((row) => row.sellerId),
   };
 }
 

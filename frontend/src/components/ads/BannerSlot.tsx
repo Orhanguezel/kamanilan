@@ -1,8 +1,6 @@
 import { fetchBanners, type BannerContext, type PublicBanner } from "@/lib/banners";
 import { headers } from "next/headers";
-import { resolveImageUrl } from "@/lib/utils";
-import VistaSeedsAnimatedBanner from "./VistaSeedsAnimatedBanner";
-import VistaSeedsLeaderboard from "./VistaSeedsLeaderboard";
+import { getCategoryThumbnailUrl as resolveImageUrl } from "@/lib/image-url";
 import TemplateBanner from "./TemplateBanner";
 import ResilientAdImage from "./ResilientAdImage";
 
@@ -104,12 +102,6 @@ export function BannerCreative({ banner, sidebar }: { banner: PublicBanner; side
     );
   }
 
-  if (banner.id === 3 && sidebar) {
-    return <VistaSeedsAnimatedBanner href={href} target={target} rel={rel} alt={alt} headline={banner.caption} ctaLabel={banner.ctaLabel} />;
-  }
-  if (banner.id === 5 && !sidebar) {
-    return <VistaSeedsLeaderboard href={href} target={target} rel={rel} alt={alt} headline={banner.caption} ctaLabel={banner.ctaLabel} />;
-  }
   if (banner.creativeTemplate && banner.creativeTemplate !== "image") {
     return <TemplateBanner banner={banner} href={href} sidebar={sidebar} />;
   }

@@ -3,10 +3,10 @@ import type { FastifyRequest } from "fastify";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
-import { isBotUserAgent } from "@agro/shared-backend/modules/audit/helpers";
+import { isBotUserAgent } from "@/modules/_shared/botDetect";
 import { env } from "@/core/env";
-import { requireAuth } from "@agro/shared-backend/middleware/auth";
-import { getAuthUserId } from "@agro/shared-backend/modules/_shared";
+import { requireAuth } from "@vps/shared-backend/middleware/auth";
+import { getAuthUserId } from "@vps/shared-backend/modules/_shared";
 import {
   type BannerContext,
   bannerStats,
@@ -60,36 +60,36 @@ import {
   listSelfServiceRequests,
   listAdminSelfServiceRequests,
   reviewSelfServiceRequest,
-  firmAdAccess,
+  sellerAdAccess,
   listAdAudit,
   recordAdAudit,
 } from "./repository";
-import { getListingCreative } from "@/modules/listings/repo";
+import { getListingCreative } from "./listingSource";
 
 // Kanonik reklam pozisyonları (frontend slot key'leri ile birebir).
 export const BANNER_POSITIONS = [
   "global_top",
   "global_footer",
-  "home_ticker_below",
+  "home_hero_below",
   "home_mid",
-  "home_footer_top",
-  "prices_top",
-  "prices_sidebar",
-  "analiz_inline",
-  "analiz_sidebar",
-  "urun_sidebar",
-  "hal_sidebar",
+  "listings_top",
+  "listings_sidebar",
+  "listing_detail_below",
+  "category_inline",
+  "news_top",
+  "news_detail_inline",
+  "news_detail_sidebar",
+  "announcements_top",
   "listing_detail_sidebar",
-  "firm_detail_sidebar",
-  "firm_detail_footer",
+  "store_detail_sidebar",
 ] as const;
 
 const positionSchema = z.enum(BANNER_POSITIONS);
 const deviceSchema = z.enum(["all", "desktop", "mobile"]);
 const typeSchema = z.enum(["image", "code"]);
-const sourceTypeSchema = z.enum(["custom", "listing", "firm", "code"]);
+const sourceTypeSchema = z.enum(["custom", "listing", "seller", "code"]);
 const lifecycleSchema = z.enum(["draft", "proposal", "reserved", "payment_pending", "scheduled", "live", "completed", "cancelled", "problem", "archived"]);
-const scopeTypeSchema = z.enum(["global", "page_type", "city", "district", "product", "category", "market", "firm", "listing"]);
+const scopeTypeSchema = z.enum(["global", "page_type", "city", "district", "product", "category", "seller", "listing"]);
 const targetSchema = z.object({
   scopeType: scopeTypeSchema,
   scopeValue: z.string().trim().min(1).max(190).nullable().optional(),
@@ -105,17 +105,16 @@ const bannerContextSchema = z.object({
   district: z.string().trim().max(128).optional(),
   product: z.string().trim().max(128).optional(),
   category: z.string().trim().max(128).optional(),
-  market: z.string().trim().max(128).optional(),
-  firm: z.string().trim().max(32).optional(),
+  seller: z.string().trim().max(32).optional(),
   listing: z.string().trim().max(32).optional(),
 });
 const conversionSchema = z.object({
-  eventType: z.enum(["listing_view", "offer_submit", "phone_click", "whatsapp_click", "firm_contact", "directions_click", "favorite_add"]),
-  entityType: z.enum(["listing", "firm", "product"]),
+  eventType: z.enum(["listing_view", "offer_submit", "phone_click", "whatsapp_click", "seller_contact", "directions_click", "favorite_add"]),
+  entityType: z.enum(["listing", "seller", "product"]),
   entityId: z.union([z.string(), z.number()]).transform(String).pipe(z.string().min(1).max(128)),
 });
 const selfServiceRequestSchema = z.object({
-  firmId: z.coerce.number().int().positive(),
+  sellerId: z.string().trim().min(1).max(36),
   bannerId: z.coerce.number().int().positive().nullable().optional(),
   requestType: z.enum(["creative_change", "extension", "new_slot", "support"]),
   payload: z.record(z.unknown()).default({}),
@@ -176,7 +175,7 @@ export const bannerUpsertSchema = z.object({
   invoiceUrl: z.string().trim().max(512).nullable().optional(),
   contractFileUrl: z.string().trim().max(512).nullable().optional(),
   creativeFileUrl: z.string().trim().max(512).nullable().optional(),
-  creativeTemplate: z.enum(["image", "firm", "listing", "sponsorship", "leaderboard", "split", "mpu", "mobile"]).optional(),
+  creativeTemplate: z.enum(["image", "seller", "listing", "sponsorship", "leaderboard", "split", "mpu", "mobile"]).optional(),
   creativeConfig: z.object({
     backgroundColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
     textColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
@@ -194,7 +193,7 @@ export const bannerUpsertSchema = z.object({
   }).nullable().optional(),
   qualityOverrideReason: z.string().trim().max(500).nullable().optional(),
   listingId: z.coerce.number().int().positive().nullable().optional(),
-  firmId: z.coerce.number().int().positive().nullable().optional(),
+  sellerId: z.string().trim().min(1).max(36).nullable().optional(),
   sponsorshipId: z.coerce.number().int().positive().nullable().optional(),
   imageUrl: z.string().trim().max(512).nullable().optional(),
   alt: z.string().trim().max(255).nullable().optional(),
@@ -311,7 +310,7 @@ async function slotValidationError(input: { position: string; sourceType?: strin
   if (!slot) return "Tanimli olmayan reklam slotu";
   if (!slot.isActive) return "Secilen reklam slotu satis ve yeni yayinlara kapali";
   const sourceType = input.sourceType ?? (input.type === "code" ? "code" : "custom");
-  if (!slot.sourceTypes.includes(sourceType as "custom" | "listing" | "firm" | "code")) return "Bu slot secilen reklam kaynagini desteklemiyor";
+  if (!slot.sourceTypes.includes(sourceType as "custom" | "listing" | "seller" | "code")) return "Bu slot secilen reklam kaynagini desteklemiyor";
   if ((input.desktopColumns ?? slot.desktopCapacity) > slot.desktopCapacity) return `Bu slot masaustunde en fazla ${slot.desktopCapacity} reklam destekliyor`;
   return null;
 }
@@ -327,7 +326,7 @@ function colorLuminance(hex: string) {
 async function creativeQualityReport(input: {
   position: string; type?: string; sourceType?: string; imageUrl?: string | null; alt?: string | null;
   title?: string; caption?: string | null; ctaLabel?: string | null; linkUrl?: string | null; rel?: string;
-  listingId?: number | null; firmId?: number | null; sponsorshipId?: number | null; endAt?: Date | string | null;
+  listingId?: number | null; sellerId?: string | null; sponsorshipId?: number | null; endAt?: Date | string | null;
   creativeTemplate?: string; creativeConfig?: {
     backgroundColor?: string; textColor?: string; animation?: boolean;
     imageWidth?: number; imageHeight?: number; imageBytes?: number;
@@ -398,7 +397,7 @@ function publicBanner(row: NonNullable<Awaited<ReturnType<typeof pickActiveForPo
     type: row.type,
     sourceType: row.sourceType,
     listingId: row.listingId,
-    firmId: row.firmId,
+    sellerId: row.sellerId,
     title: row.title,
     advertiser: row.advertiser,
     imageUrl: row.imageUrl,
@@ -484,7 +483,7 @@ export function safeAdDestination(value: string): string | null {
 }
 
 export function adMetricScope(query: Record<string, unknown>): string {
-  const preferred = ["listing", "firm", "market", "product", "category", "district", "city", "page_type"];
+  const preferred = ["listing", "seller", "product", "category", "district", "city", "page_type"];
   const key = preferred.find((item) => query[item] !== undefined && query[item] !== "");
   return key ? `${key}:${String(query[key])}` : "global";
 }
@@ -523,15 +522,15 @@ export async function registerBanners(app: FastifyInstance) {
 
   app.get<{ Params: { id: string } }>("/banners/self-service/:id/report.pdf", { onRequest: [requireAuth] }, async (req, reply) => {
     const id = Number(req.params.id);
-    const access = await firmAdAccess(getAuthUserId(req));
+    const access = await sellerAdAccess(getAuthUserId(req));
     const banner = await getBannerById(id);
     const report = await campaignPerformanceReport(id);
-    if (!report || !banner || !access.some((item) => item.firm.id === banner.firmId)) {
+    if (!report || !banner || !access.some((item) => item.seller.id === banner.sellerId)) {
       return reply.status(404).send({ error: "Kampanya bulunamadi" });
     }
     const t = report.totals;
     const pdf = asciiPdf([
-      "HALDEFIYAT.COM REKLAM PERFORMANS RAPORU",
+      "KAMANILAN.COM REKLAM PERFORMANS RAPORU",
       `Kampanya: ${report.banner.title}`, `Donem: ${report.from} - ${report.to}`,
       `Gosterim: ${t.impressions}  Tekil: ${t.uniqueImpressions}`,
       `Tiklama: ${t.clicks}  CTR: %${(t.ctr * 100).toFixed(2)}`,
@@ -547,7 +546,7 @@ export async function registerBanners(app: FastifyInstance) {
   app.post("/banners/conversion", async (req, reply) => {
     const parsed = conversionSchema.safeParse(req.body ?? {});
     if (!parsed.success) return reply.status(400).send({ error: "Gecersiz donusum" });
-    const signed = req.cookies.hf_ad_campaign;
+    const signed = req.cookies.ki_ad_campaign;
     if (!signed) return reply.status(204).send();
     const unsigned = req.unsignCookie(signed);
     if (!unsigned.valid || !unsigned.value) return reply.status(204).send();
@@ -576,8 +575,7 @@ export async function registerBanners(app: FastifyInstance) {
       district: parsed.data.district,
       product: parsed.data.product,
       category: parsed.data.category,
-      market: parsed.data.market,
-      firm: parsed.data.firm,
+      seller: parsed.data.seller,
       listing: parsed.data.listing,
     });
     const [row] = selection.rows;
@@ -601,8 +599,7 @@ export async function registerBanners(app: FastifyInstance) {
       district: parsed.data.district,
       product: parsed.data.product,
       category: parsed.data.category,
-      market: parsed.data.market,
-      firm: parsed.data.firm,
+      seller: parsed.data.seller,
       listing: parsed.data.listing,
     });
     const rows = selection.rows;
@@ -637,7 +634,7 @@ export async function registerBanners(app: FastifyInstance) {
       void incClick(id);
       void recordBannerMetric(id, "click", visitorHash, requestDevice(req), `slot:${row.position}`);
     }
-    reply.setCookie("hf_ad_campaign", JSON.stringify({ bannerId: row.id, position: row.position }), {
+    reply.setCookie("ki_ad_campaign", JSON.stringify({ bannerId: row.id, position: row.position }), {
       signed: true, httpOnly: true, sameSite: "lax", secure: env.NODE_ENV === "production",
       path: "/", maxAge: 60 * 60 * 24 * 30,
     });
@@ -922,7 +919,7 @@ export async function registerBannersAdmin(app: FastifyInstance) {
     if (!banner) return reply.status(404).send({ error: "Banner bulunamadi" });
     const payments = await getAdPaymentSummary(id);
     const pdf = asciiPdf([
-      "HALDEFIYAT.COM REKLAM TEKLIFI",
+      "KAMANILAN.COM REKLAM TEKLIFI",
       `Teklif No: HF-REK-${String(id).padStart(6, "0")}`,
       `Reklam veren: ${banner.advertiser ?? "-"}`,
       `Kampanya: ${banner.title}`,
@@ -983,7 +980,7 @@ export async function registerBannersAdmin(app: FastifyInstance) {
     if (!report) return reply.status(404).send({ error: "Banner bulunamadi" });
     const t = report.totals;
     const pdf = asciiPdf([
-      "HALDEFIYAT.COM KAMPANYA PERFORMANS RAPORU",
+      "KAMANILAN.COM KAMPANYA PERFORMANS RAPORU",
       `Kampanya: ${report.banner.title}`,
       `Reklam veren: ${report.banner.advertiser ?? "-"}`,
       `Slot: ${report.banner.position}`,
@@ -1142,7 +1139,7 @@ export async function registerBannersAdmin(app: FastifyInstance) {
     advertiser: z.string().trim().max(160).nullable().optional(),
     sourceType: sourceTypeSchema.optional(),
     listingId: z.coerce.number().int().positive().nullable().optional(),
-    firmId: z.coerce.number().int().positive().nullable().optional(),
+    sellerId: z.string().trim().min(1).max(36).nullable().optional(),
     device: deviceSchema.optional(),
     preferredStartAt: z.string().datetime().nullable().optional(),
     preferredEndAt: z.string().datetime().nullable().optional(),

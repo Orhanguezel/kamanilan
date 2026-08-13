@@ -57,24 +57,24 @@
 - [x] `HF/backend/test/banner-*.test.ts` (5 dosya) → `KI/backend/test/`
 - [x] `HF/backend/src/cron.ts` içindeki 5 reklam cron bloğunu `KI` cron altyapısına taşı
       (banner-lifecycle */5, source-audit, performance, reports, archive)
-- [ ] Commit: `port: haldefiyat reklam motoru raw kopya` (derlenmiyor olabilir — normal)
+- [x] Commit: `port: haldefiyat reklam motoru raw kopya` (derlenmiyor olabilir — normal)
 
 ## WP-2 — Derleme uyarlaması
 
-- [ ] Import eşleme: `@agro/shared-backend/*` → `@vps/shared-backend/*` karşılıkları
+- [x] Import eşleme: `@agro/shared-backend/*` → `@vps/shared-backend/*` karşılıkları
       (`requireAuth`, `getAuthUserId`) + WP-0'daki `isBotUserAgent`
-- [ ] `@/core/env` → KI env modülü; `env.JWT_SECRET` kullanımı KI'deki isimle eşleşsin
-- [ ] `getListingCreative` → `KI/backend/src/modules/ads/listingSource.ts` adaptörü yaz:
+- [x] `@/core/env` → KI env modülü; `env.JWT_SECRET` kullanımı KI'deki isimle eşleşsin
+- [x] `getListingCreative` → `KI/backend/src/modules/ads/listingSource.ts` adaptörü yaz:
       `proporties`/ilan tablosundan `{id, slug, title, productName→category, citySlug,
       priceMin/Max, priceUnit, currency, images, status, isSuspicious, validUntil}` dön
       (KI ilan şemasındaki gerçek karşılıklarla; olmayan alan için güvenli varsayılan)
-- [ ] Pozisyon enum'unu değiştir → konsept raporu §3.5'teki **14 kamanilan slotKey**'i
-- [ ] Kapsam enum'undan `market` çıkar (8 kapsam kalır); `firm` → `seller` yeniden adlandır
+- [x] Pozisyon enum'unu değiştir → konsept raporu §3.5'teki **14 kamanilan slotKey**'i
+- [x] Kapsam enum'undan `market` çıkar (8 kapsam kalır); `firm` → `seller` yeniden adlandır
       (tablo/kolon/endpoint isimlerinde tutarlı)
-- [ ] `hf_` tablo öneklerini kaldır (`banners` hero tablosuyla çakışmasın diye motor
+- [x] `hf_` tablo öneklerini kaldır (`banners` hero tablosuyla çakışmasın diye motor
       tabloları `ads_*` önekiyle: `ads_banners`, `ads_slots`, `ads_targets`, …)
-- [ ] PDF başlıklarındaki HALDEFIYAT.COM → KAMANILAN.COM; `hf_ad_campaign` cookie → `ki_ad_campaign`
-- [ ] Kabul: `bun run typecheck` yeşil (testler henüz kırmızı olabilir — DB gerekiyor)
+- [x] PDF başlıklarındaki HALDEFIYAT.COM → KAMANILAN.COM; `hf_ad_campaign` cookie → `ki_ad_campaign`
+- [x] Kabul: `bun run typecheck` yeşil (testler henüz kırmızı olabilir — DB gerekiyor)
 
 ## WP-3 — Konsolide DB şemaları (ALTER'sız)
 

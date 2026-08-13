@@ -1,4 +1,4 @@
-import { resolveImageUrl } from "@/lib/utils";
+import { getCategoryThumbnailUrl as resolveImageUrl } from "@/lib/image-url";
 import type { PublicBanner } from "@/lib/banners";
 import ResilientAdImage from "./ResilientAdImage";
 
