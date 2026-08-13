@@ -27,15 +27,33 @@ require_path "$ROOT_DIR/admin_panel/.next/static"
 require_path "$ROOT_DIR/backend/dist"
 require_path "$ROOT_DIR/backend/node_modules"
 
-# Frontend standalone bundle
-cp -R "$ROOT_DIR/frontend/public" "$RELEASE_DIR/frontend/public"
-cp -R "$ROOT_DIR/frontend/.next/standalone/." "$RELEASE_DIR/frontend/"
-cp -R "$ROOT_DIR/frontend/.next/static" "$RELEASE_DIR/frontend/.next/static"
+copy_next_standalone() {
+  local app_name="$1"
+  local standalone_dir="$ROOT_DIR/$app_name/.next/standalone"
+  local destination="$RELEASE_DIR/$app_name"
+  local server_path
 
-# Admin standalone bundle
-cp -R "$ROOT_DIR/admin_panel/public" "$RELEASE_DIR/admin_panel/public"
-cp -R "$ROOT_DIR/admin_panel/.next/standalone/." "$RELEASE_DIR/admin_panel/"
-cp -R "$ROOT_DIR/admin_panel/.next/static" "$RELEASE_DIR/admin_panel/.next/static"
+  # Keep the standalone dependency tree at the release root. In a workspace,
+  # Next.js places the actual app below <workspace>/<app>/server.js.
+  cp -R "$standalone_dir/." "$destination/"
+
+  if [[ ! -f "$destination/server.js" ]]; then
+    server_path="$(find "$standalone_dir" -path "*/$app_name/server.js" -print -quit)"
+    if [[ -z "$server_path" ]]; then
+      echo "Missing standalone server.js for $app_name" >&2
+      exit 1
+    fi
+    cp -R "$(dirname "$server_path")/." "$destination/"
+  fi
+
+  require_path "$destination/server.js"
+  cp -R "$ROOT_DIR/$app_name/public" "$destination/public"
+  mkdir -p "$destination/.next"
+  cp -R "$ROOT_DIR/$app_name/.next/static" "$destination/.next/static"
+}
+
+copy_next_standalone "frontend"
+copy_next_standalone "admin_panel"
 
 # Backend runtime bundle
 cp -R "$ROOT_DIR/backend/dist" "$RELEASE_DIR/backend/dist"
