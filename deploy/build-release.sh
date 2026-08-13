@@ -57,6 +57,8 @@ copy_next_standalone "admin_panel"
 
 # Backend runtime bundle
 cp -R "$ROOT_DIR/backend/dist" "$RELEASE_DIR/backend/dist"
+mkdir -p "$RELEASE_DIR/backend/dist/db/seed/sql"
+cp -R "$ROOT_DIR/backend/src/db/seed/sql/." "$RELEASE_DIR/backend/dist/db/seed/sql/"
 cp -R "$ROOT_DIR/backend/node_modules" "$RELEASE_DIR/backend/node_modules"
 cp "$ROOT_DIR/backend/package.json" "$RELEASE_DIR/backend/package.json"
 cp "$ROOT_DIR/backend/bun.lock" "$RELEASE_DIR/backend/bun.lock"
