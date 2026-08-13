@@ -38,6 +38,16 @@ export interface NewsSuggestionDto {
   status:          NewsSuggestionStatus;
   article_id:      number | null;
   reject_reason:   string | null;
+  ai_status:       'none' | 'queued' | 'done' | 'failed';
+  ai_title:        string | null;
+  ai_excerpt:      string | null;
+  ai_content:      string | null;
+  ai_meta_title:   string | null;
+  ai_meta_description: string | null;
+  ai_tags:         string | null;
+  image_brief:     string | null;
+  image_status:    'none' | 'waiting' | 'received' | 'attached';
+  internal_links:  string | null;
   created_at:      string;
   updated_at:      string;
 }
@@ -80,6 +90,14 @@ export interface SuggestionUpdatePayload {
   meta_title?:       string | null;
   meta_description?: string | null;
   original_pub_at?:  string | null;
+  ai_title?: string | null;
+  ai_excerpt?: string | null;
+  ai_content?: string | null;
+  ai_meta_title?: string | null;
+  ai_meta_description?: string | null;
+  ai_tags?: string | null;
+  image_brief?: string | null;
+  internal_links?: string | null;
 }
 
 export interface SuggestionApprovePayload {
@@ -114,6 +132,7 @@ export interface FetchResult {
 
 export interface AiEnhanceResult {
   ok:               boolean;
+  suggestion?:      NewsSuggestionDto;
   title?:           string;
   excerpt?:         string;
   content?:         string;

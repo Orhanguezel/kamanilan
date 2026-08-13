@@ -25,7 +25,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { COMMERCE_ENABLED } from "@/config/features";
 import { useRecentlyViewedStore } from "@/stores/recently-viewed-store";
 import type { Listing, ListingVariantValue } from "@/modules/listing/listing.types";
-import { trackConversion } from "@/lib/conversion-tracking";
+import { trackAttributedConversion } from "@/lib/conversion-tracking";
 
 function formatPrice(price: string | null, currency: string): string {
   if (!price || price === "0") return t("listing.free");
@@ -325,11 +325,11 @@ export function ListingDetail({ slug, initialListing }: ListingDetailProps) {
                 {callPhone && (
                   <a
                     href={`tel:${callPhone}`}
-                    onClick={() => trackConversion("click_phone", {
+                    onClick={() => trackAttributedConversion("phone_click", {
                       source: "listing_detail",
                       listing_id: listing.id,
                       category_id: listing.category_id,
-                    })}
+                    }, { eventType: "phone_click", entityType: "listing", entityId: listing.id })}
                     aria-label="İlan sahibini telefonla ara"
                     className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-saffron text-xs font-bold uppercase tracking-widest text-ink shadow-xl shadow-black/30 transition-all hover:scale-[1.02] active:scale-95"
                   >
@@ -340,18 +340,18 @@ export function ListingDetail({ slug, initialListing }: ListingDetailProps) {
                 {whatsappPhone && (
                   <a
                     href={`https://wa.me/${whatsappPhone.replace(/\D/g, "")}?text=${encodeURIComponent(`${listing.title} ilanınız hakkında bilgi almak istiyorum.`)}`}
-                    onClick={() => trackConversion("click_whatsapp", {
+                    onClick={() => trackAttributedConversion("whatsapp_click", {
                       source: "listing_detail",
                       listing_id: listing.id,
                       category_id: listing.category_id,
-                    })}
+                    }, { eventType: "whatsapp_click", entityType: "listing", entityId: listing.id })}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="İlan sahibine WhatsApp'tan yaz"
                     className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-[#25D366] text-xs font-bold uppercase tracking-widest text-white shadow-xl shadow-black/30 transition-all hover:scale-[1.02] active:scale-95"
                   >
                     <MessageCircle className="h-4 w-4" />
-                    WhatsApp'tan Yaz
+                    WhatsApp&apos;tan Yaz
                   </a>
                 )}
                 <p className="text-center text-[10px] leading-relaxed text-white/40">
@@ -415,6 +415,12 @@ export function ListingDetail({ slug, initialListing }: ListingDetailProps) {
           </Link>
         </div>
       </div>
+      {(callPhone || whatsappPhone) ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-2 border-t border-black/10 bg-paper/95 p-3 shadow-2xl backdrop-blur lg:hidden">
+          {callPhone ? <a href={`tel:${callPhone}`} onClick={() => trackAttributedConversion("phone_click", { source: "listing_detail_sticky", listing_id: listing.id, category_id: listing.category_id }, { eventType: "phone_click", entityType: "listing", entityId: listing.id })} className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-ink text-sm font-semibold text-white"><Phone className="size-4" /> Ara</a> : <span />}
+          {whatsappPhone ? <a href={`https://wa.me/${whatsappPhone.replace(/\D/g, "")}?text=${encodeURIComponent(`${listing.title} ilanınız hakkında bilgi almak istiyorum.`)}`} target="_blank" rel="noopener noreferrer" onClick={() => trackAttributedConversion("whatsapp_click", { source: "listing_detail_sticky", listing_id: listing.id, category_id: listing.category_id }, { eventType: "whatsapp_click", entityType: "listing", entityId: listing.id })} className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#25D366] text-sm font-semibold text-white"><MessageCircle className="size-4" /> WhatsApp</a> : <span />}
+        </div>
+      ) : null}
     </div>
   );
 }

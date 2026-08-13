@@ -27,6 +27,7 @@ export type AdminNavKey =
   | 'flash_sale'
   | 'popups'
   | 'banners'
+  | 'ads'
   | 'sliders'
   | 'menu_items'
   | 'footer_sections'
@@ -56,6 +57,7 @@ export type AdminNavKey =
   | 'articles'
   | 'news_sources'
   | 'news_suggestions'
+  | 'news_image_queue'
   | 'wallets'
   | 'coupons'
   // Faz 2 — toplu import + XML feed + photo queue

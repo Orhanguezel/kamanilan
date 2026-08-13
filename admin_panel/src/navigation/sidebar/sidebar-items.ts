@@ -131,6 +131,7 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
       { key: 'announcements', url: '/admin/announcements', icon: Megaphone },
       { key: 'articles', url: '/admin/articles', icon: FileText },
       { key: 'news_suggestions', url: '/admin/news-suggestions', icon: FileText },
+      { key: 'news_image_queue', url: '/admin/news-image-queue', icon: ImageDown },
       { key: 'news_sources', url: '/admin/news-sources', icon: FileText },
     ],
   },
@@ -158,6 +159,11 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
       {
         key: 'banners',
         url: '/admin/banners',
+        icon: Images,
+      },
+      {
+        key: 'ads',
+        url: '/admin/ads',
         icon: Images,
       },
       {
@@ -247,6 +253,7 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   flash_sale: 'Flash Sale',
   popups: 'Popups',
   banners: 'Banners',
+  ads: 'Reklamlar',
   sliders: 'Sliders',
   menu_items: 'Menu Items',
   footer_sections: 'Footer Sections',
@@ -277,6 +284,7 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   announcements: 'Duyurular',
   articles: 'Haberler',
   news_suggestions: 'Haber Önerileri',
+  news_image_queue: 'Haber Görsel Kuyruğu',
   news_sources: 'Haber Kaynakları',
   imports: 'Toplu Import',
   xml_feeds: 'XML Feed',

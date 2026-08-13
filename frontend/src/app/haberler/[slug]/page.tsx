@@ -6,6 +6,7 @@ import { ArticleDetailClient } from "./article-detail-client";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildNewsArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/json-ld";
 import { t } from "@/lib/t";
+import BannerSlot from "@/components/ads/BannerSlot";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -77,6 +78,7 @@ export default async function ArticleDetailPage({ params }: Props) {
           category:      article.category,
           siteName:      SITE_NAME,
           siteLogoUrl:   `${SITE_URL}/favicon/favicon.png`,
+          sourceUrl:     article.source_url,
         }),
         buildBreadcrumbJsonLd([
           { name: "Anasayfa", url: "/" },
@@ -90,6 +92,7 @@ export default async function ArticleDetailPage({ params }: Props) {
     <>
       <JsonLd data={jsonLd} id="article" />
       <ArticleDetailClient slug={slug} initialArticle={article} />
+      <BannerSlot position="news_detail_inline" context={{ page_type: "news_detail" }} />
     </>
   );
 }

@@ -72,7 +72,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: PROTECTED_PATHS,
       })),
     ],
-    sitemap: `${siteUrl}/sitemap.xml`,
+    sitemap: [`${siteUrl}/sitemap.xml`, `${siteUrl}/haberler-sitemap.xml`],
     host: siteUrl,
   };
 }

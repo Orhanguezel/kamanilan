@@ -12,6 +12,7 @@ import {
   buildBreadcrumbJsonLd,
 } from "@/lib/json-ld";
 import { ListingCard } from "@/components/listing/listing-card";
+import BannerSlot from "@/components/ads/BannerSlot";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -114,6 +115,7 @@ export default async function CategoryLandingPage({ params }: Props) {
           {listingCount > 0 ? ` Goruntulenen: ${listingCount} adet.` : " Ilanlar yakinda."}
         </p>
       </header>
+      <BannerSlot position="category_inline" context={{ category: slug }} className="mb-8" />
 
       {listings.length === 0 ? (
         <div className="text-center py-16">

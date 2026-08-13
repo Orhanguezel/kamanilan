@@ -12,6 +12,7 @@ import {
   index,
   uniqueIndex,
   customType,
+  text,
 } from "drizzle-orm/mysql-core";
 import { sql } from "drizzle-orm";
 
@@ -68,12 +69,24 @@ export const newsSuggestions = mysqlTable(
     status:          mysqlEnum("status", ["pending", "approved", "rejected"]).notNull().default("pending"),
     article_id:      int("article_id", { unsigned: true }),
     reject_reason:   varchar("reject_reason", { length: 500 }),
+    ai_status:       mysqlEnum("ai_status", ["none", "queued", "done", "failed"]).notNull().default("none"),
+    ai_title:        varchar("ai_title", { length: 500 }),
+    ai_excerpt:      varchar("ai_excerpt", { length: 2000 }),
+    ai_content:      longtext("ai_content"),
+    ai_meta_title:   varchar("ai_meta_title", { length: 255 }),
+    ai_meta_description: varchar("ai_meta_description", { length: 500 }),
+    ai_tags:         varchar("ai_tags", { length: 500 }),
+    image_brief:     text("image_brief"),
+    image_status:    mysqlEnum("image_status", ["none", "waiting", "received", "attached"]).notNull().default("none"),
+    internal_links:  text("internal_links"),
     created_at:      datetime("created_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`),
     updated_at:      datetime("updated_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)`),
   },
   (t) => ({
     uniq_source_url: uniqueIndex("uniq_nsugg_url").on(t.source_url),
     idx_status:      index("idx_nsugg_status").on(t.status),
+    idx_ai_status:   index("idx_nsugg_ai_status").on(t.ai_status),
+    idx_image_status:index("idx_nsugg_image_status").on(t.image_status),
     idx_source:      index("idx_nsugg_source").on(t.source_id),
     idx_article:     index("idx_nsugg_article").on(t.article_id),
     idx_created:     index("idx_nsugg_created").on(t.created_at),

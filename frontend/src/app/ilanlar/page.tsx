@@ -4,6 +4,7 @@ import { t } from "@/lib/t";
 import { ListingsFilters } from "@/components/listing/listings-filters";
 import { ListingsGrid } from "@/components/listing/listings-grid";
 import { ListingFilterSidebar } from "@/components/listing/listing-filter-sidebar";
+import BannerSlot from "@/components/ads/BannerSlot";
 
 export const metadata: Metadata = {
   title: t("seo.listings_title"),
@@ -16,6 +17,7 @@ export default function ListingsPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">{t("listing.all_listings")}</h1>
       </div>
+      <BannerSlot position="listings_top" className="-mx-4" />
 
       <div className="flex gap-6">
         {/* Sidebar — desktop only */}
@@ -23,6 +25,7 @@ export default function ListingsPage() {
           <Suspense>
             <ListingFilterSidebar />
           </Suspense>
+          <BannerSlot position="listings_sidebar" className="mt-6" />
         </aside>
 
         {/* Main content */}

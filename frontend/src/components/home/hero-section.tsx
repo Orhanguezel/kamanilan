@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Search } from "lucide-react";
 import type { SectionConfig } from "@/modules/theme/theme.type";
 import { useSlidersQuery } from "@/modules/site/site.service";
@@ -34,7 +35,7 @@ export function HeroSection({ config, initialSlides }: Props) {
   return (
     <>
       <section
-        className="relative overflow-hidden bg-gradient-to-b from-cream to-ivory pt-16 lg:pt-24 pb-12 md:pb-16 border-b border-border"
+        className="relative overflow-hidden bg-ivory border-b border-border"
         style={{ contain: "layout paint" }}
       >
         {/* Dekoratif gradient blob'lar — contain: strict ile CLS'ye katki sifir */}
@@ -49,16 +50,16 @@ export function HeroSection({ config, initialSlides }: Props) {
           style={{ contain: "strict", willChange: "transform" }}
         />
 
-        <div className="container relative z-10">
-          <div className="grid grid-cols-1 gap-12 lg:gap-20 lg:grid-cols-[1.2fr_1fr] items-center">
+        <div className="relative z-10 mx-auto max-w-[1600px]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch">
             
             {/* Sol: Copy / Editorial Content */}
-            <div className="flex flex-col items-start max-w-[680px]">
-              <div className="eyebrow mb-8">
+            <div className="flex min-h-[640px] flex-col items-start justify-center bg-ink px-6 py-16 sm:px-10 lg:px-[6vw] lg:py-20">
+              <div className="eyebrow mb-8 text-saffron before:bg-saffron">
                 {mainSlide.badgeText || "Regional Hub · 2026"}
               </div>
               
-              <h1 className="font-fraunces text-[clamp(44px,7vw,84px)] leading-[1.05] tracking-tight text-ink">
+              <h1 className="font-fraunces text-[clamp(44px,6vw,82px)] leading-[1.02] tracking-tight text-paper">
                 {mainSlide.title.split(' ').map((word, i) => {
                   const cleanWord = word.replace(/[:.,]/g, '');
                   const isHighlighted = ["Kaman", "Cevizi", "Hasat", "Hasadı"].some(h => cleanWord.includes(h));
@@ -66,7 +67,7 @@ export function HeroSection({ config, initialSlides }: Props) {
                   return (
                     <span key={i}>
                       {isHighlighted ? (
-                        <em className="inline-block relative not-italic font-medium text-saffron-2">
+                        <em className="inline-block relative not-italic font-medium text-saffron">
                           {word}
                           <span className="absolute bottom-[0.05em] left-0 right-0 h-[6px] bg-saffron/20 -z-10" />
                         </em>
@@ -76,7 +77,7 @@ export function HeroSection({ config, initialSlides }: Props) {
                 })}
               </h1>
 
-              <p className="mt-8 text-lg md:text-xl leading-relaxed text-text-2 max-w-[540px]">
+              <p className="mt-8 text-lg md:text-xl leading-relaxed text-parchment/80 max-w-[540px]">
                 {mainSlide.description || "Kaman'ın bereketli topraklarından sofranıza gelen en taze ve kaliteli ürünler."}
               </p>
 
@@ -102,9 +103,9 @@ export function HeroSection({ config, initialSlides }: Props) {
               </form>
 
               <div className="mt-6 flex flex-wrap gap-2.5 items-center">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-text-3 mr-2">Trendler:</span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-parchment/60 mr-2">Trendler:</span>
                 {["Satılık Arazi", "Yeni Mahsul", "Traktör"].map(tag => (
-                  <Link key={tag} href={`${ROUTES.LISTINGS}?q=${tag}`} className="px-4 py-1.5 rounded-full border border-border text-[12px] font-bold text-walnut hover:bg-ink hover:text-saffron transition-all">
+                  <Link key={tag} href={`${ROUTES.LISTINGS}?q=${tag}`} className="px-4 py-1.5 rounded-full border border-white/15 text-[12px] font-bold text-parchment hover:bg-saffron hover:text-ink transition-all">
                     {tag}
                   </Link>
                 ))}
@@ -112,20 +113,14 @@ export function HeroSection({ config, initialSlides }: Props) {
             </div>
 
             {/* Sağ: Editorial Visual Collage */}
-            <div className="relative h-[480px] md:h-[600px] w-full">
+            <div className="relative h-[520px] w-full bg-ivory md:h-[640px]">
               {/* Main Center Image */}
               <div className="absolute left-0 top-10 z-20 w-[65%] h-[75%] rounded-[32px] overflow-hidden shadow-2xl rotate-[-3deg] transition-all hover:rotate-0 hover:scale-[1.03]">
-                <picture>
-                  <source media="(max-width: 640px)" srcSet="/uploads/media/ceviz/kamancevizi-hero-mobile.webp" />
-                  <img src={items[0]?.image || "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb"} alt="Kaman cevizi yeni hasat" width={520} height={690} fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
-                </picture>
+                <Image src={items[0]?.image || "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb"} alt="Kaman cevizi yeni hasat" fill priority sizes="(max-width: 1024px) 65vw, 33vw" className="object-cover" />
               </div>
               {/* Secondary Floating Image */}
               <div className="absolute right-0 top-32 z-10 w-[55%] h-[55%] rounded-[24px] overflow-hidden shadow-2xl rotate-[5deg] transition-all hover:rotate-0 hover:scale-[1.03]">
-                <picture>
-                  <source media="(max-width: 640px)" srcSet="/uploads/media/ceviz/kamancevizi22-hero-mobile.webp" />
-                  <img src={mainSlide?.image2 || "https://images.unsplash.com/photo-1570129477492-45c003edd2be"} alt="Kaman cevizi ürünü" width={420} height={420} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-                </picture>
+                <Image src={mainSlide?.image2 || "https://images.unsplash.com/photo-1570129477492-45c003edd2be"} alt="Kaman cevizi ürünü" fill sizes="(max-width: 1024px) 55vw, 28vw" className="object-cover" />
               </div>
               {/* Stats Card Overlay */}
               <div className="absolute bottom-5 left-[25%] z-30 w-[55%] h-[180px] rounded-[24px] bg-ink p-8 flex flex-col items-center justify-center text-center shadow-3xl rotate-[-2deg] transition-all hover:rotate-0 hover:scale-105">

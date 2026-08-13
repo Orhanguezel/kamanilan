@@ -24,6 +24,7 @@ import {
 } from "./validation";
 import type { ArticleRow } from "./schema";
 import { buildAiChain, callAi, extractJson, wrapParagraphs } from "@/modules/_shared/aiChain";
+import { submitToIndexNow } from "@/modules/indexnow";
 
 function toAdminView(row: ArticleRow, coverUrl: string | null) {
   return {
@@ -94,6 +95,7 @@ export async function adminSetArticlePublished(req: FastifyRequest, reply: Fasti
   const { is_published } = setStatusSchema.parse(req.body);
   const r = await repoSetPublished(id, is_published);
   if (!r) return reply.code(404).send({ error: "not_found" });
+  if (is_published) void submitToIndexNow([`/haberler/${r.row.slug}`, "/haberler", "/haberler-sitemap.xml"]);
   return reply.send(toAdminView(r.row, r.cover_url));
 }
 

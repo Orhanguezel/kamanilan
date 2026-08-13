@@ -3,14 +3,11 @@
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { t } from "@/lib/t";
-import { Phone, Mail, MapPin, MessageCircle, ArrowRight } from "lucide-react";
+import { Mail, MapPin, MessageCircle, ArrowRight } from "lucide-react";
 import {
   useSiteSettingsQuery,
-  useMenuItemsQuery,
-  useFooterSectionsQuery,
   extractMediaUrl,
 } from "@/modules/site/site.service";
-import type { MenuItemDto, FooterSectionDto } from "@/modules/site/site.type";
 
 /* ── Inline SVG marka ikonları (lucide-react deprecated) ── */
 function IconFacebook({ className }: { className?: string }) {
@@ -62,32 +59,11 @@ export function Footer() {
   const brandLogoText    = cfg?.brand_logo_text        as string | undefined;
   const brandName        = (cfg?.brand_name            as string) ?? "Kaman İlan";
   const brandDisplayName = (cfg?.brand_display_name    as string) ?? brandName;
-  const phoneDisplay     = cfg?.contact_phone_display  as string | undefined;
-  const phoneTel         = (cfg?.contact_phone_tel     as string) ?? phoneDisplay;
   const email            = cfg?.contact_email          as string | undefined;
-  const address          = cfg?.contact_address        as string | undefined;
   const whatsapp         = cfg?.contact_whatsapp_link  as string | undefined;
-  const whatsappDisplay  = cfg?.contact_whatsapp_display as string | undefined;
   const facebookUrl      = cfg?.social_facebook_url    as string | undefined;
   const instagramUrl     = cfg?.social_instagram_url   as string | undefined;
   const twitterUrl       = cfg?.social_twitter_url     as string | undefined;
-
-  /* ── Footer bölümleri + linkleri (DB'den) ─────────────── */
-  const { data: rawSections = [] } = useFooterSectionsQuery();
-  const { data: rawItems    = [] } = useMenuItemsQuery("footer");
-
-  const sections = (rawSections as FooterSectionDto[])
-    .filter((s) => s.is_active)
-    .sort((a, b) => a.display_order - b.display_order);
-
-  const allItems = (rawItems as MenuItemDto[])
-    .filter((i) => i.is_active)
-    .sort((a, b) => a.order_num - b.order_num);
-
-  const itemsBySection = (sectionId: string) =>
-    allItems.filter((i) => i.section_id === sectionId && !i.parent_id);
-
-  const showStaticLinks = sections.length === 0;
 
   return (
     <footer className="bg-ink text-parchment pt-24 pb-12 border-t border-white/5">
@@ -161,30 +137,8 @@ export function Footer() {
             </div>
           </div>
 
-          {/* ── 2-3. DB FOOTER BÖLÜMLERİ (dinamik) ───────────────── */}
-          {sections.length > 0
-            ? sections.slice(0, 2).map((section) => {
-                const items = itemsBySection(section.id);
-                if (items.length === 0) return null;
-                return (
-                  <div key={section.id}>
-                    <h3 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
-                      {section.title}
-                    </h3>
-                    <ul className="space-y-4 text-sm">
-                      {items.map((item) => (
-                        <li key={item.id}>
-                          <Link href={item.url || "#"} className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">
-                            {item.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })
-            : showStaticLinks && (
-              <>
+          {/* Birleştirilen kurumsal içerik için tek, kanonik bağlantı kümesi. */}
+          <>
                 <div>
                   <h3 className="font-fraunces text-lg font-medium tracking-tight mb-8 text-saffron">
                     {t("footer.quick_links")}
@@ -208,8 +162,7 @@ export function Footer() {
                     <li><Link href={ROUTES.PRIVACY}  className="opacity-70 hover:opacity-100 hover:text-saffron transition-all">{t("footer.privacy")}</Link></li>
                   </ul>
                 </div>
-              </>
-            )}
+          </>
 
           {/* ── 4. İLETİŞİM (site_settings'den) ──────────────────── */}
           <div>
@@ -217,12 +170,10 @@ export function Footer() {
               İletişim
             </h3>
             <ul className="space-y-4 text-sm">
-              {address && (
-                <li className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-saffron" />
-                  <span className="opacity-70 leading-relaxed max-w-[200px]">{address}</span>
-                </li>
-              )}
+              <li className="flex items-start gap-3">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-saffron" />
+                <span className="opacity-70 leading-relaxed max-w-[200px]">Kaman, Kırşehir</span>
+              </li>
               {email && (
                 <li className="flex items-center gap-3">
                   <Mail className="h-4 w-4 shrink-0 text-saffron" />

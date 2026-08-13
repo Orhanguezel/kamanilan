@@ -1,11 +1,13 @@
+import { trackAdConversion, type AdConversionEvent } from "./ad-conversions";
+
 export type ConversionEventName =
   | "sign_up"
   | "login"
   | "generate_lead"
   | "listing_submit"
   | "seller_application_submit"
-  | "click_phone"
-  | "click_whatsapp";
+  | "phone_click"
+  | "whatsapp_click";
 
 export type ConversionEventParams = Record<
   string,
@@ -48,4 +50,25 @@ export function trackConversion(
 
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push({ event: eventName, ...payload });
+}
+
+export type AttributedConversion = {
+  eventType: AdConversionEvent;
+  entityType: "listing" | "seller" | "product";
+  entityId: string | number;
+};
+
+/**
+ * Records one user action in the two intentionally separate destinations:
+ * GA4/Google Ads for marketing and the ad engine for sponsor attribution.
+ */
+export function trackAttributedConversion(
+  eventName: ConversionEventName,
+  params: ConversionEventParams,
+  attribution?: AttributedConversion,
+): void {
+  trackConversion(eventName, params);
+  if (attribution) {
+    trackAdConversion(attribution.eventType, attribution.entityType, attribution.entityId);
+  }
 }

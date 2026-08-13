@@ -16,6 +16,7 @@ import {
 import { t } from "@/lib/t";
 import { useActiveListingCountQuery, useSiteSettingsQuery } from "@/modules/site/site.service";
 import { ROUTES } from "@/config/routes";
+import { SelfServiceRequest } from "./self-service-request";
 
 /* ─── Reklam konumları ────────────────────────────────────────────── */
 
@@ -290,6 +291,10 @@ export default function ReklamVerPage() {
              </div>
           </div>
         </div>
+      </section>
+
+      <section className="pb-24">
+        <div className="container max-w-3xl"><SelfServiceRequest /></div>
       </section>
 
     </main>

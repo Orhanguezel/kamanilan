@@ -167,6 +167,14 @@ export const newsAggregatorApi = baseApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+    listNewsImageQueueAdmin: builder.query<NewsSuggestionDto[], void>({
+      query: () => '/admin/news-suggestions/image-queue',
+      providesTags: ['NewsSuggestions'],
+    }),
+    bulkAiRewriteNewsSuggestionsAdmin: builder.mutation<{ results: Array<{ id: number; ok: boolean; error?: string }> }, number[]>({
+      query: (ids) => ({ url: '/admin/news-suggestions/ai-rewrite-bulk', method: 'POST', body: { ids } }),
+      invalidatesTags: ['NewsSuggestions'],
+    }),
 
     // ──────────────────────────────────────────────────────
     // LIVE FEED (no DB save)
@@ -229,6 +237,8 @@ export const {
   useDeleteNewsSuggestionAdminMutation,
   useFetchSourceNewsSuggestionAdminMutation,
   useAiEnhanceNewsSuggestionAdminMutation,
+  useListNewsImageQueueAdminQuery,
+  useBulkAiRewriteNewsSuggestionsAdminMutation,
   // Live feed
   useListLiveFeedAdminQuery,
   useLazyListLiveFeedAdminQuery,

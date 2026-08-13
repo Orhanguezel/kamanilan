@@ -6,6 +6,7 @@ import { API_ENDPOINTS } from "@/endpoints/api-endpoints";
 import type { Listing } from "@/modules/listing/listing.types";
 import { ListingDetail } from "@/components/listing/listing-detail";
 import { JsonLd } from "@/components/seo/json-ld";
+import BannerSlot from "@/components/ads/BannerSlot";
 import {
   buildPropertyJsonLd,
   buildBreadcrumbJsonLd,
@@ -115,6 +116,7 @@ export default async function ListingDetailPage({ params }: Props) {
     <div className="container mx-auto px-4 py-8">
       <JsonLd data={jsonLd} id="listing" />
       <ListingDetail slug={slug} initialListing={listing} />
+      <BannerSlot position="listing_detail_below" context={{ listing: listing?.id ?? null, category: listing?.category_id ?? null }} />
     </div>
   );
 }

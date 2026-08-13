@@ -37,10 +37,22 @@ CREATE TABLE IF NOT EXISTS `news_suggestions` (
   `status`       ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
   `article_id`   INT UNSIGNED NULL COMMENT 'Onaylanınca oluşturulan articles.id',
   `reject_reason` VARCHAR(500) NULL,
+  `ai_status` ENUM('none','queued','done','failed') NOT NULL DEFAULT 'none',
+  `ai_title` VARCHAR(500) NULL,
+  `ai_excerpt` VARCHAR(2000) NULL,
+  `ai_content` LONGTEXT NULL,
+  `ai_meta_title` VARCHAR(255) NULL,
+  `ai_meta_description` VARCHAR(500) NULL,
+  `ai_tags` VARCHAR(500) NULL,
+  `image_brief` TEXT NULL,
+  `image_status` ENUM('none','waiting','received','attached') NOT NULL DEFAULT 'none',
+  `internal_links` TEXT NULL,
   `created_at`   DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updated_at`   DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   UNIQUE KEY `uniq_nsugg_url` (`source_url`(500)),
   KEY `idx_nsugg_status`    (`status`),
+  KEY `idx_nsugg_ai_status` (`ai_status`),
+  KEY `idx_nsugg_image_status` (`image_status`),
   KEY `idx_nsugg_source`    (`source_id`),
   KEY `idx_nsugg_article`   (`article_id`),
   KEY `idx_nsugg_created`   (`created_at`)
@@ -59,3 +71,7 @@ INSERT IGNORE INTO `news_sources` (`name`, `url`, `source_type`, `is_enabled`, `
   ('Kırşehir Haber Türk - Asayiş',   'https://www.kirsehirhaberturk.com/rss/asayis.xml',                               'rss', 1, 30,  8),
   ('Son Dakika - Kaman',             'https://www.sondakika.com/kaman/rss/',                                           'rss', 1, 30,  9),
   ('Kırşehir Haber 40',              'https://kirsehirhaber40.com/rss',                                                'rss', 1, 30, 10);
+
+INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_at`)
+VALUES (UUID(), 'news_auto_publish', '*', 'false', NOW(3), NOW(3))
+ON DUPLICATE KEY UPDATE `key`=VALUES(`key`);

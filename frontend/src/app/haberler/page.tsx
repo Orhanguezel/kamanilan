@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ArticlesListClient } from "./articles-list-client";
+import BannerSlot from "@/components/ads/BannerSlot";
 
 export const metadata: Metadata = {
   title: "Haberler",
@@ -8,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function HaberlerPage() {
-  return <ArticlesListClient />;
+  return <><BannerSlot position="news_top" /><ArticlesListClient /></>;
 }

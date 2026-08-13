@@ -20,6 +20,7 @@ import { startNewsAggregatorCron } from '@/modules/newsAggregator/cron';
 import { startXmlFeedCron } from '@/modules/xmlFeeds/cron';
 // Foto indirme kuyrugu cron
 import { startPhotoDownloadCron } from '@/modules/photoQueue/cron';
+import { startAdCron } from '@/modules/ads/cron';
 
 export async function createApp() {
   const { default: buildFastify } = (await import('fastify')) as unknown as {
@@ -93,6 +94,7 @@ export async function createApp() {
   startXmlFeedCron();
   // Foto indirme kuyrugu cron'unu baslat
   startPhotoDownloadCron();
+  startAdCron(app);
 
   return app;
 }

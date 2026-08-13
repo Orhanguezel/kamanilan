@@ -18,6 +18,8 @@ import {
   repoDeleteSuggestion,
   repoGetBlockedFeedUrls,
   repoInsertDismissedUrl,
+  repoSetSuggestionAiStatus,
+  repoListImageQueue,
 } from "./repository";
 import {
   sourcesListQuerySchema,
@@ -34,6 +36,7 @@ import { fetchSource } from "./fetchService";
 import { fetchRssFeed, fetchOgData, fetchArticleContent } from "./fetcher";
 import { repoCreate as repoCreateArticle } from "@/modules/articles/repository";
 import { buildAiChain, callAi, extractJson, wrapParagraphs } from "@/modules/_shared/aiChain";
+import { rewriteSuggestionWithAi } from "./aiRewrite";
 
 // ──────────────────────────────────────────────────────────────
 // HELPERS
@@ -436,21 +439,30 @@ export async function adminApproveSuggestion(req: FastifyRequest, reply: Fastify
     return reply.code(409).send({ error: "already_approved", article_id: sug.article_id });
   }
 
-  const title = (sug.title ?? "").trim();
+  const title = (sug.ai_title ?? sug.title ?? "").trim();
   if (!title) return reply.code(422).send({ error: "title_required" });
 
   const slug = makeSlug(title, sug.id);
 
-  const cleanExcerpt = sug.excerpt
-    ? sug.excerpt.replace(/<[^>]+>/g, " ").replace(/\s{2,}/g, " ").trim().slice(0, 500) || undefined
+  const selectedExcerpt = sug.ai_excerpt ?? sug.excerpt;
+  const cleanExcerpt = selectedExcerpt
+    ? selectedExcerpt.replace(/<[^>]+>/g, " ").replace(/\s{2,}/g, " ").trim().slice(0, 500) || undefined
     : undefined;
+  let articleContent = sug.ai_content ?? sug.content ?? undefined;
+  if (sug.internal_links) {
+    try {
+      const links = JSON.parse(sug.internal_links) as Array<{ label: string; url: string }>;
+      const safeLinks = links.filter((link) => link.url.startsWith("/")).slice(0, 4);
+      if (safeLinks.length >= 2) articleContent = `${articleContent ?? ""}<aside aria-label="İlgili bağlantılar"><h2>İlgili bağlantılar</h2><ul>${safeLinks.map((link) => `<li><a href="${link.url}">${link.label}</a></li>`).join("")}</ul></aside>`;
+    } catch { /* invalid legacy value: publish without links */ }
+  }
 
   const created = await repoCreateArticle({
     locale:           "tr",
     title,
     slug,
     excerpt:          cleanExcerpt,
-    content:          sug.content   ?? undefined,
+    content:          articleContent,
     category:         (body.category ?? sug.category ?? "genel") as any,
     cover_image_url:  sug.image_url  ?? undefined,
     alt:              undefined,
@@ -458,10 +470,10 @@ export async function adminApproveSuggestion(req: FastifyRequest, reply: Fastify
     author:           sug.author    ?? undefined,
     source:           sug.source_name ?? undefined,
     source_url:       sug.source_url  ?? undefined,
-    tags:             (body.tags ?? sug.tags) ?? undefined,
+    tags:             (body.tags ?? sug.ai_tags ?? sug.tags) ?? undefined,
     reading_time:     0,
-    meta_title:       body.meta_title       ?? undefined,
-    meta_description: body.meta_description ?? undefined,
+    meta_title:       body.meta_title ?? sug.ai_meta_title ?? undefined,
+    meta_description: body.meta_description ?? sug.ai_meta_description ?? undefined,
     is_published:     0,
     is_featured:      body.is_featured ?? 0,
     display_order:    0,
@@ -520,81 +532,46 @@ export async function adminFetchSuggestionFromSource(req: FastifyRequest, reply:
 
 /** AI ile haber içeriğini geliştir → provider zinciri ile fallback */
 export async function adminAiEnhanceSuggestion(req: FastifyRequest, reply: FastifyReply) {
-  const chain = await buildAiChain();
-  if (!chain.length) {
-    return reply.code(503).send({ error: "ai_not_configured" });
-  }
-
   const { id } = idParamSchema.parse(req.params);
   const sug    = await repoGetSuggestionById(id);
   if (!sug) return reply.code(404).send({ error: "not_found" });
+  await repoSetSuggestionAiStatus(id, "queued");
+  try {
+    const result = await rewriteSuggestionWithAi(sug);
+    const updated = await repoSetSuggestionAiStatus(id, "done", {
+      ai_title: result.title, ai_excerpt: result.excerpt, ai_content: result.content,
+      ai_meta_title: result.meta_title, ai_meta_description: result.meta_description,
+      ai_tags: result.tags.join(", "), image_brief: result.image_brief,
+      internal_links: JSON.stringify(result.internal_links), image_status: "waiting",
+    });
+    return reply.send({ ok: true, suggestion: updated });
+  } catch (error) {
+    await repoSetSuggestionAiStatus(id, "failed");
+    const message = error instanceof Error ? error.message : String(error);
+    return reply.code(message === "ai_not_configured" ? 503 : 422).send({ error: message });
+  }
+}
 
-  const title    = (sug.title    ?? "").trim();
-  const category = (sug.category ?? "genel").trim();
-  const excerpt  = (sug.excerpt  ?? "").trim();
-  const content  = (sug.content  ?? "").slice(0, 3000).trim();
-  const tags     = (sug.tags     ?? "").trim();
-  const sourceUrl = sug.source_url ?? "";
-
-  const systemPrompt = `Sen bir profesyonel Türkçe haber editörüsün.
-Kullanıcı sana ham haber verisi verecek.
-Sen bu veriyi kullanarak SEO uyumlu, okunması kolay, kapsamlı bir haber makalesi yazacaksın.
-SADECE JSON formatında yanıt ver, başka hiçbir metin ekleme.`;
-
-  const userPrompt = `Aşağıdaki haber verisini kullanarak SEO uyumlu bir haber makalesi yaz.
-
-MEVCUT VERİ:
-Başlık: ${title || "(yok)"}
-Kategori: ${category}
-Özet: ${excerpt || "(yok)"}
-İçerik: ${content || "(yok)"}
-Mevcut etiketler: ${tags || "(yok)"}
-Kaynak URL: ${sourceUrl}
-
-GÖREVLER:
-1. title: Dikkat çekici, SEO uyumlu başlık yaz (60-70 karakter arası)
-2. excerpt: Kısa özet (150-160 karakter, haber ne hakkında olduğunu açıkça belirt)
-3. content: Haberi genişlet ve detaylandır. Minimum 500 kelime. SADECE DÜZ METİN yaz (HTML etiketi kullanma). Paragrafları iki boş satırla (\\n\\n) ayır. Giriş, gelişme ve sonuç bölümleri olsun.
-4. meta_title: Arama motoru başlık etiketi (50-60 karakter, anahtar kelime içermeli)
-5. meta_description: Arama motoru meta açıklaması (150-160 karakter)
-6. tags: Virgülle ayrılmış 5-7 adet SEO etiketi (küçük harf, Türkçe)
-
-ÇIKTI (sadece bu JSON, başka metin yok):
-{
-  "title": "...",
-  "excerpt": "...",
-  "content": "...",
-  "meta_title": "...",
-  "meta_description": "...",
-  "tags": "..."
-}`;
-
-  let lastErr: Error | null = null;
-
-  for (const { provider, apiKey, apiBase, model } of chain) {
+export async function adminBulkAiRewrite(req: FastifyRequest, reply: FastifyReply) {
+  const body = req.body as { ids?: number[] };
+  const ids = Array.from(new Set(body.ids ?? [])).filter(Number.isInteger).slice(0, 25);
+  const results = [];
+  for (const id of ids) {
+    const sug = await repoGetSuggestionById(id);
+    if (!sug) { results.push({ id, ok: false, error: "not_found" }); continue; }
+    await repoSetSuggestionAiStatus(id, "queued");
     try {
-      req.log.info(`[AI enhance] trying ${provider} (${model})`);
-      const raw    = await callAi(apiBase, apiKey, model, provider, systemPrompt, userPrompt);
-      const parsed = extractJson(raw);
-
-      return reply.send({
-        ok:               true,
-        title:            typeof parsed.title            === "string" ? parsed.title.slice(0, 500)            : undefined,
-        excerpt:          typeof parsed.excerpt          === "string" ? parsed.excerpt.slice(0, 2000)          : undefined,
-        content:          typeof parsed.content          === "string" ? wrapParagraphs(parsed.content)         : undefined,
-        meta_title:       typeof parsed.meta_title       === "string" ? parsed.meta_title.slice(0, 500)        : undefined,
-        meta_description: typeof parsed.meta_description === "string" ? parsed.meta_description.slice(0, 500)  : undefined,
-        tags:             typeof parsed.tags             === "string" ? parsed.tags.slice(0, 500)              : undefined,
-      });
-    } catch (err: unknown) {
-      lastErr = err instanceof Error ? err : new Error(String(err));
-      req.log.warn(`[AI enhance] ${provider} failed: ${lastErr.message} — trying next...`);
+      const value = await rewriteSuggestionWithAi(sug);
+      await repoSetSuggestionAiStatus(id, "done", { ai_title: value.title, ai_excerpt: value.excerpt, ai_content: value.content, ai_meta_title: value.meta_title, ai_meta_description: value.meta_description, ai_tags: value.tags.join(", "), image_brief: value.image_brief, internal_links: JSON.stringify(value.internal_links), image_status: "waiting" });
+      results.push({ id, ok: true });
+    } catch (error) {
+      await repoSetSuggestionAiStatus(id, "failed");
+      results.push({ id, ok: false, error: error instanceof Error ? error.message : String(error) });
     }
   }
+  return reply.send({ results });
+}
 
-  req.log.error(lastErr, "[AI enhance] all providers failed");
-  return reply.code(422).send({
-    error:   "ai_parse_failed",
-    message: lastErr?.message ?? "Tüm AI sağlayıcıları başarısız oldu.",
-  });
+export async function adminListImageQueue(_req: FastifyRequest, reply: FastifyReply) {
+  return reply.send(await repoListImageQueue());
 }

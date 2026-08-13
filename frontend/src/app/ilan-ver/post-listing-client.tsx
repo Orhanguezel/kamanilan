@@ -344,6 +344,12 @@ export function PostListingClient({ translations: tr }: Props) {
 
     setLimitError(false);
     setSubmitError(null);
+    const conversionContext = {
+      category_id: selectedCategory?.id,
+      listing_status: form.status,
+      has_images: images.length > 0,
+    };
+    trackConversion("listing_submit", { ...conversionContext, submission_state: "start" });
 
     try {
       let uploadedUrls: string[] = [];
@@ -377,6 +383,11 @@ export function PostListingClient({ translations: tr }: Props) {
 
           setSubmitState("error");
           setSubmitError(reason);
+          trackConversion("listing_submit", {
+            ...conversionContext,
+            submission_state: "error",
+            error_stage: "image_upload",
+          });
           toast.error(reason);
           window.scrollTo({ top: 0, behavior: "smooth" });
           return;
@@ -401,9 +412,9 @@ export function PostListingClient({ translations: tr }: Props) {
       });
 
       trackConversion("listing_submit", {
+        ...conversionContext,
+        submission_state: "success",
         listing_id: createdListing?.id,
-        category_id: selectedCategory?.id,
-        listing_status: form.status,
         has_images: uploadedUrls.length > 0,
       });
 
@@ -412,6 +423,12 @@ export function PostListingClient({ translations: tr }: Props) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } })?.response?.status;
+      trackConversion("listing_submit", {
+        ...conversionContext,
+        submission_state: "error",
+        error_stage: "listing_create",
+        error_status: status,
+      });
       if (status === 403) {
         setLimitError(true);
         setSubmitState("idle");

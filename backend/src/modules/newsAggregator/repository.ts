@@ -202,8 +202,27 @@ export async function repoUpdateSuggestion(id: number, b: SuggestionUpdateBody) 
   if (b.category        !== undefined) set.category        = b.category;
   if (b.tags            !== undefined) set.tags            = b.tags;
   if (b.original_pub_at !== undefined) set.original_pub_at = b.original_pub_at ? new Date(b.original_pub_at) : null;
+  for (const key of ["ai_title", "ai_excerpt", "ai_content", "ai_meta_title", "ai_meta_description", "ai_tags", "image_brief", "internal_links"] as const) {
+    if (b[key] !== undefined) set[key] = b[key];
+  }
 
   await db.update(newsSuggestions).set(set as any).where(eq(newsSuggestions.id, id));
+  return repoGetSuggestionById(id);
+}
+
+export async function repoSetSuggestionAiStatus(id: number, status: "queued" | "done" | "failed", values: Record<string, unknown> = {}) {
+  await db.update(newsSuggestions).set({ ai_status: status, ...values, updated_at: sql`CURRENT_TIMESTAMP(3)` } as any).where(eq(newsSuggestions.id, id));
+  return repoGetSuggestionById(id);
+}
+
+export async function repoListImageQueue() {
+  return db.select().from(newsSuggestions)
+    .where(eq(newsSuggestions.image_status, "waiting"))
+    .orderBy(asc(newsSuggestions.created_at));
+}
+
+export async function repoAttachSuggestionImage(id: number, imageUrl: string) {
+  await db.update(newsSuggestions).set({ image_url: imageUrl, image_status: "received", updated_at: sql`CURRENT_TIMESTAMP(3)` } as any).where(eq(newsSuggestions.id, id));
   return repoGetSuggestionById(id);
 }
 

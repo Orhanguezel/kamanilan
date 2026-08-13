@@ -65,15 +65,19 @@ export default function AdminNewsSuggestionDetailClient({ id }: { id: string }) 
   React.useEffect(() => {
     if (sug && !initialized.current) {
       setForm({
-        title:            sug.title          ?? "",
-        excerpt:          sug.excerpt        ?? "",
-        content:          sug.content        ?? "",
+        title:            sug.ai_title       ?? sug.title ?? "",
+        excerpt:          sug.ai_excerpt     ?? sug.excerpt ?? "",
+        content:          sug.ai_content     ?? sug.content ?? "",
         image_url:        sug.image_url      ?? "",
         author:           sug.author         ?? "",
         category:         sug.category       ?? "genel",
-        tags:             sug.tags           ?? "",
-        meta_title:       "",
-        meta_description: "",
+        tags:             sug.ai_tags        ?? sug.tags ?? "",
+        meta_title:       sug.ai_meta_title ?? "",
+        meta_description: sug.ai_meta_description ?? "",
+        ai_title: sug.ai_title, ai_excerpt: sug.ai_excerpt, ai_content: sug.ai_content,
+        ai_tags: sug.ai_tags, ai_meta_title: sug.ai_meta_title,
+        ai_meta_description: sug.ai_meta_description, image_brief: sug.image_brief,
+        internal_links: sug.internal_links,
         original_pub_at:  sug.original_pub_at ?? null,
       });
       initialized.current = true;
@@ -104,14 +108,17 @@ export default function AdminNewsSuggestionDetailClient({ id }: { id: string }) 
   async function handleAiEnhance() {
     try {
       const result = await aiEnhance(numId).unwrap();
+      const ai = result.suggestion;
       setForm((prev) => ({
         ...prev,
-        ...(result.title            ? { title:            result.title            } : {}),
-        ...(result.excerpt          ? { excerpt:          result.excerpt          } : {}),
-        ...(result.content          ? { content:          result.content          } : {}),
-        ...(result.tags             ? { tags:             result.tags             } : {}),
-        ...(result.meta_title       ? { meta_title:       result.meta_title       } : {}),
-        ...(result.meta_description ? { meta_description: result.meta_description } : {}),
+        ...(ai?.ai_title ? { title: ai.ai_title, ai_title: ai.ai_title } : {}),
+        ...(ai?.ai_excerpt ? { excerpt: ai.ai_excerpt, ai_excerpt: ai.ai_excerpt } : {}),
+        ...(ai?.ai_content ? { content: ai.ai_content, ai_content: ai.ai_content } : {}),
+        ...(ai?.ai_tags ? { tags: ai.ai_tags, ai_tags: ai.ai_tags } : {}),
+        ...(ai?.ai_meta_title ? { meta_title: ai.ai_meta_title, ai_meta_title: ai.ai_meta_title } : {}),
+        ...(ai?.ai_meta_description ? { meta_description: ai.ai_meta_description, ai_meta_description: ai.ai_meta_description } : {}),
+        ...(ai?.image_brief ? { image_brief: ai.image_brief } : {}),
+        ...(ai?.internal_links ? { internal_links: ai.internal_links } : {}),
       }));
       toast.success(t("messages.aiEnhanced"));
     } catch (err: any) {
@@ -133,6 +140,14 @@ export default function AdminNewsSuggestionDetailClient({ id }: { id: string }) 
       category:        (form.category as string)?.trim() || undefined,
       tags:            (form.tags     as string)?.trim() || undefined,
       original_pub_at: form.original_pub_at || null,
+      ai_title: form.ai_title ?? null,
+      ai_excerpt: form.ai_excerpt ?? null,
+      ai_content: form.ai_content ?? null,
+      ai_meta_title: form.ai_meta_title ?? null,
+      ai_meta_description: form.ai_meta_description ?? null,
+      ai_tags: form.ai_tags ?? null,
+      image_brief: form.image_brief ?? null,
+      internal_links: form.internal_links ?? null,
     };
     try {
       await updateSuggestion({ id: numId, patch }).unwrap();
@@ -216,6 +231,8 @@ export default function AdminNewsSuggestionDetailClient({ id }: { id: string }) 
         <Link href="/admin/news-suggestions" className="rounded-md border px-3 py-1.5 text-xs">
           {t("actions.backToList")}
         </Link>
+        <span className="rounded-full border px-2 py-0.5 text-[11px]">AI: {sug.ai_status}</span>
+        <span className="rounded-full border px-2 py-0.5 text-[11px]">Görsel: {sug.image_status}</span>
 
         {sug.status === "approved" && (
           <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-[11px] text-green-700">

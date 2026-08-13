@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -19,7 +19,7 @@ import { ROUTES } from "@/config/routes";
 import { API_ENDPOINTS } from "@/endpoints/api-endpoints";
 import { getApiBaseUrl } from "@/lib/api-url";
 import { normalizeContactPhone } from "./contact.utils";
-import { trackConversion } from "@/lib/conversion-tracking";
+import { trackAttributedConversion } from "@/lib/conversion-tracking";
 
 interface ContactTranslations {
   contact: string;
@@ -72,20 +72,20 @@ export function ContactPageClient({
   detailsSection,
   translations: t,
 }: ContactPageClientProps) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  const [listingReference] = useState(() => {
+    if (typeof window === "undefined") return null;
+    return new URLSearchParams(window.location.search).get("ilan")?.trim() || null;
+  });
+  const [form, setForm] = useState(() => ({
+    name: "",
+    email: "",
+    phone: "",
+    message: listingReference
+      ? `${listingReference} referanslı ilan hakkında bilgi almak istiyorum.`
+      : "",
+  }));
   const [phoneCode, setPhoneCode] = useState("+90");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [listingReference, setListingReference] = useState<string | null>(null);
-
-  useEffect(() => {
-    const listingReference = new URLSearchParams(window.location.search).get("ilan")?.trim();
-    if (!listingReference) return;
-    setListingReference(listingReference);
-
-    setForm((current) => current.message
-      ? current
-      : { ...current, message: `${listingReference} referanslı ilan hakkında bilgi almak istiyorum.` });
-  }, []);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -110,10 +110,14 @@ export function ContactPageClient({
       }
 
       setStatus("success");
-      trackConversion("generate_lead", {
+      trackAttributedConversion("generate_lead", {
         lead_type: "contact_form",
         listing_reference: listingReference || undefined,
-      });
+      }, listingReference ? {
+        eventType: "offer_submit",
+        entityType: "listing",
+        entityId: listingReference,
+      } : undefined);
       setForm({ name: "", email: "", phone: "", message: "" });
     } catch {
       setStatus("error");
@@ -257,7 +261,7 @@ export function ContactPageClient({
                 {detailsSection.phone ? (
                   <a
                     href={`tel:${detailsSection.phone}`}
-                    onClick={() => trackConversion("click_phone", { source: "contact_page" })}
+                    onClick={() => trackAttributedConversion("phone_click", { source: "contact_page" })}
                     className="flex items-center gap-1.5 hover:text-[hsl(var(--col-saffron-2))]"
                   >
                     <Phone className="h-3.5 w-3.5" /> {detailsSection.phone}

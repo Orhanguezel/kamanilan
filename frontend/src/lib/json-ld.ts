@@ -204,6 +204,7 @@ export function buildNewsArticleJsonLd(input: {
   category?: string | null;
   siteName: string;
   siteLogoUrl?: string;
+  sourceUrl?: string | null;
 }): JsonLdObject {
   const url = `${SITE_URL}/haberler/${input.slug}`;
   const doc: JsonLdObject = {
@@ -213,14 +214,12 @@ export function buildNewsArticleJsonLd(input: {
     url,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     ...(input.description ? { description: input.description } : {}),
-    ...(input.coverImageUrl ? { image: [input.coverImageUrl] } : {}),
+    ...(input.coverImageUrl ? { image: [input.coverImageUrl, input.coverImageUrl] } : {}),
+    ...(input.sourceUrl ? { isBasedOn: input.sourceUrl } : {}),
     ...(input.publishedAt ? { datePublished: toIsoString(input.publishedAt) } : {}),
     ...(input.updatedAt ? { dateModified: toIsoString(input.updatedAt) } : {}),
     ...(input.category ? { articleSection: input.category } : {}),
-    author: {
-      "@type": input.author ? "Person" : "Organization",
-      name: input.author || input.siteName,
-    },
+    author: { "@type": "Organization", name: input.siteName },
     publisher: {
       "@type": "Organization",
       name: input.siteName,

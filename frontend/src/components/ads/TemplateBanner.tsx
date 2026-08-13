@@ -37,7 +37,7 @@ export default function TemplateBanner({ banner, href, sidebar }: {
           <ResilientAdImage src={resolveImageUrl(config.logoUrl)} alt="" className="mb-2 max-h-8 max-w-28 object-contain object-left" hideOnError />
         ) : null}
         <span className="text-[10px] font-bold uppercase tracking-[.16em]" style={{ color: config.accentColor || "#8ef05b" }}>
-          {template === "firm" ? "Sponsor firma" : template === "listing" ? "Sponsorlu ilan" : template === "sponsorship" ? "Ürün sponsorluğu" : "Sponsorlu"}
+          {template === "seller" ? "Sponsor mağaza" : template === "listing" ? "Sponsorlu ilan" : template === "sponsorship" ? "Ürün sponsorluğu" : "Sponsorlu"}
         </span>
         <strong className="mt-1 line-clamp-3 break-words text-lg leading-tight">{banner.caption || banner.title}</strong>
         {config.description ? <span className="mt-1 line-clamp-2 text-xs opacity-75">{config.description}</span> : null}

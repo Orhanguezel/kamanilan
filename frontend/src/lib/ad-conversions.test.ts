@@ -1,14 +1,20 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import { trackAdConversion } from "./ad-conversions";
 
-afterEach(() => vi.unstubAllGlobals());
+const originalFetch = globalThis.fetch;
+
+afterEach(() => {
+  globalThis.fetch = originalFetch;
+  mock.restore();
+});
 
 describe("reklam dönüşüm ilişkilendirmesi", () => {
   test("ilan iletişim dönüşümünü attribution endpointine yollar", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
-    vi.stubGlobal("fetch", fetchMock);
+    const fetchMock = mock(() => Promise.resolve(new Response(null, { status: 204 })));
+    globalThis.fetch = fetchMock as typeof fetch;
     trackAdConversion("offer_submit", "listing", 42);
-    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledOnce());
+    await Promise.resolve();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith("/api/v1/banners/conversion", expect.objectContaining({
       method: "POST",
       credentials: "include",

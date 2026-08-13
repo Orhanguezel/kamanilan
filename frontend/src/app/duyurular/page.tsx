@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AnnouncementsClient } from "./announcements-client";
+import BannerSlot from "@/components/ads/BannerSlot";
 
 export const metadata: Metadata = {
   title: "Duyurular | Kaman İlan",
@@ -8,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function AnnouncementsPage() {
-  return <AnnouncementsClient />;
+  return <><BannerSlot position="announcements_top" /><AnnouncementsClient /></>;
 }

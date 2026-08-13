@@ -9,6 +9,7 @@ import { SidebarPopups } from "@/components/layout/sidebar-popups";
 import { t } from "@/lib/t";
 import { JsonLd } from "@/components/seo/json-ld";
 import { DeferredGoogleTag } from "@/components/providers/deferred-google-tag";
+import BannerSlot from "@/components/ads/BannerSlot";
 import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
 import {
   normalizeGa4MeasurementId,
@@ -304,7 +305,9 @@ export default async function RootLayout({
             <div className="flex min-h-screen flex-col">
               <TopbarPopup />
               <Header />
+              <BannerSlot position="global_top" />
               <main className="flex-1">{children}</main>
+              <BannerSlot position="global_footer" />
               <Footer />
             </div>
             <SidebarPopups />

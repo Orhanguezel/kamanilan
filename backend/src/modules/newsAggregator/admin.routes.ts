@@ -25,6 +25,8 @@ import {
   adminDeleteSuggestion,
   adminFetchSuggestionFromSource,
   adminAiEnhanceSuggestion,
+  adminBulkAiRewrite,
+  adminListImageQueue,
 } from "./admin.controller";
 
 export async function registerNewsAggregatorAdmin(app: FastifyInstance) {
@@ -106,6 +108,8 @@ export async function registerNewsAggregatorAdmin(app: FastifyInstance) {
     guard,
     adminListSuggestions
   );
+  app.get("/news-suggestions/image-queue", guard, adminListImageQueue);
+  app.post<{ Body: unknown }>("/news-suggestions/ai-rewrite-bulk", guard, adminBulkAiRewrite);
   app.get<{ Params: { id: string } }>(
     "/news-suggestions/:id",
     guard,

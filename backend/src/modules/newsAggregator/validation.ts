@@ -44,6 +44,14 @@ export const suggestionUpdateSchema = z.object({
   category:        z.string().max(100).optional(),
   tags:            z.string().max(500).optional(),
   original_pub_at: z.string().datetime({ offset: true }).optional().nullable(),
+  ai_title: z.string().max(500).optional().nullable(),
+  ai_excerpt: z.string().max(2000).optional().nullable(),
+  ai_content: z.string().optional().nullable(),
+  ai_meta_title: z.string().max(255).optional().nullable(),
+  ai_meta_description: z.string().max(500).optional().nullable(),
+  ai_tags: z.string().max(500).optional().nullable(),
+  image_brief: z.string().optional().nullable(),
+  internal_links: z.string().optional().nullable(),
 });
 
 export const approveBodySchema = z.object({
