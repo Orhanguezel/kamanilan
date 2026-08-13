@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import Link from 'next/link';
-import { Megaphone, RefreshCcw } from 'lucide-react';
+import { CalendarDays, Megaphone, RefreshCcw } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -68,7 +68,7 @@ export default function AdsPage() {
           <h1 className="flex items-center gap-2 text-2xl font-semibold"><Megaphone className="size-6" /> Reklamlar</h1>
           <p className="text-sm text-muted-foreground">Kaman İlan reklam kampanyaları ve yayın durumları.</p>
         </div>
-        <Button variant="outline" onClick={() => void load()} disabled={loading}><RefreshCcw className="mr-2 size-4" />Yenile</Button>
+        <div className="flex gap-2"><Button asChild variant="outline"><Link href="/admin/ads/operations"><CalendarDays className="mr-2 size-4" />Operasyon merkezi</Link></Button><Button variant="outline" onClick={() => void load()} disabled={loading}><RefreshCcw className="mr-2 size-4" />Yenile</Button></div>
       </div>
       <Card>
         <CardHeader><CardTitle>Yeni kampanya</CardTitle><CardDescription>Önce taslak oluşturun, ardından detay ekranından yayın ayarlarını tamamlayın.</CardDescription></CardHeader>
