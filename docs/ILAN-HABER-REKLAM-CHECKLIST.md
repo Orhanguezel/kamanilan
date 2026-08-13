@@ -46,16 +46,16 @@
 
 ## WP-1 — Reklam motoru RAW KOPYA
 
-- [ ] `HF/backend/src/modules/banners/` → `KI/backend/src/modules/ads/` (index.ts + repository.ts)
-- [ ] `HF/frontend/src/components/ads/` → `KI/frontend/src/components/ads/`
+- [x] `HF/backend/src/modules/banners/` → `KI/backend/src/modules/ads/` (index.ts + repository.ts)
+- [x] `HF/frontend/src/components/ads/` → `KI/frontend/src/components/ads/`
       (BannerSlot, TemplateBanner, ResilientAdImage, AdConversionTracker, BannerVisual.test;
       VistaSeeds* özel bileşenlerini **alma**)
-- [ ] `HF/frontend/src/lib/banners.ts` + `lib/ad-conversions.ts` (+testi) → `KI/frontend/src/lib/`
-- [ ] `HF/admin_panel/.../banners/` → `KI/admin_panel/src/app/(main)/admin/(admin)/ads/`
+- [x] `HF/frontend/src/lib/banners.ts` + `lib/ad-conversions.ts` (+testi) → `KI/frontend/src/lib/`
+- [x] `HF/admin_panel/.../banners/` → `KI/admin_panel/src/app/(main)/admin/(admin)/ads/`
       (page.tsx, [id]/page.tsx, _components/banner-detail-client.tsx;
       vistaseeds-preview* **alma**)
-- [ ] `HF/backend/test/banner-*.test.ts` (5 dosya) → `KI/backend/test/`
-- [ ] `HF/backend/src/cron.ts` içindeki 5 reklam cron bloğunu `KI` cron altyapısına taşı
+- [x] `HF/backend/test/banner-*.test.ts` (5 dosya) → `KI/backend/test/`
+- [x] `HF/backend/src/cron.ts` içindeki 5 reklam cron bloğunu `KI` cron altyapısına taşı
       (banner-lifecycle */5, source-audit, performance, reports, archive)
 - [ ] Commit: `port: haldefiyat reklam motoru raw kopya` (derlenmiyor olabilir — normal)
 
