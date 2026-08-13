@@ -25,8 +25,6 @@ export const ROUTES = {
 
   // Statik Sayfalar
   ABOUT: "/hakkimizda",
-  MISSION_VISION: "/misyon-vizyon",
-  QUALITY_POLICY: "/kalite-politikamiz",
   CONTACT: "/iletisim",
   TERMS: "/kullanim-kosullari",
   PRIVACY: "/gizlilik-politikasi",

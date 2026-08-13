@@ -20,6 +20,9 @@ jobs:
       NEXT_PUBLIC_SOCKET_URL: ${{ vars.KAMANILAN_FRONTEND_SOCKET_URL }}
       PLAYWRIGHT_BASE_URL: ${{ vars.KAMANILAN_FRONTEND_SITE_URL }}
       NEXT_PUBLIC_SITE_URL: ${{ vars.KAMANILAN_FRONTEND_SITE_URL }}
+      # Public OAuth identifier (not a secret). Keep this in the release build so
+      # production never falls back to a developer's ignored .env.local file.
+      NEXT_PUBLIC_GOOGLE_CLIENT_ID: 606233572763-83qfaehepscvarr3gdusu3orv5n4l5o4.apps.googleusercontent.com
       NEXT_PUBLIC_GTM_guezelwebdesign: ${{ vars.KAMANILAN_GTM_ID }}
       NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ vars.KAMANILAN_RECAPTCHA_SITE_KEY }}
       NEXT_PUBLIC_GA_ID: ${{ vars.KAMANILAN_GA_ID }}
@@ -74,6 +77,7 @@ jobs:
           NEXT_PUBLIC_SOCKET_URL: ${{ env.NEXT_PUBLIC_SOCKET_URL }}
           PLAYWRIGHT_BASE_URL: ${{ env.PLAYWRIGHT_BASE_URL }}
           NEXT_PUBLIC_SITE_URL: ${{ env.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ env.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
           NEXT_PUBLIC_GTM_guezelwebdesign: ${{ env.NEXT_PUBLIC_GTM_guezelwebdesign }}
           NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
           NEXT_PUBLIC_GA_ID: ${{ env.NEXT_PUBLIC_GA_ID }}

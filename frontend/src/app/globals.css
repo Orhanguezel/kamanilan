@@ -87,6 +87,15 @@
   }
 }
 
+/* SEO/readability: editorial micro-labels must remain legible on mobile. */
+.text-\[8px\],
+.text-\[9px\],
+.text-\[10px\],
+.text-\[11px\],
+.eyebrow {
+  font-size: 12px;
+}
+
 @layer base {
   * { @apply border-border; }
   body {

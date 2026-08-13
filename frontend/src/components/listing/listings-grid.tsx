@@ -140,9 +140,9 @@ export function ListingsGrid() {
       </p>
 
       <div className="grid grid-cols-2 gap-4 md:gap-8 lg:grid-cols-3">
-        {items.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
-        ))}
+          {items.map((listing, index) => (
+            <ListingCard key={listing.id} listing={listing} priority={index < 2} />
+          ))}
       </div>
 
       {(hasPrev || hasNext) && (

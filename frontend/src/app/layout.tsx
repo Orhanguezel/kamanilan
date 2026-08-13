@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { QueryProvider } from "@/lib/query-provider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Header } from "@/components/layout/header";
@@ -7,10 +6,15 @@ import { Footer } from "@/components/layout/footer";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { TopbarPopup } from "@/components/layout/topbar-popup";
 import { SidebarPopups } from "@/components/layout/sidebar-popups";
-import { OneSignalProvider } from "@/components/providers/onesignal-provider";
 import { t } from "@/lib/t";
 import { JsonLd } from "@/components/seo/json-ld";
+import { DeferredGoogleTag } from "@/components/providers/deferred-google-tag";
 import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/json-ld";
+import {
+  normalizeGa4MeasurementId,
+  normalizeGoogleAdsId,
+  selectGoogleTagLoaderId,
+} from "@/lib/tracking-ids";
 import "./globals.css";
 
 import { Manrope, Fraunces, JetBrains_Mono } from "next/font/google";
@@ -197,56 +201,6 @@ const googleAdsSettingKeys = [
   "google_ads_gtag_id",
 ].join(",");
 
-function normalizeGoogleAdsId(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-
-  const raw = value.trim();
-  if (!raw) return null;
-
-  const candidate = raw.toUpperCase().startsWith("AW-")
-    ? raw.toUpperCase()
-    : `AW-${raw.replace(/^AW-/i, "")}`;
-
-  return /^AW-\d+$/.test(candidate) ? candidate : null;
-}
-
-
-async function fetchGtmId(): Promise<string | null> {
-  try {
-    const res = await fetch(`${apiBase}/integration-settings/google_tag_manager`, {
-      next: { revalidate: 300 },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const id = typeof data?.settings?.container_id === "string"
-        ? data.settings.container_id.trim()
-        : null;
-      if (data?.enabled && id && /^GTM-[A-Z0-9]+$/.test(id)) return id;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-async function fetchGa4Id(): Promise<string | null> {
-  try {
-    const res = await fetch(`${apiBase}/integration-settings/google_analytics`, {
-      next: { revalidate: 300 },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const id = typeof data?.settings?.measurement_id === "string"
-        ? data.settings.measurement_id.trim()
-        : null;
-      if (data?.enabled && id && /^G-[A-Z0-9]+$/.test(id)) return id;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
 async function fetchGoogleAdsId(): Promise<string | null> {
   const envId = normalizeGoogleAdsId(
     process.env.NEXT_PUBLIC_GOOGLE_ADS_MEASUREMENT_ID ||
@@ -288,16 +242,31 @@ async function fetchGoogleAdsId(): Promise<string | null> {
   }
 }
 
+async function fetchGa4MeasurementId(): Promise<string | null> {
+  const envId = normalizeGa4MeasurementId(process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID);
+  if (envId) return envId;
+
+  try {
+    const res = await fetch(`${apiBase}/site_settings?key_in=ga4_measurement_id`, {
+      next: { revalidate: 300 },
+    });
+    if (!res.ok) return null;
+    const records: SettingRecord[] = await res.json();
+    return normalizeGa4MeasurementId(records.find((record) => record.key === "ga4_measurement_id")?.value);
+  } catch {
+    return null;
+  }
+}
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [googleAdsId, gtmId, ga4Id] = await Promise.all([
-    fetchGoogleAdsId(),
-    fetchGtmId(),
-    fetchGa4Id(),
-  ]);
+  const googleAdsId = await fetchGoogleAdsId();
+  const ga4MeasurementId = await fetchGa4MeasurementId();
+  const googleTagLoaderId = selectGoogleTagLoaderId(googleAdsId, ga4MeasurementId);
+  const googleConfigIds = [...new Set([ga4MeasurementId, googleAdsId].filter((id): id is string => Boolean(id)))];
 
   const orgJsonLd = buildOrganizationJsonLd({
     name:        SITE_NAME,
@@ -326,37 +295,12 @@ export default async function RootLayout({
         className={`${manrope.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
-        {gtmId && (
-        <Script id="google-tag-manager" strategy="beforeInteractive">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`}
-        </Script>
-      )}
-      {(googleAdsId || ga4Id) && (
-          <>
-            <Script
-              id="google-ads-loader"
-              src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
-              strategy="beforeInteractive"
-            />
-            <Script id="google-ads-init" strategy="beforeInteractive">
-              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());${googleAdsId?'gtag(\'config\',\''+googleAdsId+'\');':''}${ga4Id?'gtag(\'config\',\''+ga4Id+'\');':''}`}
-            </Script>
-          </>
+        {googleTagLoaderId && (
+          <DeferredGoogleTag loaderId={googleTagLoaderId} configIds={googleConfigIds} />
         )}
-      {gtmId && (
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
-      )}
         <JsonLd data={[orgJsonLd, websiteJsonLd]} id="site" />
         <QueryProvider>
           <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false}>
-            <OneSignalProvider />
             <div className="flex min-h-screen flex-col">
               <TopbarPopup />
               <Header />

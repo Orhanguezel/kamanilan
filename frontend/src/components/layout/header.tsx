@@ -10,14 +10,12 @@ import {
   Search,
   Menu,
   User,
-  ShoppingCart,
 } from "lucide-react";
 import {
   useSiteSettingsQuery,
   useMenuItemsQuery,
   extractMediaUrl,
 } from "@/modules/site/site.service";
-import { useCartStore } from "@/stores/cart-store";
 import type { MenuItemDto } from "@/modules/site/site.type";
 
 export function Header() {
@@ -37,7 +35,6 @@ export function Header() {
 
   const { data: headerMenuItems = [] } = useMenuItemsQuery("header");
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const cartItemCount = useCartStore((s) => s.totalItems());
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -58,7 +55,7 @@ export function Header() {
              </div>
           </div>
           <div className="flex items-center gap-5">
-            <a href="mailto:info@kamanilan.com" className="hover:text-saffron transition-colors">Bize Ulaşın</a>
+            <Link href={ROUTES.CONTACT} className="hover:text-saffron transition-colors">Bize Ulaşın</Link>
             {!isAuthenticated && (
               <Link href={ROUTES.REGISTER} className="text-saffron hover:brightness-125 transition-all">Üye Ol</Link>
             )}
@@ -152,15 +149,6 @@ export function Header() {
                   className="h-10 w-10 flex items-center justify-center rounded-full border border-border hover:bg-ink hover:text-saffron transition-all"
                 >
                   <Search aria-hidden="true" className="h-4.5 w-4.5" />
-                </Link>
-                <Link
-                  href={ROUTES.CART}
-                  aria-label={`Sepet${cartItemCount > 0 ? ` (${cartItemCount} ürün)` : ""}`}
-                  title="Sepet"
-                  className="relative h-10 w-10 flex items-center justify-center rounded-full border border-border hover:bg-ink hover:text-saffron transition-all"
-                >
-                  <ShoppingCart aria-hidden="true" className="h-4.5 w-4.5" />
-                  {cartItemCount > 0 && <span aria-hidden="true" className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-saffron text-[9px] font-bold text-ink">{cartItemCount}</span>}
                 </Link>
                 {!isAuthenticated ? (
                   <Link href={ROUTES.LOGIN} className="btn-editorial"><span><User aria-hidden="true" className="h-4 w-4" /> Giriş</span></Link>

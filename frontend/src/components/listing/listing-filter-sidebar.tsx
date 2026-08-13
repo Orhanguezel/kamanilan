@@ -383,6 +383,7 @@ function FilterContent({
           <div className="mt-1.5 space-y-2 pb-2 px-1">
             {cities.length > 0 && (
               <select
+                aria-label="Şehir seç"
                 value={selectedCity}
                 onChange={(e) => {
                   setSelectedCity(e.target.value);
@@ -398,6 +399,7 @@ function FilterContent({
             )}
             {districts.length > 0 && (
               <select
+                aria-label="İlçe seç"
                 value={selectedDistrict}
                 onChange={(e) => setSelectedDistrict(e.target.value)}
                 className="h-9 w-full rounded-md border bg-card px-2 text-sm text-foreground focus:border-primary focus:outline-none"

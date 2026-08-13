@@ -9,8 +9,35 @@ import {
   index,
   uniqueIndex,
   primaryKey,
+  mysqlEnum,
 } from "drizzle-orm/mysql-core";
 import { sql } from "drizzle-orm";
+
+export const sellerApplications = mysqlTable(
+  "seller_applications",
+  {
+    id: char("id", { length: 36 }).primaryKey().notNull(),
+    user_id: char("user_id", { length: 36 }).notNull(),
+    store_name: varchar("store_name", { length: 180 }).notNull(),
+    contact_phone: varchar("contact_phone", { length: 50 }).notNull(),
+    note: text("note"),
+    status: mysqlEnum("status", ["pending", "approved", "rejected"])
+      .notNull()
+      .default("pending"),
+    review_note: text("review_note"),
+    reviewed_by: char("reviewed_by", { length: 36 }),
+    reviewed_at: datetime("reviewed_at", { fsp: 3 }),
+    created_at: datetime("created_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`),
+    updated_at: datetime("updated_at", { fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`)
+      .$onUpdateFn(() => new Date()),
+  },
+  (t) => [
+    index("idx_seller_applications_user").on(t.user_id),
+    index("idx_seller_applications_status_created").on(t.status, t.created_at),
+  ],
+);
 
 export const sellerStores = mysqlTable(
   "seller_stores",

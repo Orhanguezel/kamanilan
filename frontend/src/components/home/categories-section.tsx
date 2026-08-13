@@ -7,6 +7,7 @@ import { ROUTES } from "@/config/routes";
 import { useCategoriesQuery, useCategoryCountsQuery } from "@/modules/site/site.service";
 import type { CategoryItem } from "@/modules/site/site.type";
 import type { SectionConfig } from "@/modules/theme/theme.type";
+import { getCategoryThumbnailUrl } from "@/lib/image-url";
 
 interface Props {
   config?: SectionConfig;
@@ -59,7 +60,7 @@ export function CategoriesSection({ config }: Props) {
                   
                   <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-saffron overflow-hidden border-2 border-white shadow-xl transition-all group-hover:rotate-[-8deg] group-hover:scale-110">
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt={cat.name} className="h-full w-full object-cover" />
+                      <img src={getCategoryThumbnailUrl(cat.image_url)} alt={cat.name} width={64} height={64} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                     ) : (
                       <span className="text-3xl text-ink">{cat.icon || "🌰"}</span>
                     )}
@@ -88,7 +89,7 @@ export function CategoriesSection({ config }: Props) {
               >
                 <div className="h-14 w-14 flex items-center justify-center bg-ivory overflow-hidden border-2 border-white shadow-xl transition-all duration-500 group-hover:bg-saffron group-hover:rotate-[-8deg] group-hover:scale-110">
                   {cat.image_url ? (
-                    <img src={cat.image_url} alt={cat.name} className="h-full w-full object-cover" />
+                    <img src={getCategoryThumbnailUrl(cat.image_url)} alt={cat.name} width={56} height={56} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                   ) : (
                     <span className="text-2xl">{cat.icon || "📦"}</span>
                   )}

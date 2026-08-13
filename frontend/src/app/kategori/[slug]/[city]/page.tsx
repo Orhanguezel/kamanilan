@@ -56,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const category = await fetchCategory(slug);
   if (!category) return { title: "Kategori Bulunamadi" };
+  const listings = await fetchListings(category.id, cityDef.displayName, 1);
 
   const title = `${cityDef.displayName} ${category.name} Ilanlari | Kamanilan`;
   const description = `${cityDef.displayName}${cityDef.parent ? ` (${cityDef.parent})` : ""} bolgesinde ${category.name.toLowerCase()} ilanlari. Yerel satici ve emlakcilerden guncel vitrin.`;
@@ -64,6 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/kategori/${slug}/${city}` },
+    robots: listings.length > 0 ? undefined : { index: false, follow: true },
     openGraph: {
       type: "website",
       title,

@@ -16,6 +16,8 @@ import { registerCartItems } from '@/modules/cart/router';
 import { registerSeller } from '@/modules/seller/router';
 import { registerSubscription } from '@/modules/subscription/router';
 import { registerIntegrationSettings } from '@/modules/integrationSettings/router';
+import { registerHomeContent } from '@/modules/homeContent/router';
+import { registerWebConnection } from '@/modules/webConnection';
 
 // --- Kamanilan project-specific admin routers ---
 import { registerImportsAdmin } from '@/modules/imports/admin.routes';
@@ -34,6 +36,7 @@ import { registerCartAdmin } from '@/modules/cart/admin.routes';
 import { registerSubscriptionAdmin } from '@/modules/subscription/admin.routes';
 import { registerIntegrationSettingsAdmin } from '@/modules/integrationSettings/admin.routes';
 import { registerNewsAggregatorAdmin } from '@/modules/newsAggregator/admin.routes';
+import { registerSellerApplicationsAdmin } from '@/modules/seller/admin.routes';
 
 export async function registerKamanilanRoutes(api: FastifyInstance) {
   await registerProperties(api);
@@ -51,6 +54,8 @@ export async function registerKamanilanRoutes(api: FastifyInstance) {
   await registerSeller(api);
   await registerSubscription(api);
   await registerIntegrationSettings(api);
+  await registerHomeContent(api);
+  await api.register(registerWebConnection, { prefix: '/integrations/tanitio' });
 }
 
 export async function registerKamanilanAdmin(adminApi: FastifyInstance) {
@@ -71,6 +76,7 @@ export async function registerKamanilanAdmin(adminApi: FastifyInstance) {
     registerSubscriptionAdmin,
     registerIntegrationSettingsAdmin,
     registerNewsAggregatorAdmin,
+    registerSellerApplicationsAdmin,
   ]) {
     await adminApi.register(reg);
   }

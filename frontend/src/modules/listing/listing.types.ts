@@ -79,6 +79,8 @@ export interface Listing {
   updated_at: string;
 
   has_cart?: boolean;
+  contact_phone?: string | null;
+  contact_whatsapp?: string | null;
 
   // Populated by detail endpoint
   assets?:         ListingAsset[];

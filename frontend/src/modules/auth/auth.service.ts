@@ -9,6 +9,7 @@ import { API_ENDPOINTS } from "@/endpoints/api-endpoints";
 import { getApiBaseUrl } from "@/lib/api-url";
 import { AUTH_TOKEN_KEY, AUTH_USER } from "@/lib/constants";
 import { useAuthStore } from "@/stores/auth-store";
+import { trackConversion } from "@/lib/conversion-tracking";
 import type {
   LoginInput,
   LoginResponse,
@@ -19,6 +20,11 @@ import type {
   SocialLoginInput,
   User,
 } from "./auth.type";
+import {
+  SOCIAL_LOGIN_TIMEOUT_MS,
+  shouldRetrySocialLogin,
+  waitForSocialLoginRetry,
+} from "./social-login-retry";
 
 const api = axios.create({
   baseURL: getApiBaseUrl(),
@@ -45,6 +51,7 @@ export function useLoginMutation() {
     },
     onSuccess: (data) => {
       persistAuth(data, setUser);
+      trackConversion("login", { method: "email" });
       const redirectTo = searchParams.get("redirect");
       router.push(redirectTo || "/");
     },
@@ -64,11 +71,15 @@ export function useRegisterMutation() {
         phone: data.phone,
         rules_accepted: data.rules_accepted === true,
       };
-      const res = await api.post<RegisterResponse>(API_ENDPOINTS.REGISTER, payload);
+      const res = await api.post<RegisterResponse>(
+        API_ENDPOINTS.REGISTER,
+        payload,
+      );
       return res.data;
     },
     onSuccess: (data) => {
       persistAuth(data, setUser);
+      trackConversion("sign_up", { method: "email" });
       router.push("/");
     },
   });
@@ -134,25 +145,42 @@ export function useOtpLoginVerifyMutation() {
     },
     onSuccess: (data) => {
       persistAuth(data, setUser);
+      trackConversion("login", { method: "otp" });
       router.push("/");
     },
   });
 }
 
 export function useSocialLoginMutation() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const setUser = useAuthStore((s) => s.setUser);
 
   return useMutation({
     mutationFn: async (data: SocialLoginInput) => {
-      const res = await api.post<LoginResponse>("/auth/social-login", data);
-      return res.data;
+      try {
+        const res = await api.post<LoginResponse>("/auth/social-login", data, {
+          timeout: SOCIAL_LOGIN_TIMEOUT_MS,
+        });
+        return res.data;
+      } catch (error) {
+        if (!shouldRetrySocialLogin(error)) throw error;
+
+        await waitForSocialLoginRetry();
+        const retry = await api.post<LoginResponse>(
+          "/auth/social-login",
+          data,
+          {
+            timeout: SOCIAL_LOGIN_TIMEOUT_MS,
+          },
+        );
+        return retry.data;
+      }
     },
     onSuccess: (data) => {
       persistAuth(data, setUser);
+      trackConversion("login", { method: "social" });
       const redirectTo = searchParams.get("redirect");
-      router.push(redirectTo || "/");
+      window.location.assign(redirectTo || "/");
     },
   });
 }
@@ -165,11 +193,9 @@ export function useLogout() {
     const token = Cookies.get(AUTH_TOKEN_KEY);
     try {
       if (token) {
-        await api.post(
-          API_ENDPOINTS.LOGOUT,
-          null,
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
+        await api.post(API_ENDPOINTS.LOGOUT, null, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
       }
     } catch {
       // ignore

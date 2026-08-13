@@ -2,6 +2,17 @@ import { z } from "zod";
 
 const scopeType = z.enum(["listing", "store", "category", "subcategory", "seller"]);
 
+export const createSellerApplicationBody = z.object({
+  store_name: z.string().trim().min(2).max(180),
+  contact_phone: z.string().trim().min(10).max(50),
+  note: z.string().trim().max(2000).optional().nullable(),
+});
+
+export const reviewSellerApplicationBody = z.object({
+  status: z.enum(["approved", "rejected"]),
+  review_note: z.string().trim().max(2000).optional().nullable(),
+});
+
 export const createStoreBody = z.object({
   name: z.string().trim().min(2).max(180),
   slug: z.string().trim().min(2).max(220).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),

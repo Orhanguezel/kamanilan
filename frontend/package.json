@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack -p 3003",
     "dev:no-turbo": "next dev --no-turbopack -p 3003",
     "build": "next build",
+    "test": "bun test",
     "start": "next start -p 3003",
     "lint": "eslint",
     "postinstall": "sh -c '[ -d node_modules/react-hook-form/dist ] && ln -sfn dist node_modules/react-hook-form/src || true'"
@@ -52,7 +53,6 @@
     "react-day-picker": "^9.13.1",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.1",
-    "react-onesignal": "^3.5.1",
     "react-toastify": "^11.0.5",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",

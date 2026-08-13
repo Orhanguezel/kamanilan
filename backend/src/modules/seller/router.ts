@@ -12,10 +12,14 @@ import {
   updateMyCampaign,
   updateMyStore,
 } from "./controller";
+import { createSellerApplication, getMySellerApplication } from "./application.controller";
 
 export async function registerSeller(app: FastifyInstance) {
   const BASE = "/seller";
   const sellerGuard = [requireAuth, requireSellerOrAdmin];
+
+  app.get(`${BASE}/application`, { preHandler: [requireAuth] }, getMySellerApplication);
+  app.post(`${BASE}/application`, { preHandler: [requireAuth] }, createSellerApplication);
 
   app.get(`${BASE}/stores`, { preHandler: sellerGuard }, listMyStores);
   app.post(`${BASE}/stores`, { preHandler: sellerGuard }, createMyStore);

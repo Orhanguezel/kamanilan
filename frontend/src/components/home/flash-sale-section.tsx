@@ -79,7 +79,7 @@ function CampaignCard({ sale }: { sale: FlashSale }) {
         <div className="absolute top-4 left-4 z-30">
            <div className="bg-saffron text-ink font-fraunces font-bold px-4 py-2 shadow-2xl flex flex-col items-center justify-center border-b border-ink/10">
               <span className="text-lg leading-none">{discountLabel}</span>
-              <span className="text-[7px] uppercase font-mono tracking-widest mt-0.5 opacity-60">İNDİRİM</span>
+              <span className="mt-0.5 font-mono text-[10px] font-bold uppercase tracking-widest">İNDİRİM</span>
            </div>
         </div>
       </div>
@@ -97,7 +97,7 @@ function CampaignCard({ sale }: { sale: FlashSale }) {
           </h3>
           
           {sale.description && (
-            <p className="text-xs leading-relaxed opacity-60 font-manrope line-clamp-2" style={{ color: descColor }}>
+            <p className="text-xs leading-relaxed opacity-90 font-manrope line-clamp-2" style={{ color: descColor }}>
               {sale.description}
             </p>
           )}
@@ -107,7 +107,7 @@ function CampaignCard({ sale }: { sale: FlashSale }) {
             {units.map((unit) => (
               <div key={unit.label} className="bg-white/40 border border-black/5 p-2 px-3 flex flex-col items-center min-w-[54px]">
                  <span className="font-fraunces text-base font-bold tabular-nums" style={{ color: titleColor }}>{unit.val}</span>
-                 <span className="text-[6px] font-mono font-bold text-walnut opacity-40 uppercase">{unit.label}</span>
+                 <span className="font-mono text-[10px] font-bold uppercase text-walnut/80">{unit.label}</span>
               </div>
             ))}
           </div>

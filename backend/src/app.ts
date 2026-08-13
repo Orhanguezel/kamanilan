@@ -48,7 +48,7 @@ export async function createApp() {
   });
 
   const cookieSecret =
-    (globalThis as any).Bun?.env?.COOKIE_SECRET ?? process.env.COOKIE_SECRET ?? 'cookie-secret';
+    (globalThis as any).Bun?.env?.COOKIE_SECRET ?? process.env.COOKIE_SECRET ?? (() => { throw new Error('Missing required env: COOKIE_SECRET'); })();
 
   await app.register(cookie, {
     secret: cookieSecret,
@@ -83,8 +83,10 @@ export async function createApp() {
 
   registerErrorHandlers(app);
 
-  // Haber toplayici cron'unu baslat
-  startNewsAggregatorCron();
+  // Haber toplayici bellek yogun olabilir; production'da env ile ayri worker'a alinabilir.
+  if (process.env.NEWS_AGGREGATOR_CRON_ENABLED !== 'false') {
+    startNewsAggregatorCron();
+  }
   // XML feed cekim cron'unu baslat
   startXmlFeedCron();
   // Foto indirme kuyrugu cron'unu baslat

@@ -7,7 +7,7 @@ export interface User {
   phone: string | null;
   email_verified: boolean;
   is_active: boolean;
-  role: "admin" | "moderator" | "user";
+  role: "admin" | "moderator" | "seller" | "user";
 }
 
 export interface LoginInput {

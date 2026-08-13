@@ -12,7 +12,6 @@ import {
   buildBreadcrumbJsonLd,
 } from "@/lib/json-ld";
 import { ListingCard } from "@/components/listing/listing-card";
-import { KAMAN_FOCUS_CITIES } from "@/lib/cities";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -115,23 +114,6 @@ export default async function CategoryLandingPage({ params }: Props) {
           {listingCount > 0 ? ` Goruntulenen: ${listingCount} adet.` : " Ilanlar yakinda."}
         </p>
       </header>
-
-      <section className="mb-8 border-t border-b py-4">
-        <h2 className="text-sm font-medium text-muted-foreground mb-3">
-          Sehir bazli {category.name.toLowerCase()}
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {KAMAN_FOCUS_CITIES.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/kategori/${slug}/${c.slug}`}
-              className="inline-flex items-center rounded-full border px-3 py-1 text-sm hover:bg-accent"
-            >
-              {c.displayName}
-            </Link>
-          ))}
-        </div>
-      </section>
 
       {listings.length === 0 ? (
         <div className="text-center py-16">

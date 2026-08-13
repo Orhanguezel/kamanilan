@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight, ChevronLeft, Check, Loader2, AlertCircle, LogIn, Tag, MapPin, FileText, ImagePlus, X, Upload } from "lucide-react";
 import { toast } from "sonner";
+import { trackConversion } from "@/lib/conversion-tracking";
 
 import { ROUTES } from "@/config/routes";
 import { useAuthStore } from "@/stores/auth-store";
@@ -382,7 +383,7 @@ export function PostListingClient({ translations: tr }: Props) {
         }
       }
 
-      await createMutation.mutateAsync({
+      const createdListing = await createMutation.mutateAsync({
         title:           form.title.trim(),
         type:            "ilan",
         status:          form.status,
@@ -397,6 +398,13 @@ export function PostListingClient({ translations: tr }: Props) {
         description:     form.description.trim() || null,
         cover_image_url: uploadedUrls[0] ?? null,
         images:          uploadedUrls,
+      });
+
+      trackConversion("listing_submit", {
+        listing_id: createdListing?.id,
+        category_id: selectedCategory?.id,
+        listing_status: form.status,
+        has_images: uploadedUrls.length > 0,
       });
 
       setSubmitState("success");

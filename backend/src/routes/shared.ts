@@ -17,12 +17,10 @@ import { registerNewsletter } from '@vps/shared-backend/modules/newsletter/route
 import { registerEmailTemplates } from '@vps/shared-backend/modules/emailTemplates/router';
 import { registerFaqs } from '@vps/shared-backend/modules/faqs/router';
 import { registerMenuItems } from '@vps/shared-backend/modules/menuItems/router';
-import { registerSlider } from '@vps/shared-backend/modules/slider/router';
 import { registerFooterSections } from '@vps/shared-backend/modules/footerSections/router';
 import { registerReviews } from '@vps/shared-backend/modules/review/router';
 import { registerChat } from '@vps/shared-backend/modules/chat/router';
 import { registerAiChat } from '@vps/shared-backend/modules/ai_chat/router';
-import { registerPopups } from '@vps/shared-backend/modules/popups/router';
 import { registerAnnouncements } from '@vps/shared-backend/modules/announcements/router';
 import { registerFlashSale } from '@vps/shared-backend/modules/flashSale/router';
 import { registerOrders } from '@vps/shared-backend/modules/orders/router';
@@ -43,10 +41,8 @@ import { registerEmailTemplatesAdmin } from '@vps/shared-backend/modules/emailTe
 import { registerNewsletterAdmin } from '@vps/shared-backend/modules/newsletter/admin.routes';
 import { registerFaqsAdmin } from '@vps/shared-backend/modules/faqs/admin.routes';
 import { registerMenuItemsAdmin } from '@vps/shared-backend/modules/menuItems/admin.routes';
-import { registerSliderAdmin } from '@vps/shared-backend/modules/slider/admin.routes';
 import { registerFooterSectionsAdmin } from '@vps/shared-backend/modules/footerSections/admin.routes';
 import { registerReviewsAdmin } from '@vps/shared-backend/modules/review/admin.routes';
-import { registerPopupsAdmin } from '@vps/shared-backend/modules/popups/admin.routes';
 import { registerAnnouncementsAdmin } from '@vps/shared-backend/modules/announcements/admin.routes';
 import { registerFlashSaleAdmin } from '@vps/shared-backend/modules/flashSale/admin.routes';
 import { registerThemeAdmin } from '@vps/shared-backend/modules/theme/admin.routes';
@@ -74,12 +70,10 @@ export async function registerSharedPublic(api: FastifyInstance) {
   await registerEmailTemplates(api);
   await registerFaqs(api);
   await registerMenuItems(api);
-  await registerSlider(api);
   await registerFooterSections(api);
   await registerReviews(api);
   await registerChat(api);
   await registerAiChat(api);
-  await registerPopups(api);
   await registerAnnouncements(api);
   await registerFlashSale(api);
   await registerOrders(api);
@@ -102,10 +96,8 @@ export async function registerSharedAdmin(adminApi: FastifyInstance) {
     registerNewsletterAdmin,
     registerFaqsAdmin,
     registerMenuItemsAdmin,
-    registerSliderAdmin,
     registerFooterSectionsAdmin,
     registerReviewsAdmin,
-    registerPopupsAdmin,
     registerAnnouncementsAdmin,
     registerFlashSaleAdmin,
     registerThemeAdmin,

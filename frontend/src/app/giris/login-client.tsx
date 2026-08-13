@@ -150,7 +150,7 @@ export function LoginClient({ translations: t }: Props) {
         <div className="hidden lg:flex lg:w-1/2 relative bg-white items-center justify-center p-20 border-r border-black/5">
           <div className="relative w-full h-full max-h-[600px] max-w-[600px]">
             <Image
-              src="/images/auth/login.png"
+              src="/images/auth/login-kaman-v2.webp"
               alt="Giriş Yap"
               fill
               className="object-contain transition-transform duration-700 hover:scale-105"

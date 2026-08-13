@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { sumCategoryCounts } from "./site.utils";
 import axios from "axios";
 import { getApiBaseUrl } from "@/lib/api-url";
 import { API_ENDPOINTS } from "@/endpoints/api-endpoints";
@@ -81,8 +82,18 @@ export function useCategoryCountsQuery() {
       }
       return map;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 30,
+    refetchInterval: 1000 * 60,
+    refetchOnWindowFocus: true,
   });
+}
+
+export function useActiveListingCountQuery() {
+  const query = useCategoryCountsQuery();
+  return {
+    ...query,
+    data: sumCategoryCounts(query.data ?? {}),
+  };
 }
 
 export function useSubCategoriesQuery(category_id?: string) {

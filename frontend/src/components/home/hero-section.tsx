@@ -1,14 +1,12 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { ChevronRight, Zap, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import type { SectionConfig } from "@/modules/theme/theme.type";
 import { useSlidersQuery } from "@/modules/site/site.service";
 import type { SliderItem } from "@/modules/site/site.type";
 import { ROUTES } from "@/config/routes";
-import { useSiteSettingsQuery } from "@/modules/site/site.service";
+import { useActiveListingCountQuery } from "@/modules/site/site.service";
 
 interface Props {
   config?: SectionConfig;
@@ -86,7 +84,7 @@ export function HeroSection({ config, initialSlides }: Props) {
               <form action={ROUTES.LISTINGS} className="mt-12 w-full max-w-[620px] transition-all duration-300">
                 <div className="group relative flex items-center bg-paper rounded-full border border-border p-2 shadow-xl focus-within:border-saffron focus-within:shadow-2xl">
                   <div className="hidden md:flex items-center border-r border-border px-5 py-2">
-                      <select aria-label="Kategori filtresi" name="kategori" className="bg-transparent text-[13px] font-bold outline-none cursor-pointer text-walnut uppercase tracking-wider">
+                      <select aria-label="Kategori filtresi" name="category" className="bg-transparent text-[13px] font-bold outline-none cursor-pointer text-walnut uppercase tracking-wider">
                         <option value="">Tüm İlanlar</option>
                         <option value="ceviz">Ceviz</option>
                         <option value="emlak">Emlak</option>
@@ -117,17 +115,17 @@ export function HeroSection({ config, initialSlides }: Props) {
             <div className="relative h-[480px] md:h-[600px] w-full">
               {/* Main Center Image */}
               <div className="absolute left-0 top-10 z-20 w-[65%] h-[75%] rounded-[32px] overflow-hidden shadow-2xl rotate-[-3deg] transition-all hover:rotate-0 hover:scale-[1.03]">
-                <Image
-                  src={items[0]?.image || "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb"}
-                  alt="Kaman 1" fill sizes="(max-width: 1024px) 65vw, 40vw" className="object-cover" priority fetchPriority="high"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/uploads/media/ceviz/kamancevizi-hero-mobile.webp" />
+                  <img src={items[0]?.image || "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb"} alt="Kaman cevizi yeni hasat" width={520} height={690} fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
+                </picture>
               </div>
               {/* Secondary Floating Image */}
               <div className="absolute right-0 top-32 z-10 w-[55%] h-[55%] rounded-[24px] overflow-hidden shadow-2xl rotate-[5deg] transition-all hover:rotate-0 hover:scale-[1.03]">
-                <Image
-                  src={mainSlide?.image2 || items[1]?.image || "https://images.unsplash.com/photo-1570129477492-45c003edd2be"}
-                  alt="Kaman 2" fill sizes="(max-width: 1024px) 55vw, 33vw" className="object-cover"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/uploads/media/ceviz/kamancevizi22-hero-mobile.webp" />
+                  <img src={mainSlide?.image2 || "https://images.unsplash.com/photo-1570129477492-45c003edd2be"} alt="Kaman cevizi ürünü" width={420} height={420} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                </picture>
               </div>
               {/* Stats Card Overlay */}
               <div className="absolute bottom-5 left-[25%] z-30 w-[55%] h-[180px] rounded-[24px] bg-ink p-8 flex flex-col items-center justify-center text-center shadow-3xl rotate-[-2deg] transition-all hover:rotate-0 hover:scale-105">
@@ -153,22 +151,14 @@ export function HeroSection({ config, initialSlides }: Props) {
   );
 }
 
-import { motion, useInView, useSpring, useTransform } from "framer-motion";
-import { useEffect } from "react";
-
 function StatsRibbon() {
-  const { data: site } = useSiteSettingsQuery([
-    "stats_active_ads",
-    "stats_monthly_visit",
-    "stats_satisfaction",
-    "stats_support_hours",
-  ]);
+  const { data: activeListingCount = 0 } = useActiveListingCountQuery();
 
   const stats = [
-    { val: (site?.stats_active_ads as string) || "1250", suffix: "+", label: "Aktif İlan" },
-    { val: (site?.stats_monthly_visit as string) || "45000", suffix: "+", label: "Aylık Ziyaret" },
-    { val: (site?.stats_satisfaction as string) || "98", prefix: "%", label: "Memnuniyet" },
-    { val: (site?.stats_support_hours as string) || "7/24", label: "Destek" },
+    { val: String(activeListingCount), label: "Aktif İlan" },
+    { val: "Ücretsiz", label: "İlan Verme" },
+    { val: "Kaman", label: "Yerel Odak" },
+    { val: "Doğrudan", label: "İlan Sahibiyle İletişim" },
   ];
 
   return (
@@ -176,45 +166,13 @@ function StatsRibbon() {
       {stats.map((s, idx) => (
         <div key={idx} className="flex flex-col items-start">
           <div className="font-fraunces text-2xl lg:text-3xl text-ink tracking-tight flex items-baseline">
-            {s.prefix && <span className="text-lg mr-0.5 opacity-40">{s.prefix}</span>}
-            <AnimatedNumber value={s.val} />
-            {s.suffix && <span className="text-lg ml-0.5 opacity-40">{s.suffix}</span>}
+            {s.val}
           </div>
-          <div className="font-mono text-[8px] uppercase tracking-[0.25em] text-walnut/40 font-bold mt-1.5">
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-walnut/70 font-bold mt-1.5">
             {s.label}
           </div>
         </div>
       ))}
     </div>
-  );
-}
-
-function AnimatedNumber({ value }: { value: string }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
-  // Extract number from string (e.g. "1250" or "7/24")
-  const numericVal = parseFloat(value.replace(/[^0-9.]/g, ''));
-  const isComplex = value.includes('/') || isNaN(numericVal);
-
-  const spring = useSpring(0, { stiffness: 40, damping: 20 });
-  const displayValue = useTransform(spring, (current) => 
-    Math.floor(current).toLocaleString('tr-TR')
-  );
-
-  useEffect(() => {
-    if (isInView && !isComplex) {
-      spring.set(numericVal);
-    }
-  }, [isInView, numericVal, spring, isComplex]);
-
-  if (isComplex) {
-    return <span ref={ref}>{value}</span>;
-  }
-
-  return (
-    <span ref={ref}>
-       <motion.span>{displayValue}</motion.span>
-    </span>
   );
 }

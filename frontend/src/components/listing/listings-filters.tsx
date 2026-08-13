@@ -66,6 +66,7 @@ export function ListingsFilters() {
 
       {/* Sort */}
       <select
+        aria-label="İlanları sırala"
         value={`${get("sort") || "created_at"}|${get("orderDir") || "desc"}`}
         onChange={(e) => {
           const [sort, orderDir] = e.target.value.split("|");

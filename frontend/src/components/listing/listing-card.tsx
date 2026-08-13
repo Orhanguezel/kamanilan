@@ -9,6 +9,7 @@ import { ROUTES } from "@/config/routes";
 import { useLikedListings } from "@/hooks/use-liked-listings";
 import { useCartStore } from "@/stores/cart-store";
 import type { Listing } from "@/modules/listing/listing.types";
+import { COMMERCE_ENABLED } from "@/config/features";
 
 function formatPrice(price: string | null, currency: string): React.ReactNode {
   if (!price || price === "0") return t("listing.free");
@@ -30,9 +31,10 @@ function formatDateShort(dateStr: string): string {
 
 interface ListingCardProps {
   listing: Listing;
+  priority?: boolean;
 }
 
-export function ListingCard({ listing }: ListingCardProps) {
+export function ListingCard({ listing, priority = false }: ListingCardProps) {
   const { isLiked, toggle } = useLikedListings();
   const addItem = useCartStore((s) => s.addItem);
   const liked = isLiked(listing.id);
@@ -49,6 +51,7 @@ export function ListingCard({ listing }: ListingCardProps) {
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw"
+            priority={priority}
          />
          
          {/* Badges Overlay */}
@@ -79,7 +82,7 @@ export function ListingCard({ listing }: ListingCardProps) {
               <Heart aria-hidden="true" className={`h-4.5 w-4.5 ${liked ? "fill-current" : ""}`} />
             </button>
 
-            {listing.has_cart && (
+            {COMMERCE_ENABLED && listing.has_cart ? (
                <button
                  type="button"
                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); addItem(listing); toast.success(t("listing.added_to_cart")); }}
@@ -89,7 +92,7 @@ export function ListingCard({ listing }: ListingCardProps) {
                >
                  <ShoppingCart aria-hidden="true" className="h-4.5 w-4.5" />
                </button>
-            )}
+            ) : null}
          </div>
       </Link>
 
@@ -108,9 +111,9 @@ export function ListingCard({ listing }: ListingCardProps) {
         </div>
 
         {/* Title */}
-        <h3 className="line-clamp-2 font-fraunces text-lg md:text-xl font-medium leading-[1.3] text-ink group-hover:text-saffron-2 transition-colors mb-3">
+        <h2 className="line-clamp-2 font-fraunces text-lg md:text-xl font-medium leading-[1.3] text-ink group-hover:text-saffron-2 transition-colors mb-3">
           <Link href={ROUTES.LISTING_DETAIL(listing.slug)}>{listing.title}</Link>
-        </h3>
+        </h2>
 
         {/* Details Row */}
         <div className="mb-4 flex items-center gap-1.5 text-[13px] text-text-2 font-medium">

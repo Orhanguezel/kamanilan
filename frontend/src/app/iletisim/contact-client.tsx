@@ -1,23 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from 'next/link';
+import Link from "next/link";
 import {
+  CheckCircle,
   ChevronRight,
   Mail,
-  Phone,
   MapPin,
+  MessageSquare,
+  Phone,
   Send,
-  CheckCircle,
-  Globe,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Twitter,
-  MessageCircle,
-  ArrowRight,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ROUTES } from "@/config/routes";
+import { API_ENDPOINTS } from "@/endpoints/api-endpoints";
+import { getApiBaseUrl } from "@/lib/api-url";
+import { normalizeContactPhone } from "./contact.utils";
+import { trackConversion } from "@/lib/conversion-tracking";
 
 interface ContactTranslations {
   contact: string;
@@ -65,257 +67,217 @@ interface ContactPageClientProps {
   translations: ContactTranslations;
 }
 
-function normalizePhone(phoneCode: string, phone: string) {
-  const trimmed = phone.trim();
-  if (!trimmed) return "";
-  if (trimmed.startsWith("+")) return trimmed;
-  return `${phoneCode}${trimmed}`;
-}
-
-function SocialIcon({ icon }: { icon: string }) {
-  const normalized = icon.trim().toLowerCase();
-  const cls = "h-4 w-4";
-
-  if (normalized === "facebook") return <Facebook className={cls} />;
-  if (normalized === "instagram") return <Instagram className={cls} />;
-  if (normalized === "linkedin") return <Linkedin className={cls} />;
-  if (normalized === "twitter" || normalized === "x") return <Twitter className={cls} />;
-  if (normalized === "whatsapp") return <MessageCircle className={cls} />;
-
-  return <Globe className={cls} />;
-}
-
 export function ContactPageClient({
   formSection,
   detailsSection,
-  map,
   translations: t,
 }: ContactPageClientProps) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [phoneCode, setPhoneCode] = useState("+90");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [listingReference, setListingReference] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  useEffect(() => {
+    const listingReference = new URLSearchParams(window.location.search).get("ilan")?.trim();
+    if (!listingReference) return;
+    setListingReference(listingReference);
+
+    setForm((current) => current.message
+      ? current
+      : { ...current, message: `${listingReference} referanslı ilan hakkında bilgi almak istiyorum.` });
+  }, []);
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     setStatus("loading");
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_REST_API_ENDPOINT || "";
-      const apiBase = baseUrl.replace("/api/v1", "");
-      const res = await fetch(`${apiBase}/api/contact-us`, {
+      const response = await fetch(`${getApiBaseUrl()}${API_ENDPOINTS.CONTACTS}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: form.name,
           email: form.email,
-          phone: normalizePhone(phoneCode, form.phone),
+          phone: normalizeContactPhone(phoneCode, form.phone),
+          subject: "İletişim formu",
           message: form.message,
         }),
       });
 
-      if (res.ok) {
-        setStatus("success");
-        setForm({ name: "", email: "", phone: "", message: "" });
-      } else {
+      if (!response.ok) {
         setStatus("error");
+        return;
       }
+
+      setStatus("success");
+      trackConversion("generate_lead", {
+        lead_type: "contact_form",
+        listing_reference: listingReference || undefined,
+      });
+      setForm({ name: "", email: "", phone: "", message: "" });
     } catch {
       setStatus("error");
     }
   }
 
-  const mapUrl =
-    map.lat != null && map.lng != null
-      ? `https://maps.google.com/maps?q=${map.lat},${map.lng}&z=15&output=embed`
-      : null;
-
   return (
-    <div className="bg-[hsl(var(--col-paper))] min-h-screen">
-      {/* ── Hero ── */}
-      <div className="bg-[hsl(var(--col-ink))] py-20 lg:py-32 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/4 h-full bg-[hsl(var(--col-saffron))] opacity-5 skew-x-[-15deg] translate-x-12" />
-        <div className="container relative z-10">
-           <nav className="mb-8 flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-white opacity-40">
-             <Link href="/" className="hover:text-[hsl(var(--col-saffron))] transition-colors">{t.home}</Link>
-             <span className="opacity-20">/</span>
-             <span className="text-white">{t.contact}</span>
-           </nav>
-           <h1 className="font-fraunces text-4xl lg:text-7xl font-medium tracking-tight text-white mb-6 leading-none">
-             Bize <em>Ulaşın</em>
-           </h1>
-           <p className="text-[hsl(var(--col-parchment))] opacity-50 text-sm md:text-base max-w-xl leading-relaxed">
-             {formSection.subtitle || t.contact_subtitle}
-           </p>
-        </div>
-      </div>
-
-      <div className="container py-20 lg:py-32">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-start">
-          
-          {/* ── Information ── */}
-          <div className="space-y-16">
-            <div className="section-header">
-               <div className="eyebrow mb-6">İletişim Bilgileri</div>
-               <h2 className="font-fraunces text-3xl md:text-4xl font-medium text-[hsl(var(--col-ink))]">Size Bir Adım <br /><em>Kadar Yakınız</em></h2>
-            </div>
-
-            <div className="grid gap-10">
-              {detailsSection.address && (
-                <div className="flex gap-6 group">
-                   <div className="h-14 w-14 shrink-0 rounded-2xl bg-white shadow-xl flex items-center justify-center text-[hsl(var(--col-saffron-2))] group-hover:bg-[hsl(var(--col-saffron-2))] group-hover:text-white transition-all duration-500">
-                     <MapPin className="h-6 w-6" />
-                   </div>
-                   <div>
-                      <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">{t.address}</h4>
-                      <p className="text-[hsl(var(--col-ink))] font-medium leading-relaxed max-w-xs">{detailsSection.address}</p>
-                   </div>
-                </div>
-              )}
-              {detailsSection.phone && (
-                <div className="flex gap-6 group">
-                  <div className="h-14 w-14 shrink-0 rounded-2xl bg-white shadow-xl flex items-center justify-center text-[hsl(var(--col-saffron-2))] group-hover:bg-[hsl(var(--col-saffron-2))] group-hover:text-white transition-all duration-500">
-                     <Phone className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">{t.phone}</h4>
-                    <a href={`tel:${detailsSection.phone}`} className="text-[hsl(var(--col-ink))] text-xl font-fraunces hover:text-[hsl(var(--col-saffron-2))] transition-colors">{detailsSection.phone}</a>
-                  </div>
-                </div>
-              )}
-              {detailsSection.email && (
-                <div className="flex gap-6 group">
-                  <div className="h-14 w-14 shrink-0 rounded-2xl bg-white shadow-xl flex items-center justify-center text-[hsl(var(--col-saffron-2))] group-hover:bg-[hsl(var(--col-saffron-2))] group-hover:text-white transition-all duration-500">
-                     <Mail className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2">{t.email}</h4>
-                    <a href={`mailto:${detailsSection.email}`} className="text-[hsl(var(--col-ink))] text-xl font-fraunces hover:text-[hsl(var(--col-saffron-2))] transition-colors underline underline-offset-8 decoration-black/10">{detailsSection.email}</a>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Social */}
-            {detailsSection.social.length > 0 && (
-              <div className="pt-10 border-t border-black/5">
-                 <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-40 mb-6 uppercase">{t.social_connect}</h4>
-                 <div className="flex gap-3">
-                    {detailsSection.social.map((item, idx) => (
-                      <a
-                        key={`${item.url}-${idx}`}
-                        href={item.url || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="h-12 w-12 rounded-full bg-[hsl(var(--col-ink))] text-white flex items-center justify-center hover:bg-[hsl(var(--col-saffron))] hover:text-[hsl(var(--col-ink))] transition-all shadow-lg"
-                      >
-                         <SocialIcon icon={item.icon} />
-                      </a>
-                    ))}
-                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* ── Form ── */}
-          <div className="bg-white rounded-[48px] p-8 md:p-14 shadow-3xl border border-black/5 relative">
-            <h3 className="font-fraunces text-2xl md:text-3xl font-medium text-[hsl(var(--col-ink))] mb-10">Bize Mesaj Gönderin</h3>
-            
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="space-y-2">
-                <label className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{t.name}</label>
-                <input
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-                  placeholder={t.name_placeholder}
-                  className="w-full bg-[hsl(var(--col-paper))] border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm"
-                />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{t.email}</label>
-                  <input
-                    type="email"
-                    required
-                    value={form.email}
-                    onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
-                    placeholder={t.email_placeholder}
-                    className="w-full bg-[hsl(var(--col-paper))] border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{t.phone}</label>
-                  <div className="flex bg-[hsl(var(--col-paper))] rounded-2xl overflow-hidden focus-within:ring-2 focus-within:ring-[hsl(var(--col-saffron-2))] transition-all">
-                     <select
-                        value={phoneCode}
-                        onChange={(e) => setPhoneCode(e.target.value)}
-                        className="bg-black/5 px-4 outline-none text-xs font-bold"
-                     >
-                       <option value="+90">+90</option>
-                       <option value="+49">+49</option>
-                       <option value="+1">+1</option>
-                     </select>
-                     <input
-                       type="tel"
-                       required
-                       value={form.phone}
-                       onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
-                       placeholder={t.phone_placeholder}
-                       className="w-full bg-transparent border-none py-4 px-6 outline-none text-sm"
-                     />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{t.message}</label>
-                <textarea
-                  required
-                  rows={5}
-                  value={form.message}
-                  onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
-                  placeholder={t.message_placeholder}
-                  className="w-full bg-[hsl(var(--col-paper))] border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-[hsl(var(--col-saffron-2))] transition-all outline-none text-sm resize-none"
-                />
-              </div>
-
-              {status === "success" && (
-                <div className="flex items-center gap-3 p-4 bg-green-50 text-green-700 rounded-2xl text-sm font-medium animate-in fade-in slide-in-from-bottom-2">
-                  <CheckCircle className="h-5 w-5" /> {t.success}
-                </div>
-              )}
-              {status === "error" && (
-                <div className="p-4 bg-red-50 text-red-700 rounded-2xl text-sm font-medium">{t.error}</div>
-              )}
-
-              <button
-                type="submit"
-                disabled={status === "loading"}
-                className="btn-editorial w-full py-5 justify-center mt-4 bg-[hsl(var(--col-ink))] text-white group"
-              >
-                <span>
-                  {status === "loading" ? "Gönderiliyor..." : (t.send_message || t.send)}
-                  <Send className="h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                </span>
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Map */}
-        {mapUrl && (
-          <div className="mt-20 lg:mt-32 rounded-[48px] overflow-hidden shadow-2xl border-8 border-white">
-            <iframe
-              src={mapUrl}
-              title="Kaman İlan Konum"
-              className="h-[400px] md:h-[600px] w-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
-              loading="lazy"
+    <main className="min-h-screen bg-white">
+      <div className="flex min-h-[calc(100vh-150px)] flex-col lg:flex-row">
+        <section className="hidden items-center justify-center border-r border-black/5 bg-white p-12 lg:flex lg:w-1/2 xl:p-20">
+          <div className="relative aspect-square w-full max-w-[620px]">
+            <Image
+              src="/images/auth/contact-kaman-v2.webp"
+              alt="Kaman İlan iletişim destek ekibi"
+              fill
+              sizes="(min-width: 1024px) 50vw, 0px"
+              className="object-contain transition-transform duration-700 hover:scale-[1.02]"
+              priority
             />
           </div>
-        )}
+        </section>
+
+        <section className="flex flex-1 items-center justify-center bg-[hsl(var(--col-paper))] px-6 py-12 sm:px-8 lg:px-16 lg:py-16 xl:px-24">
+          <div className="w-full max-w-[560px]">
+            <nav className="mb-8 flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[hsl(var(--col-ink))] opacity-30 lg:mb-10">
+              <Link href={ROUTES.HOME} className="transition-colors hover:text-[hsl(var(--col-saffron-2))]">
+                {t.home}
+              </Link>
+              <ChevronRight className="h-3 w-3" />
+              <span>{t.contact}</span>
+            </nav>
+
+            <header className="mb-8 space-y-3 lg:mb-10">
+              <h1 className="font-fraunces text-5xl font-medium leading-none tracking-tight text-[hsl(var(--col-ink))] lg:text-6xl">
+                {formSection.title || t.contact}
+              </h1>
+              <p className="max-w-lg font-manrope text-sm leading-relaxed text-[hsl(var(--col-walnut))]/60 sm:text-base">
+                {formSection.subtitle || t.contact_subtitle}
+              </p>
+            </header>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="contact-name">{t.name}</Label>
+                <div className="relative">
+                  <MessageSquare className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="contact-name"
+                    required
+                    autoComplete="name"
+                    value={form.name}
+                    onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+                    placeholder={t.name_placeholder}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="contact-email">{t.email}</Label>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="contact-email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={form.email}
+                      onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+                      placeholder={t.email_placeholder}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="contact-phone">{t.phone}</Label>
+                  <div className="flex rounded-md border border-input bg-background shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50">
+                    <select
+                      aria-label="Ülke telefon kodu"
+                      value={phoneCode}
+                      onChange={(event) => setPhoneCode(event.target.value)}
+                      className="border-r border-input bg-transparent px-3 text-xs font-semibold text-[hsl(var(--col-walnut))] outline-none"
+                    >
+                      <option value="+90">+90</option>
+                      <option value="+49">+49</option>
+                      <option value="+1">+1</option>
+                    </select>
+                    <div className="relative min-w-0 flex-1">
+                      <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <input
+                        id="contact-phone"
+                        type="tel"
+                        required
+                        autoComplete="tel"
+                        value={form.phone}
+                        onChange={(event) => setForm((current) => ({ ...current, phone: event.target.value }))}
+                        placeholder={t.phone_placeholder}
+                        className="h-9 w-full bg-transparent pl-10 pr-3 text-sm outline-none placeholder:text-muted-foreground"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="contact-message">{t.message}</Label>
+                <textarea
+                  id="contact-message"
+                  required
+                  rows={4}
+                  value={form.message}
+                  onChange={(event) => setForm((current) => ({ ...current, message: event.target.value }))}
+                  placeholder={t.message_placeholder}
+                  className="flex min-h-28 w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus:border-ring focus:ring-[3px] focus:ring-ring/50"
+                />
+              </div>
+
+              {status === "success" ? (
+                <div role="status" className="flex items-center gap-2 rounded-md bg-[#F2F4E9] p-3 text-sm font-medium text-[#59603E]">
+                  <CheckCircle className="h-4 w-4" />
+                  {t.success}
+                </div>
+              ) : null}
+
+              {status === "error" ? (
+                <div role="alert" className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                  {t.error}
+                </div>
+              ) : null}
+
+              <Button type="submit" className="w-full" disabled={status === "loading"}>
+                {status === "loading" ? "Gönderiliyor..." : "Mesaj Gönder"}
+                <Send className="h-4 w-4" />
+              </Button>
+            </form>
+
+            {(detailsSection.phone || detailsSection.email || detailsSection.address) ? (
+              <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 border-t border-black/10 pt-5 text-xs text-[hsl(var(--col-walnut))]/65">
+                {detailsSection.phone ? (
+                  <a
+                    href={`tel:${detailsSection.phone}`}
+                    onClick={() => trackConversion("click_phone", { source: "contact_page" })}
+                    className="flex items-center gap-1.5 hover:text-[hsl(var(--col-saffron-2))]"
+                  >
+                    <Phone className="h-3.5 w-3.5" /> {detailsSection.phone}
+                  </a>
+                ) : null}
+                {detailsSection.email ? (
+                  <a href={`mailto:${detailsSection.email}`} className="flex items-center gap-1.5 hover:text-[hsl(var(--col-saffron-2))]">
+                    <Mail className="h-3.5 w-3.5" /> {detailsSection.email}
+                  </a>
+                ) : null}
+                {detailsSection.address ? (
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5" /> {detailsSection.address}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

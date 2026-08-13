@@ -187,7 +187,14 @@
       "Bash(mysql -u app -papp x_ilan -Nse \"SELECT id, title, is_active FROM banners WHERE id IN \\(50,51,52,53\\) ORDER BY id;\")",
       "Bash(curl -s http://localhost:8078/api/v1/theme)",
       "Bash(python3 -c \"import json,sys;t=json.load\\(sys.stdin\\); print\\('Keys:', sorted\\(t.keys\\(\\)\\)\\); print\\('newsListSections count:', len\\(t.get\\('newsListSections',[]\\)\\)\\)\")",
-      "Bash(rsync -avz --delete --exclude=node_modules --exclude=.next --exclude=.env --exclude=.env.local --exclude=.git --exclude=dist ./ orhan@72.61.93.212:/var/www/kamanilan/)"
+      "Bash(rsync -avz --delete --exclude=node_modules --exclude=.next --exclude=.env --exclude=.env.local --exclude=.git --exclude=dist ./ orhan@72.61.93.212:/var/www/kamanilan/)",
+      "Bash(curl -sI https://www.kamanilan.com)",
+      "Bash(curl -sI https://www.kamanilan.com/_next/static/chunks/c52d24499c55da7e.js)",
+      "Bash(curl -sI https://www.kamanilan.com/_next/static/chunks/446546028b94d947.css)",
+      "Bash(ssh -o ConnectTimeout=10 guezelwebdesign \"ls ~/apps/ 2>/dev/null || ls /var/www/ 2>/dev/null || ls /home/orhan/ 2>/dev/null\")",
+      "Bash(rsync -av /home/orhan/Documents/Projeler/vps-guezel/kamanilan/frontend/src/app/layout.tsx guezelwebdesign:/var/www/kamanilan/frontend/src/app/layout.tsx)",
+      "Bash(rsync -av \"/home/orhan/Documents/Projeler/vps-guezel/kamanilan/admin_panel/src/app/\\(main\\)/admin/\\(admin\\)/site-settings/tabs/integration-settings-tab.tsx\" \"guezelwebdesign:/var/www/kamanilan/admin_panel/src/app/\\(main\\)/admin/\\(admin\\)/site-settings/tabs/integration-settings-tab.tsx\")",
+      "Bash(rsync -av /tmp/patch_layout.py guezelwebdesign:/tmp/patch_layout.py)"
     ],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [

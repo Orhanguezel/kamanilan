@@ -89,7 +89,6 @@ ON DUPLICATE KEY UPDATE
    EDITORIAL STATS (used by Advertise Page)
    ============================================================= */
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_at`) VALUES
-  (UUID(), 'stats_active_ads',    '*', '"1.250+"',  NOW(3), NOW(3)),
   (UUID(), 'stats_monthly_visit', '*', '"45.000+"',   NOW(3), NOW(3)),
   (UUID(), 'stats_satisfaction',  '*', '"%98"',  NOW(3), NOW(3)),
   (UUID(), 'stats_support_hours', '*', '"7/24"', NOW(3), NOW(3))

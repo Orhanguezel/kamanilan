@@ -556,6 +556,8 @@ export async function listPropertiesPublic(params: ListParams) {
       .select({
         property: properties,
         cat_has_cart: categories.has_cart,
+        contact_phone: categories.phone_number,
+        contact_whatsapp: categories.whatsapp_number,
         sub_has_cart: subCategories.has_cart,
       })
       .from(properties)
@@ -572,7 +574,12 @@ export async function listPropertiesPublic(params: ListParams) {
     const base = rowToPublicView(r.property as PropertyRow);
     // has_cart logic: subcategory has priority if exists, otherwise category
     const has_cart = r.sub_has_cart ?? r.cat_has_cart ?? true;
-    return { ...base, has_cart: Boolean(has_cart) };
+    return {
+      ...base,
+      has_cart: Boolean(has_cart),
+      contact_phone: r.contact_phone ?? null,
+      contact_whatsapp: r.contact_whatsapp ?? null,
+    };
   });
   const withTags = await attachTagIds(baseItems as Array<PropertyPublicView & { id: string }>);
 
@@ -892,6 +899,8 @@ export async function getPropertyByIdPublic(id: string) {
     .select({
       property: properties,
       cat_has_cart: categories.has_cart,
+      contact_phone: categories.phone_number,
+      contact_whatsapp: categories.whatsapp_number,
       sub_has_cart: subCategories.has_cart,
     })
     .from(properties)
@@ -905,7 +914,12 @@ export async function getPropertyByIdPublic(id: string) {
   const row = rows[0];
   const basePure = rowToPublicView(row.property as PropertyRow);
   const has_cart_raw = row.sub_has_cart ?? row.cat_has_cart ?? true;
-  let base: any = { ...basePure, has_cart: Boolean(has_cart_raw) };
+  let base: any = {
+    ...basePure,
+    has_cart: Boolean(has_cart_raw),
+    contact_phone: row.contact_phone ?? null,
+    contact_whatsapp: row.contact_whatsapp ?? null,
+  };
 
   base = await enrichCoverUrlIfNeeded(base);
 
@@ -940,6 +954,8 @@ export async function getPropertyBySlugPublic(slug: string) {
     .select({
       property: properties,
       cat_has_cart: categories.has_cart,
+      contact_phone: categories.phone_number,
+      contact_whatsapp: categories.whatsapp_number,
       sub_has_cart: subCategories.has_cart,
     })
     .from(properties)
@@ -953,7 +969,12 @@ export async function getPropertyBySlugPublic(slug: string) {
   const row = rows[0];
   const basePure = rowToPublicView(row.property as PropertyRow);
   const has_cart_raw = row.sub_has_cart ?? row.cat_has_cart ?? true;
-  let base: any = { ...basePure, has_cart: Boolean(has_cart_raw) };
+  let base: any = {
+    ...basePure,
+    has_cart: Boolean(has_cart_raw),
+    contact_phone: row.contact_phone ?? null,
+    contact_whatsapp: row.contact_whatsapp ?? null,
+  };
 
   base = await enrichCoverUrlIfNeeded(base);
 

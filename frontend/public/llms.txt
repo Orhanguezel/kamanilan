@@ -40,8 +40,6 @@ Aktif kategoriler ve ana URL'leri:
 
 - [Hakkımızda](https://www.kamanilan.com/hakkimizda)
 - [İletişim](https://www.kamanilan.com/iletisim)
-- [Misyon & Vizyon](https://www.kamanilan.com/misyon-vizyon)
-- [Kalite Politikası](https://www.kamanilan.com/kalite-politikamiz)
 - [Kullanım Koşulları](https://www.kamanilan.com/kullanim-kosullari)
 - [Gizlilik Politikası](https://www.kamanilan.com/gizlilik-politikasi)
 

@@ -61,6 +61,9 @@ export const API_ENDPOINTS = {
   MY_LISTING: "/my/listings/:id",
   MY_LISTING_TOGGLE: "/my/listings/:id/toggle",
 
+  // Seller application — authenticated users apply, admin reviews separately
+  SELLER_APPLICATION: "/seller/application",
+
   // Storage — auth required
   STORAGE_UPLOAD: "/storage/:bucket/upload",
 

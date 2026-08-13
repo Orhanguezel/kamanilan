@@ -19,7 +19,6 @@ import { ProductLatestSection } from "./product-latest-section";
 import { PopularProductSection } from "./popular-product-section";
 import { NewsletterSection } from "./newsletter-section";
 import { TopStoresSection } from "./top-stores-section";
-import { SpotlightSection } from "./spotlight-section";
 
 /* ─── section type → bileşen eşlemesi ─────────────────────────────────── */
 
@@ -34,7 +33,6 @@ const SECTION_MAP: Record<string, React.ComponentType<{ config?: SectionConfig }
   announcements:      AnnouncementsSection,
   news_feed:          NewsFeedSection,
   infinite_listings:  InfiniteListingsSection,
-  spotlight:          SpotlightSection,
   // Yeni e-commerce section tipleri (layout_blocks)
   product_featured:        ProductFeaturedSection,
   product_top_selling:     ProductTopSellingSection,
@@ -186,7 +184,6 @@ const DEFAULT_SECTIONS: SectionConfig[] = [
   { key: "hero",              enabled: true, order: 1, label: "Hero",            colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
   { key: "categories",        enabled: true, order: 2, label: "Tüm Kategoriler", colsLg: 6, colsMd: 3, colsSm: 2, limit: null },
   { key: "banner_section__1", enabled: true, order: 3, label: "Reklam Banner 1", colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
-  { key: "spotlight",         enabled: true, order: 4, label: "Özel Vurgu",       colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
   { key: "flash_sale",        enabled: true, order: 5, label: "Flash Fırsat",    colsLg: 5, colsMd: 3, colsSm: 2, limit: 5   },
   { key: "banner_section__2", enabled: true, order: 6, label: "Reklam Banner 2", colsLg: 1, colsMd: 1, colsSm: 1, limit: null },
   { key: "featured",          enabled: true, order: 7, label: "Öne Çıkan",       colsLg: 4, colsMd: 3, colsSm: 2, limit: 8   },

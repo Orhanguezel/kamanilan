@@ -14,7 +14,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { t } from "@/lib/t";
-import { useSiteSettingsQuery } from "@/modules/site/site.service";
+import { useActiveListingCountQuery, useSiteSettingsQuery } from "@/modules/site/site.service";
 import { ROUTES } from "@/config/routes";
 
 /* ─── Reklam konumları ────────────────────────────────────────────── */
@@ -79,27 +79,23 @@ const STEPS = [
   {
     num: "04",
     title: "Aynı Gün Yayım",
-    desc: "Onay ve ödeme sonrasında reklamınız 24 saat içerisinde sistemde aktifleşir.",
+    desc: "İçerik ve yayın onayı sonrasında reklamınız planlanan tarihte sistemde aktifleşir.",
   },
 ];
 
 export default function ReklamVerPage() {
   const { data: site } = useSiteSettingsQuery([
     "contact_whatsapp_link",
-    "stats_active_ads",
-    "stats_monthly_visit",
-    "stats_satisfaction",
-    "stats_support_hours",
   ]);
+  const { data: activeListingCount = 0 } = useActiveListingCountQuery();
 
   const whatsappLink = site?.contact_whatsapp_link as string | undefined;
 
-  // Stats from DB with realistic logical fallbacks
   const stats = [
-    { val: (site?.stats_active_ads as string) || "1.250+", label: "AKTİF İLAN" },
-    { val: (site?.stats_monthly_visit as string) || "45.000+", label: "AYLIK ZİYARET" },
-    { val: (site?.stats_satisfaction as string) || "%98", label: "MEMNUNİYET" },
-    { val: (site?.stats_support_hours as string) || "7/24", label: "DESTEK" },
+    { val: String(activeListingCount), label: "AKTİF İLAN" },
+    { val: "Yerel", label: "HEDEF KİTLE" },
+    { val: "Esnek", label: "YAYIN SÜRESİ" },
+    { val: "Doğrudan", label: "İLETİŞİM" },
   ];
 
   return (
@@ -124,8 +120,8 @@ export default function ReklamVerPage() {
                <em className="italic font-normal text-saffron-2">Yerinizi Alın</em>
              </h1>
              <p className="text-lg md:text-xl text-text-2 leading-relaxed max-w-2xl font-manrope">
-                Kırşehir ve Kaman bölgesinin en aktif ilan platformunda binlerce yerel ziyaretçiye ulaşın. 
-                İşletmenizin görünürlüğünü artırmak için size özel reklam çözümlerini keşfedin.
+                Kırşehir ve Kaman odaklı yerel ilan platformunda hedef kitlenize doğrudan ulaşın.
+                İşletmenizin görünürlüğünü artırmak için ölçülebilir reklam alanlarını keşfedin.
              </p>
           </div>
 
@@ -247,7 +243,7 @@ export default function ReklamVerPage() {
                 <div className="mt-10 p-6 bg-parchment/30 border border-saffron/10 rounded-2xl flex items-start gap-4">
                    <Zap className="h-5 w-5 text-saffron mt-1 flex-shrink-0" />
                    <p className="text-xs text-text-3 font-manrope leading-relaxed italic">
-                      <b>Hızlı Yayın Avantajı:</b> Tüm materyaller hazır olduğunda reklamınız ödeme onayı sonrası 24 saat içinde yayına girer.
+                      <b>Planlı Yayın:</b> Tüm materyaller hazır olduğunda reklamınız içerik onayı sonrası belirlenen tarihte yayına girer.
                    </p>
                 </div>
              </div>

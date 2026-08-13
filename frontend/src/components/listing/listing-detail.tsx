@@ -13,14 +13,19 @@ import {
   Share2,
   CheckCircle2,
   ShoppingCart,
+  Phone,
+  MessageCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { t } from "@/lib/t";
 import { ROUTES } from "@/config/routes";
+import { normalizeContactPhone } from "@/lib/contact-phone";
 import { useListingBySlugQuery } from "@/modules/listing/listing.service";
 import { useCartStore } from "@/stores/cart-store";
+import { COMMERCE_ENABLED } from "@/config/features";
 import { useRecentlyViewedStore } from "@/stores/recently-viewed-store";
 import type { Listing, ListingVariantValue } from "@/modules/listing/listing.types";
+import { trackConversion } from "@/lib/conversion-tracking";
 
 function formatPrice(price: string | null, currency: string): string {
   if (!price || price === "0") return t("listing.free");
@@ -198,6 +203,8 @@ export function ListingDetail({ slug, initialListing }: ListingDetailProps) {
     : [];
 
   const variantValues = listing.variant_values ?? [];
+  const callPhone = normalizeContactPhone(listing.contact_phone);
+  const whatsappPhone = normalizeContactPhone(listing.contact_whatsapp);
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -297,7 +304,7 @@ export function ListingDetail({ slug, initialListing }: ListingDetailProps) {
               </div>
             )}
 
-            {listing.has_cart && (
+            {COMMERCE_ENABLED && listing.has_cart ? (
               <button
                 onClick={() => {
                   addItem(listing);
@@ -308,7 +315,65 @@ export function ListingDetail({ slug, initialListing }: ListingDetailProps) {
                 <ShoppingCart className="h-4 w-4" />
                 {t("listing.add_to_cart")}
               </button>
-            )}
+            ) : null}
+
+            {(!COMMERCE_ENABLED || !listing.has_cart) && (callPhone || whatsappPhone) ? (
+              <div className="mt-8 space-y-3 border-t border-white/10 pt-6">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+                  İlan sahibiyle iletişim
+                </p>
+                {callPhone && (
+                  <a
+                    href={`tel:${callPhone}`}
+                    onClick={() => trackConversion("click_phone", {
+                      source: "listing_detail",
+                      listing_id: listing.id,
+                      category_id: listing.category_id,
+                    })}
+                    aria-label="İlan sahibini telefonla ara"
+                    className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-saffron text-xs font-bold uppercase tracking-widest text-ink shadow-xl shadow-black/30 transition-all hover:scale-[1.02] active:scale-95"
+                  >
+                    <Phone className="h-4 w-4" />
+                    Telefonla Ara
+                  </a>
+                )}
+                {whatsappPhone && (
+                  <a
+                    href={`https://wa.me/${whatsappPhone.replace(/\D/g, "")}?text=${encodeURIComponent(`${listing.title} ilanınız hakkında bilgi almak istiyorum.`)}`}
+                    onClick={() => trackConversion("click_whatsapp", {
+                      source: "listing_detail",
+                      listing_id: listing.id,
+                      category_id: listing.category_id,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="İlan sahibine WhatsApp'tan yaz"
+                    className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-[#25D366] text-xs font-bold uppercase tracking-widest text-white shadow-xl shadow-black/30 transition-all hover:scale-[1.02] active:scale-95"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp'tan Yaz
+                  </a>
+                )}
+                <p className="text-center text-[10px] leading-relaxed text-white/40">
+                  Telefon numarası gizlidir; yalnızca düğmeye basarak iletişim kurabilirsiniz.
+                </p>
+              </div>
+            ) : null}
+
+            {(!COMMERCE_ENABLED || !listing.has_cart) && !callPhone && !whatsappPhone ? (
+              <div className="mt-8 space-y-3 border-t border-white/10 pt-6">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+                  İlan hakkında bilgi alın
+                </p>
+                <Link
+                  href={`${ROUTES.CONTACT}?ilan=${encodeURIComponent(listing.listing_no || listing.title)}`}
+                  className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-saffron text-xs font-bold uppercase tracking-widest text-ink shadow-xl shadow-black/30 transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Siteye Mesaj Gönder
+                </Link>
+              </div>
+            ) : null}
 
             <div className="mt-10 space-y-4 pt-8 border-t border-white/5">
               {listing.listing_no && (

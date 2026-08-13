@@ -133,7 +133,10 @@ function TopbarBand({ popup }: { popup: PopupItem }) {
 
 export function TopbarPopup() {
   const { data: popups = [], isPending } = usePopupsQuery("topbar");
-  if (isPending || popups.length === 0) return null;
+  if (isPending) {
+    return <div className="h-10 bg-ink" aria-hidden="true" />;
+  }
+  if (popups.length === 0) return null;
 
   return (
     <div className="z-[70]">

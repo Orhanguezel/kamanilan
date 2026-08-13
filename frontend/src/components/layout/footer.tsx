@@ -263,14 +263,14 @@ export function Footer() {
            </div>
 
            <div className="flex items-center gap-2 group">
-              <span>DESIGNED BY</span>
+              <span>TASARIM VE TEKNOLOJİ</span>
               <a 
-                href="https://guezelwebdesign.com" 
+                href="https://gzlteknoloji.com" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-saffron font-bold hover:brightness-125 transition-all flex items-center gap-1"
               >
-                GWD TASARIM DİZAYN <ArrowRight className="h-3 w-3 -rotate-45" />
+                GZL TEKNOLOJİ <ArrowRight className="h-3 w-3 -rotate-45" />
               </a>
            </div>
         </div>
