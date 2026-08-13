@@ -10,6 +10,7 @@ interface DeferredGoogleTagProps {
 declare global {
   interface Window {
     dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
@@ -21,9 +22,9 @@ export function DeferredGoogleTag({ loaderId, configIds }: DeferredGoogleTagProp
       if (started) return;
       started = true;
       window.dataLayer = window.dataLayer ?? [];
-      const gtag = (...args: unknown[]) => window.dataLayer?.push(args);
-      gtag("js", new Date());
-      for (const id of configIds) gtag("config", id);
+      window.gtag = (...args: unknown[]) => window.dataLayer?.push(args);
+      window.gtag("js", new Date());
+      for (const id of configIds) window.gtag("config", id);
 
       const script = document.createElement("script");
       script.async = true;

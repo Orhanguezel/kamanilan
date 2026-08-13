@@ -56,4 +56,17 @@ describe("conversion tracking", () => {
       body: JSON.stringify({ eventType: "whatsapp_click", entityType: "listing", entityId: "ilan-1" }),
     }));
   });
+
+  it("uses the global gtag queue after the deferred loader starts", () => {
+    const gtag = mock(() => undefined);
+    Object.assign(globalThis, { window: { gtag, dataLayer: [] } });
+
+    trackConversion("generate_lead", { listing_id: "42", category_id: "7" });
+
+    expect(gtag).toHaveBeenCalledWith("event", "generate_lead", {
+      listing_id: "42",
+      category_id: "7",
+      event_category: "conversion",
+    });
+  });
 });

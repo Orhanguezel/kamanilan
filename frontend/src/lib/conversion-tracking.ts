@@ -17,7 +17,7 @@ export type ConversionEventParams = Record<
 declare global {
   interface Window {
     dataLayer?: unknown[];
-    gtag?: (command: "event", eventName: string, params?: ConversionEventParams) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
