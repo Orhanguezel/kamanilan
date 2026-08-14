@@ -1,0 +1,110 @@
+-- Geçici konsept kabul içeriği.
+-- Marker: concept-demo-2026
+-- Silme: backend/scripts/sql/remove-concept-demo.sql
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO `properties`
+  (`id`, `user_id`, `title`, `slug`, `excerpt`, `category_id`, `status`,
+   `address`, `district`, `city`, `neighborhood`, `description`, `price`, `currency`,
+   `is_negotiable`, `admin_note`, `internal_note`, `listing_no`, `badge_text`,
+   `featured`, `image_url`, `alt`, `is_active`, `display_order`, `created_at`, `updated_at`)
+VALUES
+  ('cd260001-0000-4000-8000-000000000001', @CUSTOMER_ID,
+   'Bağbaşı''nda Bahçeli Müstakil Ev', 'concept-demo-bagbasinda-bahceli-mustakil-ev',
+   'Kaman Bağbaşı Mahallesi''nde geniş bahçeli, sakin konumda müstakil ev.',
+   (SELECT c.id FROM categories c JOIN category_i18n ci ON ci.category_id=c.id WHERE ci.locale='tr' AND ci.slug='emlak-kira' LIMIT 1),
+   'satilik', 'Bağbaşı Mahallesi', 'Kaman', 'Kırşehir', 'Bağbaşı',
+   'Bu kayıt yalnızca tasarım konsepti kabulü için hazırlanmış geçici örnek ilandır.',
+   2850000, 'TRY', 1, 'concept-demo-2026', 'concept-demo-2026', 'DEMO-2601', 'Yeni', 1,
+   '/images/home/kaman-stone-house.webp',
+   'Kaman Bağbaşı''nda bahçeli müstakil ev', 1, 1, NOW(3), NOW(3)),
+
+  ('cd260002-0000-4000-8000-000000000002', @CUSTOMER_ID,
+   '2021 Model Traktör, Bakımlı', 'concept-demo-2021-model-bakimli-traktor',
+   'Tarla ve bahçe işleri için düzenli bakımları yapılmış traktör.',
+   (SELECT c.id FROM categories c JOIN category_i18n ci ON ci.category_id=c.id WHERE ci.locale='tr' AND ci.slug='arac-gerec' LIMIT 1),
+   'satilik', 'Kaman Sanayi Sitesi', 'Kaman', 'Kırşehir', 'Yeni Mahalle',
+   'Bu kayıt yalnızca tasarım konsepti kabulü için hazırlanmış geçici örnek ilandır.',
+   985000, 'TRY', 1, 'concept-demo-2026', 'concept-demo-2026', 'DEMO-2602', 'Bakımlı', 1,
+   '/images/home/kaman-tractor.webp',
+   'Kaman''da satılık bakımlı traktör', 1, 2, DATE_SUB(NOW(3), INTERVAL 1 HOUR), NOW(3)),
+
+  ('cd260003-0000-4000-8000-000000000003', @CUSTOMER_ID,
+   'Yeni Hasat Kabuklu Kaman Cevizi', 'concept-demo-yeni-hasat-kabuklu-kaman-cevizi',
+   'Yerel üreticiden ince kabuklu, yüksek iç randımanlı yeni hasat ceviz.',
+   (SELECT c.id FROM categories c JOIN category_i18n ci ON ci.category_id=c.id WHERE ci.locale='tr' AND ci.slug='kaman-cevizi' LIMIT 1),
+   'satilik', 'Çağırkan Köyü', 'Kaman', 'Kırşehir', 'Çağırkan',
+   'Bu kayıt yalnızca tasarım konsepti kabulü için hazırlanmış geçici örnek ilandır.',
+   250, 'TRY', 0, 'concept-demo-2026', 'concept-demo-2026', 'DEMO-2603', 'Yerel Üretici', 1,
+   '/images/home/kaman-walnut-orchard.webp',
+   'Yeni hasat kabuklu Kaman cevizi', 1, 3, DATE_SUB(NOW(3), INTERVAL 2 HOUR), NOW(3)),
+
+  ('cd260004-0000-4000-8000-000000000004', @CUSTOMER_ID,
+   'Ceviz Bahçesi Bakım ve Budama Hizmeti', 'concept-demo-ceviz-bahcesi-bakim-budama',
+   'Kaman ve köylerinde tecrübeli ekipten bahçe bakımı ve budama hizmeti.',
+   (SELECT c.id FROM categories c JOIN category_i18n ci ON ci.category_id=c.id WHERE ci.locale='tr' AND ci.slug='usta-hizmet' LIMIT 1),
+   'hizmet', 'Kaman Merkez', 'Kaman', 'Kırşehir', 'Merkez',
+   'Bu kayıt yalnızca tasarım konsepti kabulü için hazırlanmış geçici örnek ilandır.',
+   NULL, 'TRY', 0, 'concept-demo-2026', 'concept-demo-2026', 'DEMO-2604', 'Usta', 0,
+   '/images/home/kaman-walnut-orchard.webp',
+   'Ceviz bahçesinde bakım ve budama çalışması', 1, 4, DATE_SUB(NOW(3), INTERVAL 3 HOUR), NOW(3)),
+
+  ('cd260005-0000-4000-8000-000000000005', @CUSTOMER_ID,
+   'Masif Ahşap Yemek Masası', 'concept-demo-masif-ahsap-yemek-masasi',
+   'Az kullanılmış, sağlam ve bakımlı altı kişilik masif ahşap masa.',
+   (SELECT c.id FROM categories c JOIN category_i18n ci ON ci.category_id=c.id WHERE ci.locale='tr' AND ci.slug='ikinci-el' LIMIT 1),
+   'satilik', 'Cuma Mahallesi', 'Kaman', 'Kırşehir', 'Cuma',
+   'Bu kayıt yalnızca tasarım konsepti kabulü için hazırlanmış geçici örnek ilandır.',
+   12500, 'TRY', 1, 'concept-demo-2026', 'concept-demo-2026', 'DEMO-2605', NULL, 0,
+   '/images/home/kaman-stone-house.webp',
+   'İkinci el masif ahşap yemek masası', 1, 5, DATE_SUB(NOW(3), INTERVAL 4 HOUR), NOW(3));
+
+INSERT IGNORE INTO `articles`
+  (`uuid`, `locale`, `title`, `slug`, `excerpt`, `content`, `category`,
+   `cover_image_url`, `alt`, `author`, `source`, `tags`, `reading_time`,
+   `meta_title`, `meta_description`, `is_published`, `is_featured`,
+   `display_order`, `published_at`)
+VALUES
+  ('cd26a001-0000-4000-8000-000000000001', 'tr',
+   'Kaman''da Haftanın Yerel Pazar Gündemi', 'concept-demo-kaman-yerel-pazar-gundemi',
+   'Üreticiler, esnaf ve alıcıları ilgilendiren haftanın öne çıkan yerel pazar başlıkları.',
+   '<p>Bu haber, yeni ana sayfa tasarımının içerik görünümünü doğrulamak için hazırlanmış geçici örnek içeriktir.</p>',
+   'yerel',
+   '/images/home/kaman-walnut-orchard.webp',
+   'Yerel pazarda taze ürün tezgahları', 'Kaman İlan Haber', 'Kaman İlan',
+   'concept-demo-2026, Kaman, yerel pazar', 2,
+   'Kaman Yerel Pazar Gündemi', 'Kaman''ın yerel pazarından haftanın öne çıkan başlıkları.',
+   1, 1, 1, NOW(3)),
+
+  ('cd26a002-0000-4000-8000-000000000002', 'tr',
+   'Yeni Hasat Dönemi İçin Üretici Hazırlıkları Başladı', 'concept-demo-yeni-hasat-uretici-hazirliklari',
+   'Kamanlı üreticiler yeni sezon öncesi bahçe bakım ve hasat planlarını tamamlıyor.',
+   '<p>Bu haber, yeni ana sayfa tasarımının içerik görünümünü doğrulamak için hazırlanmış geçici örnek içeriktir.</p>',
+   'ekonomi',
+   '/images/home/kaman-walnut-orchard.webp',
+   'Hasat hazırlığı yapan yerel üretici', 'Kaman İlan Haber', 'Kaman İlan',
+   'concept-demo-2026, hasat, üretici', 2,
+   'Kaman''da Yeni Hasat Hazırlıkları', 'Kamanlı üreticilerin yeni hasat dönemi hazırlıkları.',
+   1, 0, 2, DATE_SUB(NOW(3), INTERVAL 1 DAY)),
+
+  ('cd26a003-0000-4000-8000-000000000003', 'tr',
+   'İlçede Küçük İşletmeler İçin Dijital İlan Dönemi', 'concept-demo-kucuk-isletmeler-dijital-ilan',
+   'Yerel işletmeler hizmetlerini ve fırsatlarını dijital ilanlarla daha geniş kitlelere ulaştırıyor.',
+   '<p>Bu haber, yeni ana sayfa tasarımının içerik görünümünü doğrulamak için hazırlanmış geçici örnek içeriktir.</p>',
+   'teknoloji',
+   '/images/home/kaman-stone-house.webp',
+   'Dijital satış kullanan küçük işletme', 'Kaman İlan Haber', 'Kaman İlan',
+   'concept-demo-2026, esnaf, dijital ilan', 2,
+   'Kaman Esnafı İçin Dijital İlan Dönemi', 'Kaman''daki işletmeler dijital ilanlarla yeni müşterilere ulaşıyor.',
+   1, 0, 3, DATE_SUB(NOW(3), INTERVAL 2 DAY)),
+
+  ('cd26a004-0000-4000-8000-000000000004', 'tr',
+   'Kaman ve Köylerinde Hafta Sonu Etkinlikleri', 'concept-demo-kaman-hafta-sonu-etkinlikleri',
+   'Aileler, gençler ve üreticiler için bu hafta sonunun yerel etkinlik seçkisi.',
+   '<p>Bu haber, yeni ana sayfa tasarımının içerik görünümünü doğrulamak için hazırlanmış geçici örnek içeriktir.</p>',
+   'kultur',
+   '/images/home/kaman-tractor.webp',
+   'Kaman çevresinde hafta sonu', 'Kaman İlan Haber', 'Kaman İlan',
+   'concept-demo-2026, etkinlik, Kaman', 2,
+   'Kaman Hafta Sonu Etkinlikleri', 'Kaman ve köylerindeki hafta sonu etkinlikleri.',
+   1, 0, 4, DATE_SUB(NOW(3), INTERVAL 3 DAY));

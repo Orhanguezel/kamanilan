@@ -1,173 +1,202 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { Search } from "lucide-react";
-import type { SectionConfig } from "@/modules/theme/theme.type";
-import { useSlidersQuery } from "@/modules/site/site.service";
-import type { SliderItem } from "@/modules/site/site.type";
+import Link from "next/link";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Building2,
+  CarFront,
+  MapPin,
+  Search,
+  Sprout,
+  Store,
+  Wrench,
+} from "lucide-react";
 import { ROUTES } from "@/config/routes";
-import { useActiveListingCountQuery } from "@/modules/site/site.service";
+import {
+  useActiveListingCountQuery,
+  useCategoriesQuery,
+  useCategoryCountsQuery,
+} from "@/modules/site/site.service";
+import type { CategoryItem } from "@/modules/site/site.type";
+import { pickHomeCategories } from "./marketplace-home.utils";
 
-interface Props {
-  config?: SectionConfig;
-  initialSlides?: SliderItem[];
-}
+const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  "emlak-kira": Building2,
+  "arac-motosiklet": CarFront,
+  "hayvan-tarim": Sprout,
+  "is-ilanlari": BriefcaseBusiness,
+  "usta-hizmet": Wrench,
+  "ikinci-el": Store,
+};
 
-export function HeroSection({ config, initialSlides }: Props) {
-  const { data: slides = initialSlides ?? [], isPending } = useSlidersQuery(initialSlides);
-  const items = slides as SliderItem[];
+const ORCHARD_IMAGE = "/images/home/kaman-walnut-orchard.webp";
+const HOUSE_IMAGE = "/images/home/kaman-stone-house.webp";
+const TRACTOR_IMAGE = "/images/home/kaman-tractor.webp";
 
-  if (isPending) {
-    return (
-      <section className="py-20 md:py-32">
-        <div className="container">
-          <div className="h-[500px] animate-pulse rounded-[32px] bg-parchment/50" />
-        </div>
-      </section>
-    );
-  }
-
-  if (!items.length) return null;
-
-  const mainSlide = items[0];
-
+function CategoryShortcut({
+  category,
+  count,
+}: {
+  category: CategoryItem;
+  count: number;
+}) {
+  const Icon = CATEGORY_ICONS[category.slug] ?? Store;
   return (
-    <>
-      <section
-        className="relative overflow-hidden bg-ivory border-b border-border"
-        style={{ contain: "layout paint" }}
-      >
-        {/* Dekoratif gradient blob'lar — contain: strict ile CLS'ye katki sifir */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-[200px] -top-[200px] h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle_at_center,rgba(201,147,26,0.14),transparent_60%)]"
-          style={{ contain: "strict", willChange: "transform" }}
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-[100px] -bottom-[150px] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_at_center,rgba(95,109,54,0.08),transparent_60%)]"
-          style={{ contain: "strict", willChange: "transform" }}
-        />
-
-        <div className="relative z-10 mx-auto max-w-[1600px]">
-          <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch">
-            
-            {/* Sol: Copy / Editorial Content */}
-            <div className="flex min-h-[640px] flex-col items-start justify-center bg-ink px-6 py-16 sm:px-10 lg:px-[6vw] lg:py-20">
-              <div className="eyebrow mb-8 text-saffron before:bg-saffron">
-                {mainSlide.badgeText || "Regional Hub · 2026"}
-              </div>
-              
-              <h1 className="font-fraunces text-[clamp(44px,6vw,82px)] leading-[1.02] tracking-tight text-paper">
-                {mainSlide.title.split(' ').map((word, i) => {
-                  const cleanWord = word.replace(/[:.,]/g, '');
-                  const isHighlighted = ["Kaman", "Cevizi", "Hasat", "Hasadı"].some(h => cleanWord.includes(h));
-                  
-                  return (
-                    <span key={i}>
-                      {isHighlighted ? (
-                        <em className="inline-block relative not-italic font-medium text-saffron">
-                          {word}
-                          <span className="absolute bottom-[0.05em] left-0 right-0 h-[6px] bg-saffron/20 -z-10" />
-                        </em>
-                      ) : word}{" "}
-                    </span>
-                  )
-                })}
-              </h1>
-
-              <p className="mt-8 text-lg md:text-xl leading-relaxed text-parchment/80 max-w-[540px]">
-                {mainSlide.description || "Kaman'ın bereketli topraklarından sofranıza gelen en taze ve kaliteli ürünler."}
-              </p>
-
-              {/* Premium Search Bar */}
-              <form action={ROUTES.LISTINGS} className="mt-12 w-full max-w-[620px] transition-all duration-300">
-                <div className="group relative flex items-center bg-paper rounded-full border border-border p-2 shadow-xl focus-within:border-saffron focus-within:shadow-2xl">
-                  <div className="hidden md:flex items-center border-r border-border px-5 py-2">
-                      <select aria-label="Kategori filtresi" name="category" className="bg-transparent text-[13px] font-bold outline-none cursor-pointer text-walnut uppercase tracking-wider">
-                        <option value="">Tüm İlanlar</option>
-                        <option value="ceviz">Ceviz</option>
-                        <option value="emlak">Emlak</option>
-                      </select>
-                  </div>
-                  <input 
-                    name="q"
-                    placeholder="Kaman'da ne arıyorsunuz?" 
-                    className="flex-1 bg-transparent px-6 py-3 text-sm font-medium outline-none"
-                  />
-                  <button type="submit" aria-label="Ara" className="h-12 w-12 flex items-center justify-center rounded-full bg-ink text-saffron transition-all hover:rotate-[-15deg] hover:bg-saffron hover:text-ink">
-                      <Search className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                </div>
-              </form>
-
-              <div className="mt-6 flex flex-wrap gap-2.5 items-center">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-parchment/60 mr-2">Trendler:</span>
-                {["Satılık Arazi", "Yeni Mahsul", "Traktör"].map(tag => (
-                  <Link key={tag} href={`${ROUTES.LISTINGS}?q=${tag}`} className="px-4 py-1.5 rounded-full border border-white/15 text-[12px] font-bold text-parchment hover:bg-saffron hover:text-ink transition-all">
-                    {tag}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* Sağ: Editorial Visual Collage */}
-            <div className="relative h-[520px] w-full bg-ivory md:h-[640px]">
-              {/* Main Center Image */}
-              <div className="absolute left-0 top-10 z-20 w-[65%] h-[75%] rounded-[32px] overflow-hidden shadow-2xl rotate-[-3deg] transition-all hover:rotate-0 hover:scale-[1.03]">
-                <Image src={items[0]?.image || "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb"} alt="Kaman cevizi yeni hasat" fill priority sizes="(max-width: 1024px) 65vw, 33vw" className="object-cover" />
-              </div>
-              {/* Secondary Floating Image */}
-              <div className="absolute right-0 top-32 z-10 w-[55%] h-[55%] rounded-[24px] overflow-hidden shadow-2xl rotate-[5deg] transition-all hover:rotate-0 hover:scale-[1.03]">
-                <Image src={mainSlide?.image2 || "https://images.unsplash.com/photo-1570129477492-45c003edd2be"} alt="Kaman cevizi ürünü" fill sizes="(max-width: 1024px) 55vw, 28vw" className="object-cover" />
-              </div>
-              {/* Stats Card Overlay */}
-              <div className="absolute bottom-5 left-[25%] z-30 w-[55%] h-[180px] rounded-[24px] bg-ink p-8 flex flex-col items-center justify-center text-center shadow-3xl rotate-[-2deg] transition-all hover:rotate-0 hover:scale-105">
-                <span className="font-fraunces text-6xl font-light italic text-saffron leading-none">2026</span>
-                <span className="mt-3 font-mono text-[10px] uppercase tracking-[0.3em] text-wheat">Tescilli Mahsul Zamanı</span>
-              </div>
-              {/* Rotating Badge */}
-              <div className="absolute top-0 right-[8%] z-40 h-28 w-28 md:h-32 md:w-32 animate-[spin_20s_linear_infinite] rounded-full bg-saffron shadow-2xl flex items-center justify-center p-5 text-center font-mono text-[9px] md:text-[10px] uppercase font-bold leading-tight tracking-wider text-ink">
-                Kaman Cevizi · %100 Orijinal · Coğrafi İşaret · 2026
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Hero Stats Ribbon Bar */}
-      <section className="bg-paper border-b border-black/5 py-10 lg:py-12">
-        <div className="container">
-           <StatsRibbon />
-        </div>
-      </section>
-    </>
+    <Link
+      href={ROUTES.CATEGORY(category.slug)}
+      className="group flex min-h-[64px] items-center gap-3 border-r border-white/10 px-3 py-3 last:border-r-0 hover:bg-white/[0.06]"
+    >
+      <Icon className="h-4 w-4 shrink-0 text-saffron" />
+      <span className="min-w-0">
+        <span className="block truncate text-[10px] font-bold text-paper">{category.name}</span>
+        <span className="mt-1 block font-mono text-[8px] uppercase tracking-[0.1em] text-paper/45">
+          {count} ilan
+        </span>
+      </span>
+    </Link>
   );
 }
 
-function StatsRibbon() {
+export function HeroSection() {
+  const categoriesQuery = useCategoriesQuery();
+  const categories: CategoryItem[] = categoriesQuery.data ?? [];
+  const { data: categoryCounts = {} } = useCategoryCountsQuery();
   const { data: activeListingCount = 0 } = useActiveListingCountQuery();
-
-  const stats = [
-    { val: String(activeListingCount), label: "Aktif İlan" },
-    { val: "Ücretsiz", label: "İlan Verme" },
-    { val: "Kaman", label: "Yerel Odak" },
-    { val: "Doğrudan", label: "İlan Sahibiyle İletişim" },
-  ];
+  const shortcuts = pickHomeCategories(categories);
+  const today = new Intl.DateTimeFormat("tr-TR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date());
 
   return (
-    <div className="mt-10 lg:mt-8 pt-6 border-t border-black/5 grid grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-6">
-      {stats.map((s, idx) => (
-        <div key={idx} className="flex flex-col items-start">
-          <div className="font-fraunces text-2xl lg:text-3xl text-ink tracking-tight flex items-baseline">
-            {s.val}
+    <>
+      <section className="overflow-hidden border-b border-black/10 bg-ink">
+        <div className="mx-auto grid min-h-[360px] max-w-[1536px] grid-cols-1 lg:grid-cols-[45%_29%_26%]">
+          <div className="flex flex-col justify-center bg-ink px-6 py-10 text-paper sm:px-10 lg:px-[max(2.5rem,calc((100vw-1280px)/2))] lg:py-8">
+            <p className="mb-4 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.2em] text-saffron">
+              <span className="h-px w-6 bg-saffron" />
+              Kaman&apos;ın yerel pazarı
+            </p>
+            <h1 className="max-w-[520px] font-fraunces text-[clamp(38px,4.2vw,64px)] font-medium leading-[0.94] tracking-[-0.045em]">
+              Aradığın<br />
+              <em className="font-normal text-saffron">Kaman&apos;da.</em>
+            </h1>
+            <p className="mt-5 max-w-[500px] text-[13px] leading-6 text-paper/65">
+              Kaman ve çevresindeki ilanları keşfet; doğrudan ilan sahibiyle iletişim kur.
+            </p>
+
+            <form action={ROUTES.LISTINGS} className="mt-6 max-w-[570px]">
+              <div className="flex h-12 items-center bg-paper text-ink shadow-xl">
+                <select
+                  aria-label="Kategori seç"
+                  name="category"
+                  className="hidden h-full max-w-[145px] border-r border-black/10 bg-transparent px-4 text-[10px] font-bold outline-none sm:block"
+                >
+                  <option value="">Tüm kategoriler</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.slug}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  name="q"
+                  aria-label="İlanlarda ara"
+                  placeholder="Ne arıyorsun?"
+                  className="min-w-0 flex-1 bg-transparent px-4 text-[12px] outline-none placeholder:text-walnut/45"
+                />
+                <button
+                  type="submit"
+                  aria-label="Ara"
+                  className="mr-1 flex h-10 w-10 items-center justify-center bg-saffron text-ink transition-colors hover:bg-ink hover:text-saffron"
+                >
+                  <Search aria-hidden="true" className="h-4 w-4" />
+                </button>
+              </div>
+            </form>
+
+            {shortcuts.length > 0 && (
+              <div className="mt-5 grid max-w-[570px] grid-cols-2 border border-white/10 sm:grid-cols-5">
+                {shortcuts.map((category) => (
+                  <CategoryShortcut
+                    key={category.id}
+                    category={category}
+                    count={categoryCounts[category.id] ?? 0}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-walnut/70 font-bold mt-1.5">
-            {s.label}
+
+          <div className="relative min-h-[300px] overflow-hidden lg:min-h-[360px]">
+            <Image
+              src={ORCHARD_IMAGE}
+              alt="Kaman'da tarım ve yerel üretim"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 29vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/25 to-transparent" />
+            <span className="absolute bottom-5 left-5 bg-paper px-3 py-2 font-mono text-[8px] uppercase tracking-[0.16em] text-ink">
+              Kaman · Kırşehir
+            </span>
+          </div>
+
+          <div className="hidden grid-rows-2 gap-px bg-paper lg:grid">
+            <Link href={ROUTES.CATEGORY("emlak-kira")} className="group relative overflow-hidden">
+              <Image
+                src={HOUSE_IMAGE}
+                alt="Kaman emlak ilanları"
+                fill
+                sizes="26vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-ink/80 to-transparent px-5 pb-4 pt-10 text-[11px] font-bold text-paper">
+                Emlak İlanları <ArrowRight className="h-3.5 w-3.5" />
+              </span>
+            </Link>
+            <Link href={ROUTES.CATEGORY("arac-gerec")} className="group relative overflow-hidden">
+              <Image
+                src={TRACTOR_IMAGE}
+                alt="Kaman araç ve tarım ilanları"
+                fill
+                sizes="26vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-ink/80 to-transparent px-5 pb-4 pt-10 text-[11px] font-bold text-paper">
+                Araç & Tarım <ArrowRight className="h-3.5 w-3.5" />
+              </span>
+            </Link>
           </div>
         </div>
-      ))}
-    </div>
+      </section>
+
+      <section className="border-b border-black/10 bg-paper">
+        <div className="container grid min-h-[66px] grid-cols-2 items-center gap-x-6 gap-y-3 py-4 md:grid-cols-[1.2fr_1fr_1fr_1fr] md:py-0">
+          <div>
+            <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-saffron">Bugün Kaman&apos;da</span>
+            <p className="mt-1 font-fraunces text-[16px] font-medium text-ink">Yerel pazar açık</p>
+          </div>
+          <div className="border-l border-black/10 pl-5">
+            <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-walnut/55">Tarih</span>
+            <p className="mt-1 text-[11px] font-semibold text-ink">{today}</p>
+          </div>
+          <div className="border-l border-black/10 pl-5">
+            <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-walnut/55">Konum</span>
+            <p className="mt-1 flex items-center gap-1.5 text-[11px] font-semibold text-ink">
+              <MapPin className="h-3 w-3 text-saffron" /> Kaman, Kırşehir
+            </p>
+          </div>
+          <div className="border-l border-black/10 pl-5">
+            <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-walnut/55">Yayındaki ilan</span>
+            <p className="mt-1 text-[11px] font-semibold text-ink">{activeListingCount} aktif ilan</p>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

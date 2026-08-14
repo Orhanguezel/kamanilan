@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { X, ArrowRight } from "lucide-react";
 import { usePopupsQuery } from "@/modules/popup/popup.service";
 import type { PopupItem } from "@/modules/popup/popup.type";
@@ -37,8 +38,8 @@ function TopbarBand({ popup }: { popup: PopupItem }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!shouldShow(popup)) {
-      setHidden(true);
-      return;
+      const hideTimer = setTimeout(() => setHidden(true), 0);
+      return () => clearTimeout(hideTimer);
     }
     if (popup.delay_seconds > 0) {
       const t = setTimeout(() => setVisible(true), popup.delay_seconds * 1000);
@@ -132,7 +133,9 @@ function TopbarBand({ popup }: { popup: PopupItem }) {
 }
 
 export function TopbarPopup() {
+  const pathname = usePathname();
   const { data: popups = [], isPending } = usePopupsQuery("topbar");
+  if (pathname === "/") return null;
   if (isPending) {
     return <div className="h-10 bg-ink" aria-hidden="true" />;
   }
