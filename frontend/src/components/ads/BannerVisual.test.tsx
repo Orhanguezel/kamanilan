@@ -72,6 +72,6 @@ describe("banner görsel dayanıklılığı", () => {
     const { container } = render(
       <TemplateBanner banner={banner({ creativeConfig: { ...banner().creativeConfig, animation: true } })} href={null} sidebar={false} />,
     );
-    expect(container.querySelector("a")?.className).toContain("motion-safe:animate-[pulse_5s_ease-in-out_infinite]");
+    expect(container.querySelector("a")?.className).toContain("motion-safe:animate-[pulse_8s_ease-in-out_infinite]");
   });
 });

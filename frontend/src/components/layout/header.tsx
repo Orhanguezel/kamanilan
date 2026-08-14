@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, Menu, Plus, User } from "lucide-react";
+import { Heart, Menu, User } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { extractMediaUrl, useSiteSettingsQuery } from "@/modules/site/site.service";
 import { useAuthStore } from "@/stores/auth-store";
@@ -81,13 +81,6 @@ export function Header() {
           </nav>
 
           <div className="ml-auto hidden items-center gap-3 md:flex">
-            <Link
-              href={ROUTES.POST_LISTING}
-              className="hidden items-center gap-1.5 text-[11px] font-bold text-ink transition-colors hover:text-saffron xl:flex"
-            >
-              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-              İlan Ver
-            </Link>
             <Link
               href={ROUTES.PROFILE_FAVORITES}
               aria-label="Favoriler"

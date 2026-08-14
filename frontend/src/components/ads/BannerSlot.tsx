@@ -95,13 +95,13 @@ export function BannerCreative({ banner, sidebar }: { banner: PublicBanner; side
     const listingHref = `/api/v1/ads/banners/${banner.id}/click`;
     const price = listing.priceMin == null ? "Fiyat için iletişime geçin" : `${Number(listing.priceMin).toLocaleString("tr-TR")} ${listing.currency}/${listing.priceUnit}`;
     return (
-      <a href={listingHref} target={target} rel={rel} className={`${deviceClass(banner.device)} group flex min-h-28 overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface) text-(--color-foreground) shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg`.trim()}>
+      <a href={listingHref} target={target} rel={rel} className={`${deviceClass(banner.device)} group flex min-h-[140px] overflow-hidden border border-ink/10 bg-ivory text-ink shadow-[0_16px_45px_rgba(30,22,14,0.08)] transition hover:-translate-y-0.5 hover:border-saffron/60 hover:shadow-[0_20px_55px_rgba(30,22,14,0.13)]`.trim()}>
         {listing.imageUrl && (
           <ResilientAdImage src={resolveImageUrl(listing.imageUrl)} alt={listing.title} className="w-32 shrink-0 object-cover sm:w-40" />
         )}
-        <span className="flex min-w-0 flex-1 flex-col justify-center p-4">
-          <span className="text-[10px] font-bold uppercase tracking-[.14em] text-(--color-brand)">Sponsorlu ilan · {listing.productName}</span>
-          <strong className="mt-1 line-clamp-2 text-base leading-tight">{listing.title}</strong>
+        <span className="flex min-w-0 flex-1 flex-col justify-center p-6">
+          <span className="text-[9px] font-bold uppercase tracking-[.18em] text-saffron-2">Sponsorlu ilan · {listing.productName}</span>
+          <strong className="mt-2 line-clamp-2 font-fraunces text-xl font-medium leading-tight">{listing.title}</strong>
           <span className="mt-2 text-sm font-semibold">{price}</span>
           <span className="mt-1 text-xs text-(--color-muted)">{listing.citySlug || "Türkiye"} · İlanı incele →</span>
         </span>
@@ -114,13 +114,13 @@ export function BannerCreative({ banner, sidebar }: { banner: PublicBanner; side
   }
   if (!banner.imageUrl) return null;
   return (
-    <a href={href ?? undefined} target={href ? target : undefined} rel={href ? rel : undefined} className={`${deviceClass(banner.device)} flex h-full flex-col items-center gap-3 rounded-xl border border-(--color-border) bg-(--color-surface) p-3 sm:flex-row`.trim()}>
-      <ResilientAdImage src={resolveImageUrl(banner.imageUrl)} alt={alt} fallbackClassName="min-h-24" className={sidebar ? "max-h-[260px] w-full rounded-md object-contain" : "max-h-28 min-w-0 flex-1 rounded-md object-contain"} />
-      {(banner.caption || banner.ctaLabel) && <span className="p-2 text-sm font-semibold">{banner.caption}{banner.ctaLabel ? <small className="mt-2 block text-(--color-brand)">{banner.ctaLabel} →</small> : null}</span>}
+    <a href={href ?? undefined} target={href ? target : undefined} rel={href ? rel : undefined} className={`${deviceClass(banner.device)} flex h-full overflow-hidden border border-ink/10 bg-ivory shadow-[0_16px_45px_rgba(30,22,14,0.08)] transition hover:-translate-y-0.5 hover:border-saffron/60 sm:flex-row ${sidebar ? "flex-col" : "min-h-[140px]"}`.trim()}>
+      <ResilientAdImage src={resolveImageUrl(banner.imageUrl)} alt={alt} fallbackClassName="min-h-32" className={sidebar ? "max-h-[260px] w-full object-cover" : "order-2 max-h-40 min-w-0 flex-1 object-cover"} />
+      {(banner.caption || banner.ctaLabel) && <span className="flex min-w-0 flex-col justify-center p-6 text-sm"><small className="font-mono text-[9px] font-bold uppercase tracking-[.18em] text-saffron-2">Sponsorlu içerik</small>{banner.caption ? <strong className="mt-2 font-fraunces text-xl font-medium leading-tight text-ink">{banner.caption}</strong> : null}{banner.ctaLabel ? <small className="mt-4 border-b border-ink pb-1 text-[10px] font-bold uppercase tracking-[.1em] text-ink">{banner.ctaLabel} →</small> : null}</span>}
     </a>
   );
 }
 
 function SponsorLabel() {
-  return <div className="mb-1 text-center font-(family-name:--font-mono) text-[10px] font-semibold uppercase tracking-[0.12em] text-(--color-muted)">Sponsorlu</div>;
+  return <div className="mb-2 flex items-center gap-2 font-(family-name:--font-mono) text-[9px] font-semibold uppercase tracking-[0.16em] text-walnut/45"><span className="h-px w-5 bg-saffron" />Sponsorlu</div>;
 }

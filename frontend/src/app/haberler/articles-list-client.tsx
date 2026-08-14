@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Loader2, RefreshCcw, ArrowRight } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { useArticlesQuery } from "@/modules/articles/articles.service";
 import { useThemeQuery } from "@/modules/theme/theme.service";
@@ -20,7 +20,7 @@ function FullWidthNewsBanner({ ids }: { ids?: string }) {
   const cols = banners.length === 1 ? "" : banners.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3";
   return (
     <div className={`my-12 grid grid-cols-1 gap-8 ${cols}`}>
-      {banners.map((b) => <SidebarBannerCard key={b.id} banner={b} />)}
+      {banners.map((b) => <SidebarBannerCard key={b.id} banner={b} variant="wide" />)}
     </div>
   );
 }

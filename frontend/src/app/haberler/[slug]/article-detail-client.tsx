@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Loader2, ArrowLeft, Clock, User, ExternalLink, Calendar, Share2 } from "lucide-react";
+import { Loader2, User, ExternalLink, Calendar, Share2 } from "lucide-react";
 
 import { useArticleBySlugQuery, useArticlesQuery } from "@/modules/articles/articles.service";
 import { useThemeQuery } from "@/modules/theme/theme.service";
@@ -30,7 +30,7 @@ function FullWidthDetailBanner({ ids }: { ids?: string }) {
   const cols = banners.length === 1 ? "" : banners.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3";
   return (
     <div className={`my-8 grid grid-cols-1 gap-8 ${cols}`}>
-      {banners.map((b) => <SidebarBannerCard key={b.id} banner={b} />)}
+      {banners.map((b) => <SidebarBannerCard key={b.id} banner={b} variant="wide" />)}
     </div>
   );
 }
