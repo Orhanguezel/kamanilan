@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import type { PublicBanner } from "@/lib/banners";
 import { bannerColumnsClass } from "./BannerSlot";
 import ResilientAdImage from "./ResilientAdImage";
@@ -11,7 +11,7 @@ const banner = (patch: Partial<PublicBanner> = {}): PublicBanner => ({
   type: "image",
   sourceType: "custom",
   title: "Profesyonel sponsor kampanyası",
-  advertiser: "Örnek Firma",
+  advertiser: "Örnek Mağaza",
   imageUrl: null,
   alt: "Sponsor reklamı",
   linkUrl: null,
@@ -45,27 +45,33 @@ describe("banner responsive düzeni", () => {
 describe("banner görsel dayanıklılığı", () => {
   test("kırık görsel yerine erişilebilir fallback gösterir", () => {
     render(<ResilientAdImage src="/broken.webp" alt="Erik kampanyası" />);
-    fireEvent.error(screen.getByAltText("Erik kampanyası"));
-    expect(screen.getByRole("img", { name: "Erik kampanyası" })).toHaveTextContent("Görsel kullanılamıyor");
+    // happy-dom kirik src icin error olayini kendiliginden atesleyebilir;
+    // img hala duruyorsa olayi elle tetikle, dusmusse fallback zaten render olmustur.
+    const img = screen.queryByAltText("Erik kampanyası");
+    if (img) fireEvent.error(img);
+    const fallback = screen.getByRole("img", { name: "Erik kampanyası" });
+    expect(fallback.textContent).toContain("Görsel kullanılamıyor");
   });
 
-  test("görselsiz firma metin ve çağrı alanıyla çalışır", () => {
-    render(<TemplateBanner banner={banner({ creativeTemplate: "firm" })} href={null} sidebar={false} />);
-    expect(screen.getByText("Sponsor firma")).toBeInTheDocument();
-    expect(screen.getByText("Profesyonel sponsor kampanyası")).toBeInTheDocument();
-    expect(screen.getByText(/İncele/)).toBeInTheDocument();
+  test("görselsiz mağaza metin ve çağrı alanıyla çalışır", () => {
+    render(<TemplateBanner banner={banner({ creativeTemplate: "seller" })} href={null} sidebar={false} />);
+    expect(screen.getByText("Sponsor mağaza")).toBeTruthy();
+    expect(screen.getByText("Profesyonel sponsor kampanyası")).toBeTruthy();
+    expect(screen.getByText(/İncele/)).toBeTruthy();
   });
 
   test("uzun başlık kontrollü satır ve kelime kırma sınıfları alır", () => {
     const title = "Çok uzun sponsor başlığı ".repeat(12);
     const { container } = render(<TemplateBanner banner={banner({ title })} href={null} sidebar={false} />);
-    expect(container.querySelector("strong")).toHaveClass("line-clamp-3", "break-words");
+    const heading = container.querySelector("strong");
+    expect(heading?.className).toContain("line-clamp-3");
+    expect(heading?.className).toContain("break-words");
   });
 
   test("animasyon yalnız motion-safe koşuluyla etkinleşir", () => {
     const { container } = render(
       <TemplateBanner banner={banner({ creativeConfig: { ...banner().creativeConfig, animation: true } })} href={null} sidebar={false} />,
     );
-    expect(container.querySelector("a")).toHaveClass("motion-safe:animate-[pulse_5s_ease-in-out_infinite]");
+    expect(container.querySelector("a")?.className).toContain("motion-safe:animate-[pulse_5s_ease-in-out_infinite]");
   });
 });

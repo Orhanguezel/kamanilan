@@ -2,9 +2,13 @@ import { afterEach, describe, expect, it, mock } from "bun:test";
 import { sanitizeConversionParams, trackAttributedConversion, trackConversion } from "./conversion-tracking";
 
 const originalFetch = globalThis.fetch;
+// happy-dom preload'u window'u global kaydeder; testler kendi sahte window'unu
+// yazdigi icin afterEach'te SILMEK yerine orijinali geri yukluyoruz (silmek
+// ayni process'te sonra kosan component testlerinin DOM'unu bozar).
+const originalWindow = (globalThis as { window?: unknown }).window;
 
 afterEach(() => {
-  delete (globalThis as typeof globalThis & { window?: unknown }).window;
+  (globalThis as { window?: unknown }).window = originalWindow;
   globalThis.fetch = originalFetch;
   mock.restore();
 });

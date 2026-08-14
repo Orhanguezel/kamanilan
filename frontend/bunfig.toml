@@ -1,0 +1,3 @@
+# bun test yapilandirmasi — component testleri icin happy-dom DOM ortami
+[test]
+preload = ["./src/test-setup.ts"]
