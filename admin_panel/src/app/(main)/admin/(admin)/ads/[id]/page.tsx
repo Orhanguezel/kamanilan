@@ -1,4 +1,4 @@
-import { BannerDetailClient } from '../_components/banner-detail-client';
+import { BannerDetailClient } from "../_components/banner-detail-client";
 
 interface Props {
   params: Promise<{ id: string }>;
