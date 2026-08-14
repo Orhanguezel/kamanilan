@@ -46,11 +46,11 @@ function CategoryShortcut({
   return (
     <Link
       href={ROUTES.CATEGORY(category.slug)}
-      className="group flex min-h-[64px] items-center gap-3 border-r border-white/10 px-3 py-3 last:border-r-0 hover:bg-white/[0.06]"
+      className="group flex min-h-[64px] items-center gap-2 border-r border-white/10 px-2 py-3 last:border-r-0 hover:bg-white/[0.06]"
     >
       <Icon className="h-4 w-4 shrink-0 text-saffron" />
       <span className="min-w-0">
-        <span className="block truncate text-[10px] font-bold text-paper">{category.name}</span>
+        <span className="line-clamp-2 block text-[9px] font-bold leading-[1.15] text-paper">{category.name}</span>
         <span className="mt-1 block font-mono text-[8px] uppercase tracking-[0.1em] text-paper/45">
           {count} ilan
         </span>
@@ -74,12 +74,8 @@ export function HeroSection() {
   return (
     <>
       <section className="overflow-hidden border-b border-black/10 bg-ink">
-        <div className="mx-auto grid min-h-[360px] max-w-[1536px] grid-cols-1 lg:grid-cols-[45%_29%_26%]">
-          <div className="flex flex-col justify-center bg-ink px-6 py-10 text-paper sm:px-10 lg:px-[max(2.5rem,calc((100vw-1280px)/2))] lg:py-8">
-            <p className="mb-4 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.2em] text-saffron">
-              <span className="h-px w-6 bg-saffron" />
-              Kaman&apos;ın yerel pazarı
-            </p>
+        <div className="grid min-h-[360px] grid-cols-1 lg:h-[400px] lg:grid-cols-[45%_29%_26%] xl:h-[360px]">
+          <div className="flex flex-col justify-center bg-ink px-6 py-10 text-paper sm:px-10 lg:py-5 lg:pl-[max(2.5rem,calc((100vw-1280px)/2))] lg:pr-10">
             <h1 className="max-w-[520px] font-fraunces text-[clamp(38px,4.2vw,64px)] font-medium leading-[0.94] tracking-[-0.045em]">
               Aradığın<br />
               <em className="font-normal text-saffron">Kaman&apos;da.</em>
@@ -131,7 +127,7 @@ export function HeroSection() {
             )}
           </div>
 
-          <div className="relative min-h-[300px] overflow-hidden lg:min-h-[360px]">
+          <div className="relative min-h-[300px] overflow-hidden lg:min-h-0">
             <Image
               src={ORCHARD_IMAGE}
               alt="Kaman'da tarım ve yerel üretim"
@@ -140,10 +136,6 @@ export function HeroSection() {
               sizes="(max-width: 1024px) 100vw, 29vw"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/25 to-transparent" />
-            <span className="absolute bottom-5 left-5 bg-paper px-3 py-2 font-mono text-[8px] uppercase tracking-[0.16em] text-ink">
-              Kaman · Kırşehir
-            </span>
           </div>
 
           <div className="hidden grid-rows-2 gap-px bg-paper lg:grid">

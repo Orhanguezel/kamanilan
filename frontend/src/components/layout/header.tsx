@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, Menu, Plus, User } from "lucide-react";
 import { ROUTES } from "@/config/routes";
-import { useSiteSettingsQuery } from "@/modules/site/site.service";
+import { extractMediaUrl, useSiteSettingsQuery } from "@/modules/site/site.service";
 import { useAuthStore } from "@/stores/auth-store";
 import { MobileNav } from "./mobile-nav";
 
@@ -24,8 +25,9 @@ export function Header() {
   const pathname = usePathname();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const hasHydrated = useAuthStore((state) => state.hasHydrated);
-  const { data: brand } = useSiteSettingsQuery(["brand_name"]);
+  const { data: brand } = useSiteSettingsQuery(["brand_name", "site_logo_light", "site_logo"]);
   const brandName = (brand?.brand_name as string | undefined) ?? "Kaman İlan";
+  const brandLogo = extractMediaUrl(brand?.site_logo_light ?? brand?.site_logo);
 
   return (
     <>
@@ -40,7 +42,17 @@ export function Header() {
             <Menu aria-hidden="true" className="h-4 w-4" />
           </button>
 
-          <Link href={ROUTES.HOME} className="mr-auto flex min-w-max items-baseline gap-2 lg:mr-2">
+          <Link href={ROUTES.HOME} className="mr-auto flex min-w-max items-center gap-2.5 lg:mr-2">
+            {brandLogo ? (
+              <Image
+                src={brandLogo}
+                alt={`${brandName} logosu`}
+                width={40}
+                height={40}
+                priority
+                className="h-10 w-10 rounded-full object-contain"
+              />
+            ) : null}
             <span className="font-fraunces text-[26px] font-semibold tracking-[-0.04em] text-ink">
               Kaman İlan
             </span>
