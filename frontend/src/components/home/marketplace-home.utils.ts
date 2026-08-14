@@ -8,6 +8,18 @@ export const HOME_CATEGORY_SLUGS = [
   "ikinci-el",
 ] as const;
 
+const HOME_CATEGORY_LABELS: Partial<Record<(typeof HOME_CATEGORY_SLUGS)[number], string>> = {
+  "emlak-kira": "Emlak",
+  "arac-motosiklet": "Vasıta",
+  "hayvan-tarim": "Tarım & Hayvancılık",
+  "usta-hizmet": "Hizmetler",
+  "ikinci-el": "Diğer İlanlar",
+};
+
+export function getHomeCategoryLabel(category: CategoryItem): string {
+  return HOME_CATEGORY_LABELS[category.slug as (typeof HOME_CATEGORY_SLUGS)[number]] ?? category.name;
+}
+
 export function pickHomeCategories(categories: CategoryItem[], limit = 5): CategoryItem[] {
   const active = categories.filter((category) => category.is_active);
   const bySlug = new Map(active.map((category) => [category.slug, category]));

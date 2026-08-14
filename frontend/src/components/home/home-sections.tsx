@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { HeroSection } from "./hero-section";
 import { MarketplaceHome } from "./marketplace-home";
 
@@ -8,11 +9,18 @@ import { MarketplaceHome } from "./marketplace-home";
  * Yönetilebilir kampanya/reklam alanları sayfa seviyesindeki BannerSlot'larda kalır;
  * theme.layout_blocks ana pazar akışını büyütüp bozmaz.
  */
-export function HomeSections() {
+export function HomeSections({
+  heroAd,
+  sponsorSection,
+}: {
+  heroAd?: ReactNode;
+  sponsorSection?: ReactNode;
+}) {
   return (
     <>
       <HeroSection />
-      <MarketplaceHome />
+      {heroAd}
+      <MarketplaceHome sponsorSection={sponsorSection} />
     </>
   );
 }

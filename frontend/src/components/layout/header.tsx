@@ -32,12 +32,12 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-black/10 bg-paper/95 backdrop-blur-xl">
-        <div className="container flex h-[70px] items-center gap-5 lg:gap-7">
+        <div className="container flex h-[70px] items-center gap-5 px-6 lg:gap-7 lg:px-12 xl:px-16">
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
             aria-label="Menüyü aç"
-            className="flex h-9 w-9 items-center justify-center border border-black/10 lg:hidden"
+            className="flex h-9 w-9 items-center justify-center border border-black/10 xl:hidden"
           >
             <Menu aria-hidden="true" className="h-4 w-4" />
           </button>
@@ -61,7 +61,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-5 xl:gap-7 lg:flex">
+          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-5 xl:flex xl:gap-7">
             {NAV_ITEMS.map((item) => {
               const isActive = pathname === item.href;
               return (

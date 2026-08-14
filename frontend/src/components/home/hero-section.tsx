@@ -20,7 +20,7 @@ import {
   useCategoryCountsQuery,
 } from "@/modules/site/site.service";
 import type { CategoryItem } from "@/modules/site/site.type";
-import { pickHomeCategories } from "./marketplace-home.utils";
+import { getHomeCategoryLabel, pickHomeCategories } from "./marketplace-home.utils";
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "emlak-kira": Building2,
@@ -50,7 +50,9 @@ function CategoryShortcut({
     >
       <Icon className="h-4 w-4 shrink-0 text-saffron" />
       <span className="min-w-0">
-        <span className="line-clamp-2 block text-[9px] font-bold leading-[1.15] text-paper">{category.name}</span>
+        <span className="line-clamp-2 block text-[9px] font-bold leading-[1.15] text-paper">
+          {getHomeCategoryLabel(category)}
+        </span>
         <span className="mt-1 block font-mono text-[8px] uppercase tracking-[0.1em] text-paper/45">
           {count} ilan
         </span>
@@ -73,9 +75,9 @@ export function HeroSection() {
 
   return (
     <>
-      <section className="overflow-hidden border-b border-black/10 bg-ink">
-        <div className="grid min-h-[360px] grid-cols-1 lg:h-[400px] lg:grid-cols-[45%_29%_26%] xl:h-[360px]">
-          <div className="flex flex-col justify-center bg-ink px-6 py-10 text-paper sm:px-10 lg:py-5 lg:pl-[max(2.5rem,calc((100vw-1280px)/2))] lg:pr-10">
+      <section className="overflow-hidden border-b border-black/10 bg-ivory">
+        <div className="mx-auto grid min-h-[360px] w-full max-w-[var(--container-max)] grid-cols-1 lg:h-[400px] lg:grid-cols-[55%_45%] xl:h-[360px] xl:grid-cols-[45%_29%_26%]">
+          <div className="flex flex-col justify-center bg-ink px-6 py-10 text-paper sm:px-10 lg:px-8 lg:py-5 xl:pl-16 xl:pr-12">
             <h1 className="max-w-[520px] font-fraunces text-[clamp(38px,4.2vw,64px)] font-medium leading-[0.94] tracking-[-0.045em]">
               Aradığın<br />
               <em className="font-normal text-saffron">Kaman&apos;da.</em>
@@ -86,10 +88,16 @@ export function HeroSection() {
 
             <form action={ROUTES.LISTINGS} className="mt-6 max-w-[570px]">
               <div className="flex h-12 items-center bg-paper text-ink shadow-xl">
+                <input
+                  name="q"
+                  aria-label="İlanlarda ara"
+                  placeholder="Ne arıyorsun?"
+                  className="min-w-0 flex-1 bg-transparent px-4 text-[12px] outline-none placeholder:text-walnut/45"
+                />
                 <select
                   aria-label="Kategori seç"
                   name="category"
-                  className="hidden h-full max-w-[145px] border-r border-black/10 bg-transparent px-4 text-[10px] font-bold outline-none sm:block"
+                  className="hidden h-full max-w-[145px] border-l border-black/10 bg-transparent px-4 text-[10px] font-bold outline-none sm:block"
                 >
                   <option value="">Tüm kategoriler</option>
                   {categories.map((category) => (
@@ -98,12 +106,6 @@ export function HeroSection() {
                     </option>
                   ))}
                 </select>
-                <input
-                  name="q"
-                  aria-label="İlanlarda ara"
-                  placeholder="Ne arıyorsun?"
-                  className="min-w-0 flex-1 bg-transparent px-4 text-[12px] outline-none placeholder:text-walnut/45"
-                />
                 <button
                   type="submit"
                   aria-label="Ara"
@@ -138,7 +140,7 @@ export function HeroSection() {
             />
           </div>
 
-          <div className="hidden grid-rows-2 gap-px bg-paper lg:grid">
+          <div className="hidden grid-rows-2 gap-px bg-paper xl:grid">
             <Link href={ROUTES.CATEGORY("emlak-kira")} className="group relative overflow-hidden">
               <Image
                 src={HOUSE_IMAGE}
@@ -168,7 +170,7 @@ export function HeroSection() {
       </section>
 
       <section className="border-b border-black/10 bg-paper">
-        <div className="container grid min-h-[66px] grid-cols-2 items-center gap-x-6 gap-y-3 py-4 md:grid-cols-[1.2fr_1fr_1fr_1fr] md:py-0">
+        <div className="container grid min-h-[66px] grid-cols-2 items-center gap-x-6 gap-y-3 px-6 py-4 md:grid-cols-[1.2fr_1fr_1fr_1fr] md:py-0 lg:px-12 xl:px-16">
           <div>
             <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-saffron">Bugün Kaman&apos;da</span>
             <p className="mt-1 font-fraunces text-[16px] font-medium text-ink">Yerel pazar açık</p>

@@ -1,6 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import type { CategoryItem } from "@/modules/site/site.type";
-import { formatListingPrice, pickHomeCategories } from "./marketplace-home.utils";
+import {
+  formatListingPrice,
+  getHomeCategoryLabel,
+  pickHomeCategories,
+} from "./marketplace-home.utils";
 
 function category(id: string, slug: string, order: number, isActive = true): CategoryItem {
   return {
@@ -35,5 +39,11 @@ describe("marketplace home helpers", () => {
   it("formats real prices and keeps contact-only listings explicit", () => {
     expect(formatListingPrice("125000", "TRY")).toContain("125.000");
     expect(formatListingPrice(null, "TRY")).toBe("Fiyat için iletişime geçin");
+  });
+
+  it("uses the concise category labels from the accepted home concept", () => {
+    expect(getHomeCategoryLabel(category("home", "emlak-kira", 1))).toBe("Emlak");
+    expect(getHomeCategoryLabel(category("car", "arac-motosiklet", 2))).toBe("Vasıta");
+    expect(getHomeCategoryLabel(category("custom", "custom-category", 3))).toBe("custom-category");
   });
 });

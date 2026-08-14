@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Clock3, MapPin, Newspaper } from "lucide-react";
@@ -19,6 +20,35 @@ function dateLabel(value: string | null): string {
   if (!value) return "";
   return new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "short" }).format(
     new Date(value),
+  );
+}
+
+function SectionHeading({
+  id,
+  title,
+  href,
+  action,
+}: {
+  id: string;
+  title: string;
+  href: string;
+  action: string;
+}) {
+  return (
+    <div className="mb-2.5 flex items-end justify-between gap-4">
+      <h2
+        id={id}
+        className="font-fraunces text-[26px] font-medium leading-tight tracking-[-0.035em] text-ink"
+      >
+        {title}
+      </h2>
+      <Link
+        href={href}
+        className="flex items-center gap-2 text-[10px] font-bold text-ink transition-colors hover:text-saffron"
+      >
+        {action} <ArrowRight className="h-3 w-3" />
+      </Link>
+    </div>
   );
 }
 
@@ -42,25 +72,25 @@ function ListingTile({
           alt={listing.alt || listing.title}
           fill
           priority={priority}
-          sizes="(max-width: 640px) 80vw, (max-width: 1024px) 33vw, 20vw"
+          sizes="(max-width: 640px) 80vw, (max-width: 1279px) 33vw, 13vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {listing.featured && (
+        {listing.featured ? (
           <span className="absolute left-3 top-3 bg-saffron px-2 py-1 font-mono text-[7px] font-bold uppercase tracking-[0.14em] text-ink">
             Öne çıkan
           </span>
-        )}
+        ) : null}
       </Link>
-      <div className="p-3.5">
+      <div className="p-1.5">
         <div className="flex items-center justify-between gap-3 font-mono text-[7px] uppercase tracking-[0.13em] text-walnut/55">
           <span className="truncate text-saffron">{categoryName || "İlan"}</span>
           <span>{dateLabel(listing.created_at)}</span>
         </div>
-        <h3 className="mt-2 line-clamp-2 min-h-[38px] font-fraunces text-[15px] font-medium leading-[1.25] text-ink group-hover:text-saffron">
+        <h3 className="mt-1 line-clamp-2 min-h-[30px] font-fraunces text-[13px] font-medium leading-[1.15] text-ink group-hover:text-saffron">
           <Link href={ROUTES.LISTING_DETAIL(listing.slug)}>{listing.title}</Link>
         </h3>
-        <div className="mt-3 flex items-end justify-between gap-2 border-t border-black/10 pt-3">
-          <strong className="text-[11px] text-ink">
+        <div className="mt-1.5 flex items-end justify-between gap-2 border-t border-black/10 pt-1.5">
+          <strong className="text-[10px] text-ink">
             {formatListingPrice(listing.price, listing.currency)}
           </strong>
           <span className="flex min-w-0 items-center gap-1 text-[8px] text-walnut/65">
@@ -75,33 +105,76 @@ function ListingTile({
 
 function NewsLead({ article }: { article: Article }) {
   const cover = article.cover_url || article.cover_image_url;
+
   return (
-    <Link href={ROUTES.NEWS_DETAIL(article.slug)} className="group relative block min-h-[250px] overflow-hidden bg-ink">
-      {cover ? (
-        <Image
-          src={cover}
-          alt={article.alt || article.title}
-          fill
-          sizes="(max-width: 768px) 100vw, 55vw"
-          className="object-cover opacity-80 transition-transform duration-700 group-hover:scale-105"
-        />
-      ) : (
-        <Newspaper className="absolute left-6 top-6 h-8 w-8 text-saffron" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 p-5 text-paper">
+    <Link
+      href={ROUTES.NEWS_DETAIL(article.slug)}
+      className="group grid min-h-[142px] overflow-hidden border border-black/10 bg-paper sm:grid-cols-[1.3fr_0.9fr] xl:grid-cols-[1.3fr_0.9fr]"
+    >
+      <span className="relative block min-h-[142px] overflow-hidden bg-ink">
+        {cover ? (
+          <Image
+            src={cover}
+            alt={article.alt || article.title}
+            fill
+            sizes="(max-width: 1279px) 100vw, 32vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        ) : (
+          <Newspaper className="absolute left-6 top-6 h-8 w-8 text-saffron" />
+        )}
+      </span>
+      <span className="flex flex-col justify-center p-4">
         <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-saffron">
           {article.category} · {dateLabel(article.published_at || article.created_at)}
         </span>
-        <h3 className="mt-2 max-w-[520px] font-fraunces text-[24px] font-medium leading-tight">
+        <strong className="mt-2 block font-fraunces text-[18px] font-medium leading-tight text-ink group-hover:text-saffron">
           {article.title}
-        </h3>
-      </div>
+        </strong>
+        {article.excerpt ? (
+          <span className="mt-2 line-clamp-3 block text-[10px] leading-4 text-walnut/65">
+            {article.excerpt}
+          </span>
+        ) : null}
+      </span>
     </Link>
   );
 }
 
-export function MarketplaceHome() {
+function NewsRow({ article }: { article: Article }) {
+  const cover = article.cover_url || article.cover_image_url;
+
+  return (
+    <Link
+      href={ROUTES.NEWS_DETAIL(article.slug)}
+      className="group grid min-h-[58px] grid-cols-[58px_1fr] items-center gap-3 border-b border-black/10 py-2 last:border-b-0"
+    >
+      <span className="relative block aspect-[4/3] overflow-hidden bg-parchment">
+        {cover ? (
+          <Image
+            src={cover}
+            alt={article.alt || article.title}
+            fill
+            sizes="58px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <Newspaper className="absolute inset-0 m-auto h-4 w-4 text-saffron" />
+        )}
+      </span>
+      <span className="min-w-0">
+        <span className="flex items-center gap-1 font-mono text-[7px] uppercase tracking-[0.15em] text-walnut/55">
+          <Clock3 className="h-2.5 w-2.5" /> {dateLabel(article.published_at || article.created_at)}
+        </span>
+        <span className="mt-1 line-clamp-2 block font-fraunces text-[14px] leading-tight text-ink group-hover:text-saffron">
+          {article.title}
+        </span>
+      </span>
+    </Link>
+  );
+}
+
+export function MarketplaceHome({ sponsorSection }: { sponsorSection?: ReactNode }) {
   const { data: listingsData, isPending: listingsPending } = useListingsQuery({
     sort: "created_at",
     orderDir: "desc",
@@ -120,88 +193,70 @@ export function MarketplaceHome() {
   const sideArticles = articles.slice(1, 4);
 
   return (
-    <main className="bg-ivory py-9 md:py-12">
-      <div className="container">
-        <section aria-labelledby="latest-listings-title">
-          <div className="mb-5 flex items-end justify-between gap-4">
-            <div>
-              <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-saffron">Yeni eklenenler</p>
-              <h2 id="latest-listings-title" className="mt-1 font-fraunces text-[30px] font-medium tracking-[-0.035em] text-ink">
-                Yeni İlanlar
-              </h2>
-            </div>
-            <Link href={ROUTES.LISTINGS} className="flex items-center gap-2 text-[10px] font-bold text-ink hover:text-saffron">
-              Tümünü Gör <ArrowRight className="h-3 w-3" />
-            </Link>
+    <main className="bg-ivory py-6 md:py-4 xl:py-1">
+      <div className="container px-6 lg:px-12 xl:px-16">
+        <div className="grid items-start gap-7 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-8 2xl:grid-cols-[minmax(0,1fr)_475px]">
+          <div className="min-w-0 xl:border-r xl:border-black/10 xl:pr-8">
+            <section aria-labelledby="latest-listings-title">
+              <SectionHeading
+                id="latest-listings-title"
+                title="Yeni İlanlar"
+                href={ROUTES.LISTINGS}
+                action="Tümünü Gör"
+              />
+
+              {listingsPending ? (
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <div key={index} className="aspect-[3/4] animate-pulse bg-parchment" />
+                  ))}
+                </div>
+              ) : listings.length > 0 ? (
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+                  {listings.map((listing, index) => (
+                    <ListingTile
+                      key={listing.id}
+                      listing={listing}
+                      categoryName={
+                        listing.category_id ? categoryNames.get(listing.category_id) : undefined
+                      }
+                      priority={index < 2}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="border border-black/10 bg-paper px-6 py-10 text-center">
+                  <p className="font-fraunces text-xl text-ink">Henüz yayınlanmış ilan yok.</p>
+                  <Link
+                    href={ROUTES.POST_LISTING}
+                    className="mt-3 inline-flex text-[11px] font-bold text-saffron"
+                  >
+                    İlk ilanı sen ver
+                  </Link>
+                </div>
+              )}
+            </section>
+
+            {sponsorSection ? <div className="mt-3">{sponsorSection}</div> : null}
           </div>
 
-          {listingsPending ? (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <div key={index} className="aspect-[3/4] animate-pulse bg-parchment" />
-              ))}
-            </div>
-          ) : listings.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
-              {listings.map((listing, index) => (
-                <ListingTile
-                  key={listing.id}
-                  listing={listing}
-                  categoryName={listing.category_id ? categoryNames.get(listing.category_id) : undefined}
-                  priority={index < 2}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="border border-black/10 bg-paper px-6 py-10 text-center">
-              <p className="font-fraunces text-xl text-ink">Henüz yayınlanmış ilan yok.</p>
-              <Link href={ROUTES.POST_LISTING} className="mt-3 inline-flex text-[11px] font-bold text-saffron">
-                İlk ilanı sen ver
-              </Link>
-            </div>
-          )}
-        </section>
-
-        {!articlesPending && leadArticle && (
-          <section aria-labelledby="news-title" className="mt-11 border-t border-black/10 pt-9">
-            <div className="mb-5 flex items-end justify-between gap-4">
-              <div>
-                <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-saffron">Kaman&apos;dan haberler</p>
-                <h2 id="news-title" className="mt-1 font-fraunces text-[30px] font-medium tracking-[-0.035em] text-ink">
-                  Gündem
-                </h2>
-              </div>
-              <Link href={ROUTES.NEWS} className="flex items-center gap-2 text-[10px] font-bold text-ink hover:text-saffron">
-                Tüm Haberler <ArrowRight className="h-3 w-3" />
-              </Link>
-            </div>
-
-            <div className="grid gap-px bg-black/10 md:grid-cols-[1.55fr_1fr]">
+          {!articlesPending && leadArticle ? (
+            <section aria-labelledby="news-title" className="min-w-0">
+              <SectionHeading
+                id="news-title"
+                title="Gündem"
+                href={ROUTES.NEWS}
+                action="Tüm Haberler"
+              />
               <NewsLead article={leadArticle} />
-              <div className="divide-y divide-black/10 bg-paper">
+              <div className="mt-1 bg-paper px-3">
                 {sideArticles.map((article) => (
-                  <Link
-                    key={article.id}
-                    href={ROUTES.NEWS_DETAIL(article.slug)}
-                    className="group flex min-h-[83px] items-center gap-4 p-4 hover:bg-parchment/45"
-                  >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-saffron/35 text-saffron">
-                      <Newspaper className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="flex items-center gap-1 font-mono text-[7px] uppercase tracking-[0.15em] text-walnut/55">
-                        <Clock3 className="h-2.5 w-2.5" /> {dateLabel(article.published_at || article.created_at)}
-                      </span>
-                      <span className="mt-1 line-clamp-2 block font-fraunces text-[15px] leading-tight text-ink group-hover:text-saffron">
-                        {article.title}
-                      </span>
-                    </span>
-                  </Link>
+                  <NewsRow key={article.id} article={article} />
                 ))}
               </div>
-            </div>
-          </section>
-        )}
+            </section>
+          ) : null}
+        </div>
       </div>
     </main>
   );

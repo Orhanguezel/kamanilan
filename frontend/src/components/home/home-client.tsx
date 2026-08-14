@@ -1,11 +1,14 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { HomeSections } from "./home-sections";
 import type { SliderItem } from "@/modules/site/site.type";
 
 interface Props {
   initialSlides?: SliderItem[];
+  heroAd?: ReactNode;
+  sponsorSection?: ReactNode;
 }
 
 /**
@@ -16,7 +19,7 @@ interface Props {
  * Using setQueryData directly (instead of HydrationBoundary) avoids the React
  * 19 / Next 16 hydration mismatch that was unmounting the hero on the client.
  */
-export function HomeClient({ initialSlides }: Props) {
+export function HomeClient({ initialSlides, heroAd, sponsorSection }: Props) {
   const qc = useQueryClient();
 
   if (initialSlides && initialSlides.length) {
@@ -26,5 +29,5 @@ export function HomeClient({ initialSlides }: Props) {
     }
   }
 
-  return <HomeSections />;
+  return <HomeSections heroAd={heroAd} sponsorSection={sponsorSection} />;
 }

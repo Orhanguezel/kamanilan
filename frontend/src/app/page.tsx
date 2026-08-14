@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { t } from "@/lib/t";
 import { HomeClient } from "@/components/home/home-client";
+import { SponsoredBusinessesSection } from "@/components/home/sponsored-businesses-section";
 import type { SliderItem } from "@/modules/site/site.type";
 import BannerSlot from "@/components/ads/BannerSlot";
 
@@ -31,10 +32,10 @@ export default async function HomePage() {
   const sliders = await fetchSliders();
 
   return (
-    <>
-      <HomeClient initialSlides={sliders} />
-      <BannerSlot position="home_hero_below" />
-      <BannerSlot position="home_mid" />
-    </>
+    <HomeClient
+      initialSlides={sliders}
+      heroAd={<BannerSlot position="home_hero_below" />}
+      sponsorSection={<SponsoredBusinessesSection />}
+    />
   );
 }

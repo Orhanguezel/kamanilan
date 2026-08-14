@@ -60,7 +60,13 @@ export default async function BannerSlot({
 
   return (
     <div className={className} aria-label="Reklam">
-      <div className={`mx-auto my-5 ${sidebar ? "max-w-[336px]" : "max-w-6xl"} px-4`}>
+      <div
+        className={`mx-auto my-5 ${
+          sidebar
+            ? "max-w-[336px] px-4"
+            : "max-w-[var(--container-max)] px-6 lg:px-12 xl:px-16"
+        }`}
+      >
         <SponsorLabel />
         <div className="space-y-4">
           {[...rows.entries()].sort(([a], [b]) => a - b).map(([row, rowBanners]) => (
