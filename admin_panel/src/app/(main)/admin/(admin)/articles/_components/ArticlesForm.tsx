@@ -15,6 +15,7 @@ import { useAdminT } from "@/app/(main)/admin/_components/common/useAdminT";
 import RichContentEditor from "@/app/(main)/admin/_components/common/RichContentEditor";
 import { Button } from "@/components/ui/button";
 import type { ArticleCategory, ArticleDto, AiEnhanceResult } from "@/integrations/shared";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 /* ------------------------------------------------------------- */
 /* Types                                                         */
@@ -345,7 +346,7 @@ export const ArticlesForm: React.FC<ArticlesFormProps> = ({
                   <label className="mb-1 block text-xs text-muted-foreground">{t("form.fields.coverImageUrl") || "Kapak Görseli URL"}</label>
                   {values.cover_image_url ? (
                     <img
-                      src={values.cover_image_url}
+                      src={resolveMediaUrl(values.cover_image_url)}
                       alt="Kapak görseli"
                       className="mb-2 max-h-48 w-full rounded-lg object-cover"
                       onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}

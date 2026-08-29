@@ -16,6 +16,7 @@ import { useAdminT } from "@/app/(main)/admin/_components/common/useAdminT";
 import { Button } from "@/components/ui/button";
 import { useDeleteArticleAdminMutation, useSetArticlePublishedMutation } from "@/integrations/hooks";
 import type { ArticleDto } from "@/integrations/shared";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 export type ArticlesListProps = {
   items?: ArticleDto[];
@@ -137,7 +138,7 @@ export const ArticlesList: React.FC<ArticlesListProps> = ({
           {rows.map((item, idx) => {
             const published = isPublished(item.is_published);
             const featured  = isFeatured(item.is_featured);
-            const coverUrl  = item.cover_url ?? item.cover_image_url;
+            const coverUrl = resolveMediaUrl(item.cover_url ?? item.cover_image_url);
 
             return (
               <div
