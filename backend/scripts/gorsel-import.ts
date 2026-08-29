@@ -5,6 +5,9 @@ import { eq } from "drizzle-orm";
 import { db, pool } from "../src/db/client";
 import { newsSuggestions } from "../src/modules/newsAggregator/schema";
 import { repoCreate as createArticle } from "../src/modules/articles/repository";
+import { assertLocalNewsPipeline } from "./local-news-guard";
+
+assertLocalNewsPipeline();
 
 const incoming = path.resolve(process.cwd(), "content-images/gelen");
 const processed = path.resolve(process.cwd(), "content-images/islendi");

@@ -11,7 +11,8 @@
     "db:seed": "bun src/db/seed/index.ts",
     "db:seed:nodrop": "bun src/db/seed/index.ts --no-drop",
     "db:seed:only": "bun src/db/seed/index.ts --only=",
-    "gorsel:import": "bun run scripts/gorsel-import.ts"
+    "gorsel:import": "bun run scripts/gorsel-import.ts",
+    "haber:local": "bun run scripts/haber-local-cron.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11",

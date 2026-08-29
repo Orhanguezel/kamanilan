@@ -238,6 +238,25 @@
 - [x] Deploy notu hazırla (deploy/ altına): env listesi, seed sırası, PM2 restart sırası —
       **canlıya çıkış kullanıcı onayıyla** (müşteri sitesinde görünür değişiklik kuralı)
 
+## WP-10 — Yerel ve telif güvenli haber hattı
+
+- [x] Kaynak allowlist'ini Google News Kaman/Kırşehir, Kırşehir Haber Türk ve
+      Kırşehir Haber 40 ile sınırla; Sabah/Hürriyet/AA ve bozuk/boş kaynakları sil
+- [x] Kaman/Kırşehir alaka, AKP/Erdoğan ve reklam-tanıtım filtresini canlı akış ile
+      cron kayıt hattında ortak uygula
+- [x] AI çıktısında uzun birebir ifade kontrolü, bağımsız kurgu ve kaynak atfı uygula
+- [x] Kaynak görselin makaleye taşınmasını engelle; onayı AI metni + yerel görsel
+      hazır kapısına bağla
+- [x] Yalnız yerel DB'de çalışabilen `haber:local` ve `gorsel:import` cron örneğini ekle
+- [x] Kabul: haber politika testleri + backend build + admin typecheck yeşil
+
+## WP-11 — Reklam menü ayrımı ve admin TR metinleri
+
+- [ ] `/admin/ads` → `Reklam Kampanyaları` adıyla ayrı sidebar öğesi
+- [ ] `/admin/ads/operations` → `Reklam Operasyon Merkezi` adıyla ayrı sidebar öğesi
+- [ ] `news_image_queue` ve yeni reklam menü anahtarlarının `tr` değerlerini tamamla
+- [ ] Kabul: admin typecheck/build + masaüstü/mobil sidebar smoke yeşil
+
 ---
 
 ## Sıralama ve bağımlılık

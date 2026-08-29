@@ -1,0 +1,4 @@
+# Yalnız geliştirici makinesinin crontab dosyasına eklenir. Canlı sunucuya kurulmaz.
+# `crontab -e` içinde proje yolunu kendi yerel checkout yolunuza göre düzenleyin.
+*/30 * * * * cd /home/orhan/Documents/Projeler/vps-guezel/kamanilan/backend && NEWS_LOCAL_PIPELINE_ENABLED=true NODE_ENV=development bun run haber:local >> content-images/haber-local.log 2>&1
+*/5 * * * * cd /home/orhan/Documents/Projeler/vps-guezel/kamanilan/backend && NEWS_LOCAL_PIPELINE_ENABLED=true NODE_ENV=development bun run gorsel:import >> content-images/gorsel-import.log 2>&1

@@ -35,8 +35,8 @@ import {
 import { fetchSource } from "./fetchService";
 import { fetchRssFeed, fetchOgData, fetchArticleContent } from "./fetcher";
 import { repoCreate as repoCreateArticle } from "@/modules/articles/repository";
-import { buildAiChain, callAi, extractJson, wrapParagraphs } from "@/modules/_shared/aiChain";
 import { rewriteSuggestionWithAi } from "./aiRewrite";
+import { evaluateEditorialCandidate } from "./editorialPolicy";
 
 // ──────────────────────────────────────────────────────────────
 // HELPERS
@@ -148,9 +148,9 @@ export interface LiveFeedItem {
 // Fallback RSS sources used when DB has no enabled sources
 const FALLBACK_RSS_SOURCES = [
   { id: 0, name: "Kırşehir Haber Türk", url: "https://www.kirsehirhaberturk.com/rss.xml" },
-  { id: 0, name: "Kırşehir Haber Türk - Gündem", url: "https://www.kirsehirhaberturk.com/rss/gundem.xml" },
-  { id: 0, name: "Son Dakika - Kaman", url: "https://www.sondakika.com/kaman/rss/" },
+  { id: 0, name: "Kırşehir Haber 40", url: "https://kirsehirhaber40.com/rss" },
   { id: 0, name: "Google News - Kaman", url: "https://news.google.com/rss/search?q=Kaman+K%C4%B1r%C5%9Fehir&hl=tr&gl=TR&ceid=TR:tr" },
+  { id: 0, name: "Google News - Kırşehir", url: "https://news.google.com/rss/search?q=K%C4%B1r%C5%9Fehir&hl=tr&gl=TR&ceid=TR:tr" },
 ];
 
 /** Tüm aktif RSS kaynaklarından canlı olarak haber listesi döner (DB'ye kaydetmez) */
@@ -221,7 +221,9 @@ export async function adminGetLiveFeed(req: FastifyRequest, reply: FastifyReply)
   }
 
   // Filter out already-approved and dismissed URLs
-  const notBlocked = unique.filter((i) => !blockedUrls.has(i.source_url));
+  const notBlocked = unique.filter((i) =>
+    !blockedUrls.has(i.source_url) && evaluateEditorialCandidate(i).allowed,
+  );
 
   // Filter by keyword
   const results = filterQ
@@ -263,10 +265,18 @@ export async function adminQuickApprove(req: FastifyRequest, reply: FastifyReply
     meta_title?:      string | null;
     meta_description?: string | null;
     fetch_content?:   boolean;
+    editorial_rewrite_confirmed?: boolean;
   };
 
   if (!body?.source_url || !body?.title) {
     return reply.code(400).send({ error: "source_url_and_title_required" });
+  }
+  if (body.editorial_rewrite_confirmed !== true) {
+    return reply.code(422).send({ error: "editorial_rewrite_required" });
+  }
+  const policy = evaluateEditorialCandidate(body);
+  if (!policy.allowed) {
+    return reply.code(422).send({ error: "editorial_policy", reasons: policy.reasons });
   }
 
   let content = body.content ?? null;
@@ -294,7 +304,8 @@ export async function adminQuickApprove(req: FastifyRequest, reply: FastifyReply
       excerpt:          cleanExcerpt,
       content:          content ?? undefined,
       category:         (body.category ?? "genel") as any,
-      cover_image_url:  body.image_url ?? undefined,
+      // Kaynak görseli taşınmaz; kapak yalnız yerel görsel hattından eklenir.
+      cover_image_url:  undefined,
       alt:              undefined,
       video_url:        undefined,
       author:           body.author ?? undefined,
@@ -318,9 +329,6 @@ export async function adminQuickApprove(req: FastifyRequest, reply: FastifyReply
 
 // ── AI Enhance Live — DB'siz, ham veriyi AI ile geliştir ──────
 export async function adminAiEnhanceLive(req: FastifyRequest, reply: FastifyReply) {
-  const chain = await buildAiChain();
-  if (!chain.length) return reply.code(503).send({ error: "ai_not_configured" });
-
   const body = req.body as {
     title?:      string;
     excerpt?:    string;
@@ -330,73 +338,35 @@ export async function adminAiEnhanceLive(req: FastifyRequest, reply: FastifyRepl
     tags?:       string;
   };
 
-  const title     = (body.title    ?? "").trim();
-  const category  = (body.category ?? "genel").trim();
-  const excerpt   = (body.excerpt  ?? "").trim();
-  const content   = (body.content  ?? "").slice(0, 3000).trim();
-  const tags      = (body.tags     ?? "").trim();
   const sourceUrl = (body.source_url ?? "").trim();
-
-  const systemPrompt = `Sen bir profesyonel Türkçe haber editörüsün.
-Kullanıcı sana ham haber verisi verecek.
-Sen bu veriyi kullanarak SEO uyumlu, okunması kolay, kapsamlı bir haber makalesi yazacaksın.
-SADECE JSON formatında yanıt ver, başka hiçbir metin ekleme.`;
-
-  const userPrompt = `Aşağıdaki haber verisini kullanarak SEO uyumlu bir haber makalesi yaz.
-
-MEVCUT VERİ:
-Başlık: ${title || "(yok)"}
-Kategori: ${category}
-Özet: ${excerpt || "(yok)"}
-İçerik: ${content || "(yok)"}
-Mevcut etiketler: ${tags || "(yok)"}
-Kaynak URL: ${sourceUrl || "(yok)"}
-
-GÖREVLER:
-1. title: Dikkat çekici, SEO uyumlu başlık yaz (60-70 karakter arası)
-2. excerpt: Kısa özet (150-160 karakter, haber ne hakkında olduğunu açıkça belirt)
-3. content: Haberi genişlet ve detaylandır. Minimum 500 kelime. SADECE DÜZ METİN yaz (HTML etiketi kullanma). Paragrafları iki boş satırla (\\n\\n) ayır.
-4. meta_title: Arama motoru başlık etiketi (50-60 karakter)
-5. meta_description: Arama motoru meta açıklaması (150-160 karakter)
-6. tags: Virgülle ayrılmış 5-7 adet SEO etiketi (küçük harf, Türkçe)
-
-ÇIKTI (sadece bu JSON, başka metin yok):
-{
-  "title": "...",
-  "excerpt": "...",
-  "content": "...",
-  "meta_title": "...",
-  "meta_description": "...",
-  "tags": "..."
-}`;
-
-  let lastErr: Error | null = null;
-
-  for (const { provider, apiKey, apiBase, model } of chain) {
-    try {
-      req.log.info(`[AI enhance-live] trying ${provider} (${model})`);
-      const raw    = await callAi(apiBase, apiKey, model, provider, systemPrompt, userPrompt);
-      const parsed = extractJson(raw);
-
-      return reply.send({
-        ok:               true,
-        title:            typeof parsed.title            === "string" ? parsed.title.slice(0, 500)            : undefined,
-        excerpt:          typeof parsed.excerpt          === "string" ? parsed.excerpt.slice(0, 2000)          : undefined,
-        content:          typeof parsed.content          === "string" ? wrapParagraphs(parsed.content)         : undefined,
-        meta_title:       typeof parsed.meta_title       === "string" ? parsed.meta_title.slice(0, 500)        : undefined,
-        meta_description: typeof parsed.meta_description === "string" ? parsed.meta_description.slice(0, 500)  : undefined,
-        tags:             typeof parsed.tags             === "string" ? parsed.tags.slice(0, 500)              : undefined,
-      });
-    } catch (err: unknown) {
-      lastErr = err instanceof Error ? err : new Error(String(err));
-      req.log.warn(`[AI enhance-live] ${provider} failed: ${lastErr.message}`);
-    }
+  const policy = evaluateEditorialCandidate(body);
+  if (!policy.allowed) {
+    return reply.code(422).send({ error: "editorial_policy", reasons: policy.reasons });
   }
 
-  return reply.code(422).send({
-    error:   "ai_parse_failed",
-    message: lastErr?.message ?? "Tüm AI sağlayıcıları başarısız oldu.",
-  });
+  try {
+    const rewritten = await rewriteSuggestionWithAi({
+      title: body.title ?? null,
+      excerpt: body.excerpt ?? null,
+      content: body.content ?? null,
+      source_url: sourceUrl,
+      source_name: "Kaynak",
+      category: body.category ?? "yerel",
+    } as any);
+    return reply.send({
+      ok: true,
+      title: rewritten.title,
+      excerpt: rewritten.excerpt,
+      content: rewritten.content,
+      meta_title: rewritten.meta_title,
+      meta_description: rewritten.meta_description,
+      tags: rewritten.tags.join(", "),
+      image_brief: rewritten.image_brief,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return reply.code(message === "ai_not_configured" ? 503 : 422).send({ error: message, message });
+  }
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -437,6 +407,12 @@ export async function adminApproveSuggestion(req: FastifyRequest, reply: Fastify
   if (!sug) return reply.code(404).send({ error: "not_found" });
   if (sug.status === "approved") {
     return reply.code(409).send({ error: "already_approved", article_id: sug.article_id });
+  }
+  if (sug.ai_status !== "done") {
+    return reply.code(422).send({ error: "local_ai_rewrite_required" });
+  }
+  if (sug.image_status !== "received" && sug.image_status !== "attached") {
+    return reply.code(422).send({ error: "local_image_required" });
   }
 
   const title = (sug.ai_title ?? sug.title ?? "").trim();
@@ -542,7 +518,7 @@ export async function adminAiEnhanceSuggestion(req: FastifyRequest, reply: Fasti
       ai_title: result.title, ai_excerpt: result.excerpt, ai_content: result.content,
       ai_meta_title: result.meta_title, ai_meta_description: result.meta_description,
       ai_tags: result.tags.join(", "), image_brief: result.image_brief,
-      internal_links: JSON.stringify(result.internal_links), image_status: "waiting",
+      internal_links: JSON.stringify(result.internal_links), image_url: null, image_status: "waiting",
     });
     return reply.send({ ok: true, suggestion: updated });
   } catch (error) {
@@ -562,7 +538,7 @@ export async function adminBulkAiRewrite(req: FastifyRequest, reply: FastifyRepl
     await repoSetSuggestionAiStatus(id, "queued");
     try {
       const value = await rewriteSuggestionWithAi(sug);
-      await repoSetSuggestionAiStatus(id, "done", { ai_title: value.title, ai_excerpt: value.excerpt, ai_content: value.content, ai_meta_title: value.meta_title, ai_meta_description: value.meta_description, ai_tags: value.tags.join(", "), image_brief: value.image_brief, internal_links: JSON.stringify(value.internal_links), image_status: "waiting" });
+      await repoSetSuggestionAiStatus(id, "done", { ai_title: value.title, ai_excerpt: value.excerpt, ai_content: value.content, ai_meta_title: value.meta_title, ai_meta_description: value.meta_description, ai_tags: value.tags.join(", "), image_brief: value.image_brief, internal_links: JSON.stringify(value.internal_links), image_url: null, image_status: "waiting" });
       results.push({ id, ok: true });
     } catch (error) {
       await repoSetSuggestionAiStatus(id, "failed");

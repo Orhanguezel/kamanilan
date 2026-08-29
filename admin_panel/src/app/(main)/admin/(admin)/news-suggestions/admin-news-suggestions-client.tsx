@@ -130,7 +130,7 @@ export default function AdminNewsSuggestionsClient() {
           >
             <option value="">{t("filters.allSources")}</option>
             {sources
-              .filter((s) => s.source_type === "rss")
+              .filter((s) => s.source_type === "rss" && s.is_enabled === 1)
               .map((src) => (
                 <option key={src.id} value={src.id}>{src.name}</option>
               ))}
@@ -209,7 +209,8 @@ type CardProps = {
 
 function LiveFeedCard({ item, globalBusy, t, formatDate, onRemove }: CardProps) {
   // Quick approve state
-  const [category, setCategory] = React.useState("genel");
+  const [category, setCategory] = React.useState("yerel");
+  const [aiEnhanced, setAiEnhanced] = React.useState(false);
 
   // Edit panel state
   const [isEditing,    setIsEditing]    = React.useState(false);
@@ -242,6 +243,7 @@ function LiveFeedCard({ item, globalBusy, t, formatDate, onRemove }: CardProps) 
     setEditTags("");
     setEditMetaTitle("");
     setEditMetaDesc("");
+    setAiEnhanced(false);
     setIsEditing(true);
   }
 
@@ -273,30 +275,10 @@ function LiveFeedCard({ item, globalBusy, t, formatDate, onRemove }: CardProps) 
       if (r.tags)             setEditTags(r.tags);
       if (r.meta_title)       setEditMetaTitle(r.meta_title);
       if (r.meta_description) setEditMetaDesc(r.meta_description);
+      setAiEnhanced(true);
       toast.success("AI geliştirme tamamlandı.");
     } catch (err: any) {
       toast.error(err?.data?.message ?? "AI geliştirme başarısız.");
-    }
-  }
-
-  async function handleQuickApprove() {
-    if (!item.title) return;
-    try {
-      const r = await quickApprove({
-        source_url:    item.source_url,
-        title:         item.title,
-        excerpt:       item.excerpt,
-        content:       item.content || undefined,
-        image_url:     item.image_url,
-        author:        item.author,
-        source_name:   item.source_name,
-        category,
-        fetch_content: false,
-      }).unwrap();
-      toast.success(t("messages.approved", { articleId: r.article_id }));
-      onRemove(item.source_url);
-    } catch (err: any) {
-      toast.error(err?.data?.message ?? err?.data?.error ?? t("errors.generic"));
     }
   }
 
@@ -318,7 +300,7 @@ function LiveFeedCard({ item, globalBusy, t, formatDate, onRemove }: CardProps) 
         title,
         excerpt:           editExcerpt   || undefined,
         content:           editContent   || undefined,
-        image_url:         item.image_url,
+        image_url:         null,
         author:            item.author,
         source_name:       item.source_name,
         category,
@@ -326,6 +308,7 @@ function LiveFeedCard({ item, globalBusy, t, formatDate, onRemove }: CardProps) 
         meta_title:        editMetaTitle || undefined,
         meta_description:  editMetaDesc  || undefined,
         fetch_content:     false,
+        editorial_rewrite_confirmed: aiEnhanced,
       }).unwrap();
       toast.success(t("messages.approved", { articleId: r.article_id }));
       onRemove(item.source_url);
@@ -391,15 +374,6 @@ function LiveFeedCard({ item, globalBusy, t, formatDate, onRemove }: CardProps) 
                   <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>
                 ))}
               </select>
-
-              <button
-                type="button"
-                className="rounded-md border border-green-300 bg-green-50 px-2.5 py-1 text-xs text-green-700 disabled:opacity-60"
-                disabled={busy || !item.title}
-                onClick={handleQuickApprove}
-              >
-                {approveState.isLoading ? "Kaydediliyor…" : t("actions.approve")}
-              </button>
 
               <button
                 type="button"
@@ -529,6 +503,10 @@ function LiveFeedCard({ item, globalBusy, t, formatDate, onRemove }: CardProps) 
             </div>
           </div>
 
+          <p className="rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
+            Kaynak metin ve kaynak görsel doğrudan kaydedilmez. Önce AI ile telif güvenli biçimde yeniden yazın; kapak görselini yerel görsel kuyruğundan ekleyin.
+          </p>
+
           {/* Category + action buttons */}
           <div className="flex flex-wrap items-center gap-2 border-t pt-2">
             <select
@@ -544,10 +522,10 @@ function LiveFeedCard({ item, globalBusy, t, formatDate, onRemove }: CardProps) 
             <button
               type="button"
               className="rounded-md border border-green-300 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 disabled:opacity-60"
-              disabled={busy || !editTitle.trim()}
+              disabled={busy || !editTitle.trim() || !aiEnhanced}
               onClick={handleEditApprove}
             >
-              {approveState.isLoading ? "Kaydediliyor…" : "Onayla ve Kaydet"}
+              {approveState.isLoading ? "Kaydediliyor…" : "Telif güvenli taslak oluştur"}
             </button>
 
             <button

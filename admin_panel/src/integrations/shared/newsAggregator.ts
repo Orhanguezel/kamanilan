@@ -173,6 +173,7 @@ export interface QuickApprovePayload {
   meta_title?:       string | null;
   meta_description?: string | null;
   fetch_content?:    boolean;
+  editorial_rewrite_confirmed?: boolean;
 }
 
 export interface QuickApproveResult {

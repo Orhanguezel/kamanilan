@@ -59,18 +59,24 @@ CREATE TABLE IF NOT EXISTS `news_suggestions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
--- Varsayılan haber kaynakları
+-- Yerel yayın politikası dışında kalan veya bozuk kaynakları nodrop seed'de de tamamen kaldır.
+-- Kullanıcı kararı: ulusal gündem kaynağı, AKP propagandası ve reklam/tanıtım akışı yok.
+DELETE FROM `news_sources`
+WHERE `name` IN (
+  'Sabah Gündem',
+  'Hürriyet Gündem',
+  'AA - Son Dakika',
+  'Kırşehir Haber Türk - Gündem',
+  'Kırşehir Haber Türk - Asayiş',
+  'Son Dakika - Kaman'
+);
+
+-- Varsayılan allowlist: yalnız Kaman/Kırşehir odaklı, canlı doğrulanmış akışlar.
 INSERT IGNORE INTO `news_sources` (`name`, `url`, `source_type`, `is_enabled`, `fetch_interval_min`, `display_order`) VALUES
   ('Google News - Kaman',            'https://news.google.com/rss/search?q=Kaman+Kırşehir&hl=tr&gl=TR&ceid=TR:tr',   'rss', 1, 60,  1),
   ('Google News - Kırşehir',         'https://news.google.com/rss/search?q=Kırşehir&hl=tr&gl=TR&ceid=TR:tr',         'rss', 1, 60,  2),
-  ('Sabah Gündem',                   'https://www.sabah.com.tr/rss/gundem.xml',                                        'rss', 1, 30,  3),
-  ('Hürriyet Gündem',                'https://www.hurriyet.com.tr/rss/gundem',                                         'rss', 1, 30,  4),
-  ('AA - Son Dakika',                'https://www.aa.com.tr/tr/rss/default?cat=guncel',                                'rss', 1, 30,  5),
-  ('Kırşehir Haber Türk',            'https://www.kirsehirhaberturk.com/rss.xml',                                      'rss', 1, 30,  6),
-  ('Kırşehir Haber Türk - Gündem',   'https://www.kirsehirhaberturk.com/rss/gundem.xml',                               'rss', 1, 30,  7),
-  ('Kırşehir Haber Türk - Asayiş',   'https://www.kirsehirhaberturk.com/rss/asayis.xml',                               'rss', 1, 30,  8),
-  ('Son Dakika - Kaman',             'https://www.sondakika.com/kaman/rss/',                                           'rss', 1, 30,  9),
-  ('Kırşehir Haber 40',              'https://kirsehirhaber40.com/rss',                                                'rss', 1, 30, 10);
+  ('Kırşehir Haber Türk',            'https://www.kirsehirhaberturk.com/rss.xml',                                      'rss', 1, 30,  3),
+  ('Kırşehir Haber 40',              'https://kirsehirhaber40.com/rss',                                                'rss', 1, 30,  4);
 
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_at`)
 VALUES (UUID(), 'news_auto_publish', '*', 'false', NOW(3), NOW(3))

@@ -9,6 +9,7 @@ import {
   repoUpsertSuggestion,
 } from "./repository";
 import { fetchRssFeed, fetchOgData, fetchArticleContent } from "./fetcher";
+import { evaluateEditorialCandidate } from "./editorialPolicy";
 
 const FETCH_LIMIT_PER_SOURCE = 30;
 // İçerik eksik RSS item'ları için makale sayfasından çekilecek max item sayısı
@@ -61,6 +62,13 @@ export async function fetchSource(source: NewsSourceRow): Promise<{
       items = [og];
     }
 
+    const policyApproved = items.filter((item) => {
+      const decision = evaluateEditorialCandidate(item);
+      if (!decision.allowed) skipped += 1;
+      return decision.allowed;
+    });
+    items = policyApproved;
+
     for (const item of items) {
       if (!item.source_url) continue;
       const { inserted: ok } = await repoUpsertSuggestion({
@@ -72,7 +80,7 @@ export async function fetchSource(source: NewsSourceRow): Promise<{
         image_url:       item.image_url,
         source_name:     source.name,
         author:          item.author ?? null,
-        category:        "genel",
+        category:        "yerel",
         tags:            null,
         original_pub_at: item.original_pub_at,
       });

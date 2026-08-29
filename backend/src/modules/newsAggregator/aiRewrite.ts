@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { buildAiChain, callAi, extractJson } from "@/modules/_shared/aiChain";
 import type { NewsSuggestionRow } from "./schema";
+import { assertCopyrightSafeRewrite, evaluateEditorialCandidate } from "./editorialPolicy";
 
 const outputSchema = z.object({
   title: z.string().min(10).max(500),
@@ -20,14 +21,18 @@ export async function rewriteSuggestionWithAi(suggestion: NewsSuggestionRow): Pr
   const chain = await buildAiChain();
   if (!chain.length) throw new Error("ai_not_configured");
 
-  const system = `Kaman İlan için çalışan deneyimli bir Türkçe yerel haber editörüsün. Yalnız geçerli JSON döndür. Kaynaktaki cümleleri kopyalama; olguları değiştirmeden yapıyı ve ifadeyi özgünleştir. Kaman/Kırşehir bağlamını yalnız doğrulanabilir biçimde ekle. Kaynak adı ve bağlantısına atıf cümlesini gövdede koru.`;
-  const prompt = `Ham haber:\nBaşlık: ${suggestion.title ?? ""}\nÖzet: ${suggestion.excerpt ?? ""}\nİçerik: ${(suggestion.content ?? "").slice(0, 8000)}\nKaynak: ${suggestion.source_name ?? "Kaynak"}\nKaynak URL: ${suggestion.source_url}\nKategori: ${suggestion.category ?? "genel"}\n\nŞu JSON şemasını eksiksiz üret: {"title":"...","excerpt":"en fazla 300 karakter","content":"semantik HTML; sonunda kaynak atıflı paragraf","meta_title":"en fazla 60 karakter","meta_description":"en fazla 155 karakter","tags":["5-8 etiket"],"image_brief":"foto-gerçekçi yerel haber sahnesi; üzerinde yazı/logo yok; dosya adı için uygun sahne; 1200x675 ve 1080x1080 kırpıma uygun","internal_links":[{"label":"...","url":"/haberler veya /ilanlar ile başlayan dahili yol"},{"label":"...","url":"/..."}]}. En az iki gerçek site içi bağlantı öner.`;
+  const system = `Kaman İlan için çalışan deneyimli bir Türkçe yerel haber editörüsün. Yalnız geçerli JSON döndür. Kaynaktan yalnız doğrulanabilir olguları çıkar; kaynak metnin cümlelerini, özgün ifadelerini, sıralamasını ve paragraf yapısını kopyalama. Bilgi eksikse uydurma veya metni yapay biçimde uzatma. Haberi bağımsız bir anlatı ve başlıkla sıfırdan yaz. Kaman/Kırşehir bağlamını yalnız doğrulanabilir biçimde ekle. Kaynak adı ve bağlantısına atıf cümlesini gövdede koru. AKP, AK Parti veya Recep Tayyip Erdoğan odaklı içerik üretme. Reklam, sponsorlu tanıtım ve işletme övgüsü üretme.`;
+  const prompt = `Ham haber:\nBaşlık: ${suggestion.title ?? ""}\nÖzet: ${suggestion.excerpt ?? ""}\nİçerik: ${(suggestion.content ?? "").slice(0, 8000)}\nKaynak: ${suggestion.source_name ?? "Kaynak"}\nKaynak URL: ${suggestion.source_url}\nKategori: ${suggestion.category ?? "yerel"}\n\nŞu JSON şemasını eksiksiz üret: {"title":"...","excerpt":"en fazla 300 karakter","content":"semantik HTML; sonunda kaynak atıflı paragraf","meta_title":"en fazla 60 karakter","meta_description":"en fazla 155 karakter","tags":["5-8 etiket"],"image_brief":"kaynak görseli kopyalamayan, gerçek olay anı veya gerçek kişileri taklit etmeyen, temsili editoryal yerel sahne; üzerinde yazı, logo ve marka yok; 1200x675 ve 1080x1080 kırpıma uygun","internal_links":[{"label":"...","url":"/haberler veya /ilanlar ile başlayan dahili yol"},{"label":"...","url":"/..."}]}. En az iki gerçek site içi bağlantı öner.`;
 
   let lastError: unknown;
   for (const provider of chain) {
     try {
       const raw = await callAi(provider.apiBase, provider.apiKey, provider.model, provider.provider, system, prompt);
-      return parseNewsAiRewrite(extractJson(raw));
+      const rewritten = parseNewsAiRewrite(extractJson(raw));
+      assertCopyrightSafeRewrite(suggestion, rewritten);
+      const policy = evaluateEditorialCandidate(rewritten);
+      if (!policy.allowed) throw new Error(`ai_output_editorial_policy:${policy.reasons.join(",")}`);
+      return rewritten;
     } catch (error) {
       lastError = error;
     }

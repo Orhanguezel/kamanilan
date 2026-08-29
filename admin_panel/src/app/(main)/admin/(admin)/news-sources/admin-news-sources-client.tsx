@@ -147,11 +147,7 @@ export default function AdminNewsSourcesClient() {
     { name: "Google News - Kaman",          url: "https://news.google.com/rss/search?q=Kaman+K%C4%B1r%C5%9Fehir&hl=tr&gl=TR&ceid=TR:tr", source_type: "rss", is_enabled: 1, fetch_interval_min: 60, display_order: 1 },
     { name: "Google News - Kırşehir",        url: "https://news.google.com/rss/search?q=K%C4%B1r%C5%9Fehir&hl=tr&gl=TR&ceid=TR:tr",        source_type: "rss", is_enabled: 1, fetch_interval_min: 60, display_order: 2 },
     { name: "Kırşehir Haber Türk",           url: "https://www.kirsehirhaberturk.com/rss.xml",                                               source_type: "rss", is_enabled: 1, fetch_interval_min: 30, display_order: 3 },
-    { name: "Kırşehir Haber Türk - Gündem", url: "https://www.kirsehirhaberturk.com/rss/gundem.xml",                                        source_type: "rss", is_enabled: 1, fetch_interval_min: 30, display_order: 4 },
-    { name: "Kırşehir Haber Türk - Asayiş", url: "https://www.kirsehirhaberturk.com/rss/asayis.xml",                                        source_type: "rss", is_enabled: 1, fetch_interval_min: 30, display_order: 5 },
-    { name: "Son Dakika - Kaman",            url: "https://www.sondakika.com/kaman/rss/",                                                    source_type: "rss", is_enabled: 1, fetch_interval_min: 30, display_order: 6 },
-    { name: "Sabah Gündem",                  url: "https://www.sabah.com.tr/rss/gundem.xml",                                                  source_type: "rss", is_enabled: 1, fetch_interval_min: 30, display_order: 7 },
-    { name: "AA - Son Dakika",               url: "https://www.aa.com.tr/tr/rss/default?cat=guncel",                                         source_type: "rss", is_enabled: 1, fetch_interval_min: 30, display_order: 8 },
+    { name: "Kırşehir Haber 40",             url: "https://kirsehirhaber40.com/rss",                                                         source_type: "rss", is_enabled: 1, fetch_interval_min: 30, display_order: 4 },
   ];
 
   const [seeding, setSeeding] = React.useState(false);
