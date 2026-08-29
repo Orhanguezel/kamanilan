@@ -152,7 +152,7 @@ export default function AdsOperationsClient() {
         <div>
           <h1 className="flex items-center gap-2 font-semibold text-2xl">
             <CalendarDays className="size-6" />
-            Reklam operasyon merkezi
+            Reklam Operasyon Merkezi
           </h1>
           <p className="text-muted-foreground text-sm">Slot, fiyat, yayın takvimi, talep ve performans yönetimi.</p>
         </div>

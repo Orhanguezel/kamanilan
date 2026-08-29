@@ -81,7 +81,7 @@ export default function AdsPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="flex items-center gap-2 font-semibold text-2xl">
-            <Megaphone className="size-6" /> Reklamlar
+            <Megaphone className="size-6" /> Reklam Kampanyaları
           </h1>
           <p className="text-muted-foreground text-sm">Kaman İlan reklam kampanyaları ve yayın durumları.</p>
         </div>

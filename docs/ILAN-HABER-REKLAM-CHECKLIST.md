@@ -252,10 +252,10 @@
 
 ## WP-11 — Reklam menü ayrımı ve admin TR metinleri
 
-- [ ] `/admin/ads` → `Reklam Kampanyaları` adıyla ayrı sidebar öğesi
-- [ ] `/admin/ads/operations` → `Reklam Operasyon Merkezi` adıyla ayrı sidebar öğesi
-- [ ] `news_image_queue` ve yeni reklam menü anahtarlarının `tr` değerlerini tamamla
-- [ ] Kabul: admin typecheck/build + masaüstü/mobil sidebar smoke yeşil
+- [x] `/admin/ads` → `Reklam Kampanyaları` adıyla ayrı sidebar öğesi
+- [x] `/admin/ads/operations` → `Reklam Operasyon Merkezi` adıyla ayrı sidebar öğesi
+- [x] `news_image_queue` ve yeni reklam menü anahtarlarının `tr` değerlerini tamamla
+- [x] Kabul: admin typecheck/build + masaüstü/mobil sidebar smoke yeşil
 
 ---
 

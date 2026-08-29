@@ -28,6 +28,7 @@ export type AdminNavKey =
   | 'popups'
   | 'banners'
   | 'ads'
+  | 'ads_operations'
   | 'sliders'
   | 'menu_items'
   | 'footer_sections'

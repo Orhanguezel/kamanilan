@@ -279,6 +279,8 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_a
         "products":"İlanlar",
         "sellers":"Satıcılar",
         "flash_sale":"Flash Sale",
+        "ads":"Reklam Kampanyaları",
+        "ads_operations":"Reklam Operasyon Merkezi",
         "sliders":"Slider",
         "faqs":"S.S.S.",
         "contacts":"İletişim Mesajları",
@@ -286,6 +288,10 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`,`created_at`,`updated_a
         "campaign_settings":"Kampanya Ayarları",
         "mail":"E-Posta",
         "users":"Kullanıcılar",
+        "articles":"Haberler",
+        "news_suggestions":"Haber Önerileri",
+        "news_image_queue":"Haber Görsel Kuyruğu",
+        "news_sources":"Haber Kaynakları",
         "storage":"Dosya Yöneticisi",
         "db":"Veritabanı"
       }

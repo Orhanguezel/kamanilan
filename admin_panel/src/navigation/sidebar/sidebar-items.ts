@@ -164,7 +164,12 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
       {
         key: 'ads',
         url: '/admin/ads',
-        icon: Images,
+        icon: Megaphone,
+      },
+      {
+        key: 'ads_operations',
+        url: '/admin/ads/operations',
+        icon: Settings,
       },
       {
         key: 'coupons',
@@ -253,7 +258,8 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   flash_sale: 'Flash Sale',
   popups: 'Popups',
   banners: 'Banners',
-  ads: 'Reklamlar',
+  ads: 'Reklam Kampanyaları',
+  ads_operations: 'Reklam Operasyon Merkezi',
   sliders: 'Sliders',
   menu_items: 'Menu Items',
   footer_sections: 'Footer Sections',
@@ -291,6 +297,12 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   photo_queue: 'Foto Kuyruğu',
 };
 
+function translatedOrEmpty(t: TranslateFn | undefined, key: string): string {
+  if (!t) return '';
+  const translated = t(key as any);
+  return translated === key ? '' : translated;
+}
+
 export function buildAdminSidebarItems(
   copy?: Partial<AdminNavCopy> | null,
   t?: TranslateFn,
@@ -303,8 +315,7 @@ export function buildAdminSidebarItems(
     // 1. Try copy.labels[group.key]
     // 2. Try t(`admin.sidebar.groups.${group.key}`)
     // 3. Fallback to empty (or key)
-    const label =
-      labels[group.key] || (t ? t(`admin.sidebar.groups.${group.key}` as any) : '') || '';
+    const label = labels[group.key] || translatedOrEmpty(t, `admin.sidebar.groups.${group.key}`);
 
     return {
       id: group.id,
@@ -322,7 +333,7 @@ export function buildAdminSidebarItems(
         // 4. Fallback to key
         const title =
           items[item.key] ||
-          (t ? t(`admin.dashboard.items.${item.key}` as any) : '') ||
+          translatedOrEmpty(t, `admin.dashboard.items.${item.key}`) ||
           FALLBACK_TITLES[item.key] ||
           item.key;
 
