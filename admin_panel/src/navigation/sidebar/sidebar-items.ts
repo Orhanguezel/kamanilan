@@ -63,7 +63,16 @@ export type AdminSidebarRole = PanelRole;
 
 export type AdminNavItemKey = AdminNavKey;
 
-export type AdminNavGroupKey = 'general' | 'content' | 'integrations' | 'marketing' | 'communication' | 'system';
+export type AdminNavGroupKey =
+  | 'general'
+  | 'catalog'
+  | 'editorial'
+  | 'commerce'
+  | 'marketing'
+  | 'appearance'
+  | 'communication'
+  | 'integrations'
+  | 'system';
 
 export type AdminNavConfigItem = {
   key: AdminNavItemKey;
@@ -80,106 +89,80 @@ export type AdminNavConfigGroup = {
 };
 
 export const adminNavConfig: AdminNavConfigGroup[] = [
+  // 1) Genel — gunluk giris noktasi
   {
     id: 1,
     key: 'general',
     items: [{ key: 'dashboard', url: '/admin/dashboard', icon: LayoutDashboard }],
   },
+  // 2) Ilanlar & Katalog — asil pazar yeri envanteri
   {
     id: 2,
-    key: 'content',
+    key: 'catalog',
     items: [
-      { key: 'site_settings', url: '/admin/site-settings', icon: Settings },
-      {
-        key: 'theme_management',
-        url: '/admin/theme',
-        icon: Settings,
-      },
-      {
-        key: 'custom_pages',
-        url: '/admin/custompage',
-        icon: FileText,
-      },
-      {
-        key: 'menu_items',
-        url: '/admin/menuitem',
-        icon: FileText,
-      },
-      {
-        key: 'footer_sections',
-        url: '/admin/footer-sections',
-        icon: FileText,
-      },
+      { key: 'products', url: '/admin/ilanlar', icon: Package },
       { key: 'categories', url: '/admin/categories', icon: Folders },
       { key: 'subcategories', url: '/admin/subcategories', icon: FolderOpen },
-      { key: 'products', url: '/admin/ilanlar', icon: Package },
-      { key: 'imports',     url: '/admin/imports',     icon: FileSpreadsheet },
-      { key: 'xml_feeds',   url: '/admin/xml-feeds',   icon: Rss },
-      { key: 'photo_queue', url: '/admin/photo-queue', icon: ImageDown },
-      { key: 'subscriptions', url: '/admin/subscriptions', icon: CreditCard },
-      { key: 'wallets', url: '/admin/wallet', icon: CreditCard },
       { key: 'brands', url: '/admin/brands', icon: Package },
       { key: 'variants', url: '/admin/variants', icon: Settings },
       { key: 'units', url: '/admin/units', icon: Settings },
-      {
-        key: 'sellers',
-        url: '/admin/sellers',
-        icon: Users,
-      },
-      { key: 'sliders', url: '/admin/slider', icon: Images },
-      { key: 'faqs', url: '/admin/faqs', icon: HelpCircle },
-      { key: 'announcements', url: '/admin/announcements', icon: Megaphone },
+      { key: 'imports', url: '/admin/imports', icon: FileSpreadsheet },
+      { key: 'xml_feeds', url: '/admin/xml-feeds', icon: Rss },
+      { key: 'photo_queue', url: '/admin/photo-queue', icon: ImageDown },
+    ],
+  },
+  // 3) Haber & Duyuru — editoryal icerik ve AI haber hatti
+  {
+    id: 3,
+    key: 'editorial',
+    items: [
       { key: 'articles', url: '/admin/articles', icon: FileText },
+      { key: 'announcements', url: '/admin/announcements', icon: Megaphone },
       { key: 'news_suggestions', url: '/admin/news-suggestions', icon: FileText },
       { key: 'news_image_queue', url: '/admin/news-image-queue', icon: ImageDown },
       { key: 'news_sources', url: '/admin/news-sources', icon: FileText },
+      { key: 'faqs', url: '/admin/faqs', icon: HelpCircle },
     ],
   },
-  {
-    id: 3,
-    key: 'integrations',
-    items: [
-      { key: 'integration_settings', url: '/admin/integrations', icon: Settings },
-    ],
-  },
+  // 4) Magaza & Uyelik — saticilar ve abonelik/cuzdan
   {
     id: 4,
-    key: 'marketing',
+    key: 'commerce',
     items: [
-      {
-        key: 'flash_sale',
-        url: '/admin/flash-sale',
-        icon: Bell,
-      },
-      {
-        key: 'popups',
-        url: '/admin/popups',
-        icon: Bell,
-      },
-      {
-        key: 'banners',
-        url: '/admin/banners',
-        icon: Images,
-      },
-      {
-        key: 'ads',
-        url: '/admin/ads',
-        icon: Megaphone,
-      },
-      {
-        key: 'ads_operations',
-        url: '/admin/ads/operations',
-        icon: Settings,
-      },
-      {
-        key: 'coupons',
-        url: '/admin/kuponlar',
-        icon: Tag,
-      },
+      { key: 'sellers', url: '/admin/sellers', icon: Users },
+      { key: 'subscriptions', url: '/admin/subscriptions', icon: CreditCard },
+      { key: 'wallets', url: '/admin/wallet', icon: CreditCard },
     ],
   },
+  // 5) Pazarlama & Reklam — reklam motoru + kampanya araclari
   {
     id: 5,
+    key: 'marketing',
+    items: [
+      { key: 'ads', url: '/admin/ads', icon: Megaphone },
+      { key: 'ads_operations', url: '/admin/ads/operations', icon: Settings },
+      { key: 'banners', url: '/admin/banners', icon: Images },
+      { key: 'flash_sale', url: '/admin/flash-sale', icon: Bell },
+      { key: 'popups', url: '/admin/popups', icon: Bell },
+      { key: 'coupons', url: '/admin/kuponlar', icon: Tag },
+    ],
+  },
+  // 6) Site & Gorunum — vitrin yapisi ve tema
+  {
+    id: 6,
+    key: 'appearance',
+    items: [
+      { key: 'site_settings', url: '/admin/site-settings', icon: Settings },
+      { key: 'theme_management', url: '/admin/theme', icon: Settings },
+      { key: 'sliders', url: '/admin/slider', icon: Images },
+      { key: 'custom_pages', url: '/admin/custompage', icon: FileText },
+      { key: 'menu_items', url: '/admin/menuitem', icon: FileText },
+      { key: 'footer_sections', url: '/admin/footer-sections', icon: FileText },
+    ],
+  },
+  // 7) Iletisim & CRM — musteri temasi
+  {
+    id: 7,
     key: 'communication',
     items: [
       { key: 'contacts', url: '/admin/contacts', icon: Contact2 },
@@ -198,11 +181,20 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
       },
     ],
   },
+  // 8) Entegrasyonlar — 3. taraf API
   {
-    id: 6,
+    id: 8,
+    key: 'integrations',
+    items: [{ key: 'integration_settings', url: '/admin/integrations', icon: Settings }],
+  },
+  // 9) Sistem & Ayarlar — altyapi
+  {
+    id: 9,
     key: 'system',
     items: [
       { key: 'users', url: '/admin/users', icon: Users },
+      { key: 'storage', url: '/admin/storage', icon: HardDrive },
+      { key: 'db', url: '/admin/db', icon: Database },
       {
         key: 'payment_settings',
         url: '/admin/dashboard/coming-soon?module=payment_settings',
@@ -227,8 +219,6 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
         icon: Bell,
         comingSoon: true,
       },
-      { key: 'storage', url: '/admin/storage', icon: HardDrive },
-      { key: 'db', url: '/admin/db', icon: Database },
     ],
   },
 ];

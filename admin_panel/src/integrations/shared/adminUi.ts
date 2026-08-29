@@ -70,10 +70,13 @@ const emptyCommon: AdminUiCommonCopy = {
 const emptyNav: AdminNavCopy = {
   labels: {
     general: '',
-    content: '',
-    integrations: '',
+    catalog: '',
+    editorial: '',
+    commerce: '',
     marketing: '',
+    appearance: '',
     communication: '',
+    integrations: '',
     system: '',
   },
   items: {
@@ -143,10 +146,13 @@ export function normalizeAdminUiCopy(raw: unknown): AdminUiCopy {
 
   const labels: AdminNavCopy['labels'] = {
     general: uiText(labelsRaw.general),
-    content: uiText(labelsRaw.content),
-    integrations: uiText(labelsRaw.integrations),
+    catalog: uiText(labelsRaw.catalog),
+    editorial: uiText(labelsRaw.editorial),
+    commerce: uiText(labelsRaw.commerce),
     marketing: uiText(labelsRaw.marketing),
+    appearance: uiText(labelsRaw.appearance),
     communication: uiText(labelsRaw.communication),
+    integrations: uiText(labelsRaw.integrations),
     system: uiText(labelsRaw.system),
   };
 

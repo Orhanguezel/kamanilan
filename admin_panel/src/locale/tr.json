@@ -796,11 +796,14 @@
         "languagePlaceholder": "Dil seçin"
       },
       "groups": {
-        "general": "Genel / Yönetim",
-        "content": "İçerik Yönetimi",
-        "integrations": "3. Taraf API Entegrasyonları",
-        "marketing": "Pazarlama",
+        "general": "Genel",
+        "catalog": "İlanlar & Katalog",
+        "editorial": "Haber & Duyuru",
+        "commerce": "Mağaza & Üyelik",
+        "marketing": "Pazarlama & Reklam",
+        "appearance": "Site & Görünüm",
         "communication": "İletişim & CRM",
+        "integrations": "Entegrasyonlar",
         "system": "Sistem & Ayarlar"
       }
     },
@@ -4612,22 +4615,22 @@
         "selectColumn": "Kolon seçin",
         "none": "(Boş)",
         "fields": {
-          "title":             "Başlık",
-          "slug":              "Slug (URL)",
-          "city":              "Şehir",
-          "district":          "İlçe",
-          "neighborhood":      "Mahalle",
-          "address":           "Adres",
-          "description":       "Açıklama",
-          "excerpt":           "Kısa Özet",
-          "price":             "Fiyat",
-          "currency":          "Para Birimi",
-          "status":            "Durum",
-          "category_slug":     "Kategori (slug)",
+          "title": "Başlık",
+          "slug": "Slug (URL)",
+          "city": "Şehir",
+          "district": "İlçe",
+          "neighborhood": "Mahalle",
+          "address": "Adres",
+          "description": "Açıklama",
+          "excerpt": "Kısa Özet",
+          "price": "Fiyat",
+          "currency": "Para Birimi",
+          "status": "Durum",
+          "category_slug": "Kategori (slug)",
           "sub_category_slug": "Alt Kategori (slug)",
-          "brand_slug":        "Marka (slug)",
-          "external_id":       "Harici Kod",
-          "photos":            "Fotoğraflar"
+          "brand_slug": "Marka (slug)",
+          "external_id": "Harici Kod",
+          "photos": "Fotoğraflar"
         }
       },
       "items": {
@@ -4662,14 +4665,14 @@
         "deleted": "Import silindi."
       },
       "errors": {
-        "generic":         "Bir hata oluştu.",
-        "uploadFailed":    "Dosya yüklenemedi.",
+        "generic": "Bir hata oluştu.",
+        "uploadFailed": "Dosya yüklenemedi.",
         "mappingRequired": "Başlık, Şehir ve İlçe zorunlu.",
-        "mappingFailed":   "Kolon eşleme doğrulanamadı.",
-        "noValidItems":    "Aktarılacak geçerli satır yok.",
-        "commitFailed":    "İlanlar oluşturulamadı.",
-        "limitExceeded":   "Abonelik limiti aşıldı. {overage} ilan fazla.",
-        "jobNotFound":     "Import kaydı bulunamadı."
+        "mappingFailed": "Kolon eşleme doğrulanamadı.",
+        "noValidItems": "Aktarılacak geçerli satır yok.",
+        "commitFailed": "İlanlar oluşturulamadı.",
+        "limitExceeded": "Abonelik limiti aşıldı. {overage} ilan fazla.",
+        "jobNotFound": "Import kaydı bulunamadı."
       }
     },
     "xmlFeeds": {
@@ -4749,19 +4752,19 @@
         "lastFetched": "Son çekim"
       },
       "messages": {
-        "created":            "Feed oluşturuldu.",
-        "updated":            "Feed güncellendi.",
-        "deleted":            "Feed silindi.",
-        "runCompleted":       "+{added} ~{updated} ✗{failed}",
-        "categoryMapSaved":   "Kategori eşlemesi kaydedildi."
+        "created": "Feed oluşturuldu.",
+        "updated": "Feed güncellendi.",
+        "deleted": "Feed silindi.",
+        "runCompleted": "+{added} ~{updated} ✗{failed}",
+        "categoryMapSaved": "Kategori eşlemesi kaydedildi."
       },
       "errors": {
-        "generic":        "Bir hata oluştu.",
+        "generic": "Bir hata oluştu.",
         "requiredFields": "Ad ve URL zorunlu.",
-        "createFailed":   "Feed oluşturulamadı.",
-        "runFailed":      "Çekim başarısız.",
-        "feedInactive":   "Pasif feed çekilemez — önce aktif edin.",
-        "feedNotFound":   "Feed bulunamadı."
+        "createFailed": "Feed oluşturulamadı.",
+        "runFailed": "Çekim başarısız.",
+        "feedInactive": "Pasif feed çekilemez — önce aktif edin.",
+        "feedNotFound": "Feed bulunamadı."
       },
       "deleteConfirm": "\"{name}\" feed'ini silmek istediğinize emin misiniz? Tüm çekim geçmişi ve item kayıtları cascade silinecek."
     },
