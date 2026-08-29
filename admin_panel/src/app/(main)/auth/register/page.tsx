@@ -31,7 +31,7 @@ export default function Register() {
           <div className="space-y-6">
             <div className="mx-auto size-24 relative">
               <Image
-                src="/logo/logo-horizontal.svg"
+                src="/apple/apple-touch-icon.png"
                 alt="Kaman Ilan"
                 fill
                 className="object-contain"

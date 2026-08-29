@@ -289,7 +289,7 @@ export default function AdminBannersDetailClient(props: Props) {
                 }))
               }
               bucket="default"
-              folder="banners/images"
+              folder="showcase/images"
             />
           </div>
           <div className="space-y-2">
@@ -305,7 +305,7 @@ export default function AdminBannersDetailClient(props: Props) {
                 }))
               }
               bucket="default"
-              folder="banners/thumbs"
+              folder="showcase/thumbs"
               previewAspect="1x1"
             />
           </div>

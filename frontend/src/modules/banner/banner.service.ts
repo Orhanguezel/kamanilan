@@ -6,6 +6,16 @@ import { API_ENDPOINTS } from "@/endpoints/api-endpoints";
 
 const api = axios.create({ baseURL: getApiBaseUrl(), timeout: 8000 });
 
+/** Banner slotlari kritik degil: istek engellenirse (ERR_BLOCKED_BY_CLIENT)
+ *  tekrar denemek konsolu doldurmaktan baska is yapmaz, slot sessizce bos kalir. */
+const BANNER_QUERY_OPTIONS = {
+  retry: false,
+  refetchOnMount: false as const,
+  refetchOnReconnect: false as const,
+  staleTime: 1000 * 60 * 10,
+  gcTime: 1000 * 60 * 60,
+};
+
 /** GET /api/banners?ids=1,2 — ID numarasına göre belirli banner'ları getirir.
  *  (haber sidebar, listings sayfası vb. ID bazlı slotlar için) */
 export function useBannersByIdsQuery(ids?: string, limit = 10) {
@@ -19,8 +29,7 @@ export function useBannersByIdsQuery(ids?: string, limit = 10) {
       });
       return Array.isArray(res.data) ? res.data : [];
     },
-    staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 60,
+    ...BANNER_QUERY_OPTIONS,
   });
 }
 
@@ -36,7 +45,6 @@ export function useBannersByRowQuery(row: number) {
       });
       return Array.isArray(res.data) ? res.data : [];
     },
-    staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 60,
+    ...BANNER_QUERY_OPTIONS,
   });
 }

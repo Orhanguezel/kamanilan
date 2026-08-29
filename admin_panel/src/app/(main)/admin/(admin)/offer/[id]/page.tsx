@@ -7,7 +7,7 @@ import AdminOfferDetailClient from '../_components/admin-offer-detail-client';
 
 type Params = { id: string };
 
-export default async function Page({ params }: { params: Promise<Params> | Params }) {
+export default async function Page({ params }: { params: Promise<Params> }) {
   const p = (await params) as Params;
   return <AdminOfferDetailClient id={p.id} />;
 }

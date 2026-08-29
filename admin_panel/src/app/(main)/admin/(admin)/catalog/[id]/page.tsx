@@ -5,6 +5,6 @@
 
 import AdminCatalogDetailClient from '../_components/admin-catalog-detail-client';
 
-export default function Page({ params }: { params: { id: string } }) {
-  return <AdminCatalogDetailClient id={params.id} />;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  return <AdminCatalogDetailClient id={(await params).id} />;
 }

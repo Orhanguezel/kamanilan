@@ -14,8 +14,9 @@ export const API_ENDPOINTS = {
   THEME_ADMIN: "/admin/theme",
   THEME_ADMIN_RESET: "/admin/theme/reset",
 
-  // Banners (public)
-  BANNERS: "/banners",
+  // Banners (public) — reklam engelleyiciler "/banners" yolunu bloklar,
+  // bu yuzden notr alias kullanilir (backend her iki yolu da servis eder).
+  BANNERS: "/showcase",
 
   // Popups / Topbar (public)
   POPUPS: "/popups",

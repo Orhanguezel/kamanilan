@@ -20,6 +20,11 @@ import { ThemeSwitcher } from './_components/sidebar/theme-switcher';
 import AdminAuthGate from './_components/admin-auth-gate';
 import { AdminSettingsProvider } from './_components/admin-settings-provider';
 
+/* Panel tamamen auth arkasinda — statik prerender'in degeri yok. force-dynamic,
+ * webpack build'inde route-group sayfalarinin export asamasindaki
+ * "client reference manifest does not exist" Next.js bug'ini da devre disi birakir. */
+export const dynamic = 'force-dynamic';
+
 export default function Layout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <AdminAuthGate>

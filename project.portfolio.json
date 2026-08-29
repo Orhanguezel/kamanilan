@@ -1,14 +1,30 @@
 {
-  "title": "Kamanilan",
-  "slug": "kamanilan",
-  "summary": "Real estate listing and property management platform with customer web, admin panel, multi-language support and integrated payment.",
-  "category": "REAL ESTATE",
+  "schemaVersion": 2,
+  "project": {
+    "key": "kamanilan",
+    "title": "Kamanilan",
+    "summary": "Real estate listing and property management platform with customer web, admin panel, multi-language support and integrated payment.",
+    "description": "Real estate listing and property management platform with customer web, admin panel, multi-language support and integrated payment.",
+    "category": "web-ecommerce",
+    "status": "live",
+    "ownership": "own",
+    "owner": {
+      "id": "orhan-guzel",
+      "name": "Orhan Güzel",
+      "kind": "person"
+    },
+    "group": {
+      "id": "independent",
+      "name": "Bağımsız Projeler"
+    },
+    "productType": "owned-product"
+  },
   "services": [
     "Frontend Development",
     "Backend Development",
     "Admin Panel"
   ],
-  "techs": [
+  "technologies": [
     "Next.js",
     "React",
     "TypeScript",
@@ -36,24 +52,46 @@
     "Google OAuth",
     "Email notifications"
   ],
-  "designHighlights": [
-    "Property-focused UX",
-    "Multi-language routing",
-    "Headless architecture"
+  "timeline": {
+    "startedAt": "2025-01-01",
+    "targetEndAt": null,
+    "completedAt": null,
+    "progressPercent": null
+  },
+  "links": {
+    "website": "https://www.kamanilan.com",
+    "demo": null,
+    "repository": null
+  },
+  "media": [
+    {
+      "id": "legacy-1",
+      "role": "cover",
+      "src": "/assets/imgs/work/projects/kamanilan.png",
+      "alt": "Kamanilan Real Estate Platform",
+      "caption": "",
+      "displayPermission": true,
+      "rightsConfirmed": true
+    }
   ],
-  "featured": false,
-  "displayOrder": 20,
-  "clientName": "Own Project",
-  "status": "live",
-  "startDate": "2025-01-01",
-  "completeDate": null,
-  "completionTimeLabel": "Ongoing",
-  "repoUrl": null,
-  "websiteUrl": "https://www.kamanilan.com",
-  "demoUrl": null,
-  "featuredImage": "/assets/imgs/work/projects/kamanilan.png",
-  "featuredImageAlt": "Kamanilan Real Estate Platform",
-  "resumeTitle": "Kamanilan",
-  "resumeSubtitle": "Real Estate Listing Platform",
-  "excludeFromPortfolio": false
+  "channels": {
+    "website": {
+      "enabled": false,
+      "disabledReason": "CRM v2 geçişinde web yayın içeriği ve izinleri kullanıcı onayı bekliyor"
+    },
+    "bionluk": {
+      "enabled": false,
+      "disabledReason": "CRM v2 geçişinde Bionluk içeriği ve ticari uygunluk kullanıcı onayı bekliyor"
+    }
+  },
+  "publication": {
+    "privacy": "public",
+    "displayPermission": true
+  },
+  "management": {
+    "priority": "normal",
+    "controlPlane": "gzl-gelir-crm",
+    "lastChangedBy": "orhan"
+  },
+  "updatedAt": "2026-08-16T13:28:54.832Z"
 }

@@ -4,6 +4,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { BASE_URL } from '@/integrations/apiBase';
 import { FALLBACK_LOCALE } from './config';
 import { normLocaleTag } from './localeUtils';
 import { ensureLocationEventsPatched } from './locationEvents';
@@ -31,9 +32,9 @@ function readLocaleFromQuery(): string {
 }
 
 function getApiBase(): string {
-  const raw =
-    (process.env.NEXT_PUBLIC_API_BASE_URL || '').trim() || (process.env.API_BASE_URL || '').trim();
-  return raw.replace(/\/+$/, '');
+  // Tek kaynak: integrations/apiBase. Onceden burada ayri env sirasi + '/api'
+  // ekleme mantigi vardi; RTK ile farkli taban uretip yanlis URL'e istek atiyordu.
+  return BASE_URL;
 }
 
 async function fetchJson<T>(url: string): Promise<T | null> {

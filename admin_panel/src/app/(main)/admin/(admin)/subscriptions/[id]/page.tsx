@@ -2,7 +2,7 @@ import SubscriptionPlanDetailClient from '../_components/subscription-plan-detai
 
 type Params = { id: string };
 
-export default async function Page({ params }: { params: Promise<Params> | Params }) {
+export default async function Page({ params }: { params: Promise<Params> }) {
   const p = (await params) as Params;
   return <SubscriptionPlanDetailClient id={p.id} />;
 }

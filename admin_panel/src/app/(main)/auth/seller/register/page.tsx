@@ -24,7 +24,7 @@ export default function SellerRegisterPage() {
         <div className="flex h-full flex-col items-center justify-center p-12 text-center">
           <div className="space-y-6">
             <div className="relative mx-auto size-24">
-              <Image src="/logo/logo-horizontal.svg" alt="Kaman Ilan" fill className="object-contain" />
+              <Image src="/apple/apple-touch-icon.png" alt="Kaman Ilan" fill className="object-contain" />
             </div>
             <div className="space-y-2">
               <h1 className="font-light text-5xl text-primary-foreground">Satici Kaydi</h1>

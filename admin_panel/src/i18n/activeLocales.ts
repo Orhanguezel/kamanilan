@@ -8,22 +8,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FALLBACK_LOCALE } from './config';
 import { normLocaleTag } from './localeUtils';
+import { BASE_URL } from '@/integrations/apiBase';
 import { computeActiveLocales, normalizeAppLocalesMeta, type AppLocaleMeta } from './app-locales-meta';
 
 function getApiBase(): string {
-  const raw =
-    (process.env.NEXT_PUBLIC_API_BASE_URL || '').trim() ||
-    (process.env.NEXT_PUBLIC_API_URL || '').trim() ||
-    (process.env.API_BASE_URL || '').trim();
-
-  const base = raw.replace(/\/+$/, '');
-
-  // ✅ Senin projede RTK çağrıları /api/... gidiyor.
-  // Env yanlışlıkla https://www.guezelwebdesign.de verildiyse burada /api ekleyerek tolere ediyoruz.
-  // Env zaten .../api ise aynen kalır.
-  if (base && !/\/api$/i.test(base)) return `${base}/api`;
-
-  return base;
+  // Tek kaynak: integrations/apiBase. Onceden burada ayri env sirasi + '/api'
+  // ekleme mantigi vardi; RTK ile farkli taban uretip yanlis URL'e istek atiyordu.
+  return BASE_URL;
 }
 
 async function fetchJson<T>(url: string): Promise<T | null> {

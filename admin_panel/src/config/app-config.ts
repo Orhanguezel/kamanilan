@@ -43,7 +43,7 @@ export const DEFAULT_BRANDING: AdminBrandingConfig = {
     og_title: 'Kaman Ilan Admin Panel',
     og_description:
       'Kaman Ilan yonetim paneli ile ilan ve icerik yonetimini merkezi olarak yapin.',
-    og_image: '/logo/og-image.png',
+    og_image: '/logo/og.png',
     twitter_card: 'summary_large_image',
   },
 };

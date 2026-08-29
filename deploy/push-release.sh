@@ -3,9 +3,13 @@
 set -euo pipefail
 
 ARCHIVE_PATH="${1:?archive path required}"
-DEPLOY_HOST="${DEPLOY_HOST:-72.61.93.212}"
+# kamanilan.com 2026-08'den beri vps-guezel sunucusunda (srv1745322).
+# Eski 72.61.93.212 sunusuna SSH erisimi kapali — oraya push etme.
+# PM2 daemon'i "orhan" kullanicisinda kosuyor; root ile push edilirse
+# ikinci bir pm2 daemon'inda kopya surec olusur (port cakismasi).
+DEPLOY_HOST="${DEPLOY_HOST:-72.61.23.36}"
 DEPLOY_USER="${DEPLOY_USER:-orhan}"
-DEPLOY_BASE="${DEPLOY_BASE:-/var/www/kamanilan}"
+DEPLOY_BASE="${DEPLOY_BASE:-/var/www/vps-guezel/kamanilan}"
 RELEASE_NAME="${RELEASE_NAME:-$(basename "$ARCHIVE_PATH" .tar.gz)}"
 
 scp "$ARCHIVE_PATH" "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_BASE}/tmp/${RELEASE_NAME}.tar.gz"

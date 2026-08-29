@@ -3,7 +3,14 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-RELEASE_NAME="${1:-$(git -C "$ROOT_DIR" rev-parse --short HEAD)}"
+# Syncthing ile senkronlanan makinede .git bulunmaz (.stignore geregi);
+# orada release adi zaman damgasindan uretilir.
+if git -C "$ROOT_DIR" rev-parse --short HEAD >/dev/null 2>&1; then
+  DEFAULT_RELEASE_NAME="$(git -C "$ROOT_DIR" rev-parse --short HEAD)"
+else
+  DEFAULT_RELEASE_NAME="sync-$(date +%Y%m%d-%H%M%S)"
+fi
+RELEASE_NAME="${1:-$DEFAULT_RELEASE_NAME}"
 BUILD_ROOT="$ROOT_DIR/.release"
 RELEASE_DIR="$BUILD_ROOT/$RELEASE_NAME"
 ARCHIVE_PATH="$BUILD_ROOT/${RELEASE_NAME}.tar.gz"
@@ -92,7 +99,7 @@ fi
 
 # Deploy scripts and metadata
 cp -R "$ROOT_DIR/deploy" "$RELEASE_DIR/deploy"
-git -C "$ROOT_DIR" rev-parse HEAD > "$RELEASE_DIR/REVISION"
+git -C "$ROOT_DIR" rev-parse HEAD > "$RELEASE_DIR/REVISION" 2>/dev/null || echo "$RELEASE_NAME" > "$RELEASE_DIR/REVISION"
 
 mkdir -p "$BUILD_ROOT"
 tar -C "$BUILD_ROOT" -czf "$ARCHIVE_PATH" "$RELEASE_NAME"

@@ -8,7 +8,7 @@ import AdminAnnouncementsDetailClient from "../admin-announcements-detail-client
 
 type Params = { id: string };
 
-export default async function Page({ params }: { params: Promise<Params> | Params }) {
+export default async function Page({ params }: { params: Promise<Params> }) {
   const p = (await params) as Params;
   return <AdminAnnouncementsDetailClient id={p.id} />;
 }

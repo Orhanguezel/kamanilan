@@ -1,0 +1,72 @@
+// kamanilan Syncthing ignore -- YALNIZ KOD senkronlanir.
+// senkron-sec tarafindan uretildi. .stignore Syncthing ile TASINMAZ;
+// iki makinede de ayni olmak zorunda (senkron-sec bunu kendisi yapar).
+
+// Ortam ornekleri senkronlanir (secret degil); gercek secret'lar asagida haric.
+!.env.example
+!**/.env.example
+!**/credentials.env.example
+
+// SECRET -- ASLA senkronlanmaz
+.env
+.env.*
+**/.env
+**/.env.*
+**/.env.local
+**/.env.production.local
+**/.env.local.yedek-*
+.secrets
+**/.secrets
+client_secret*.json
+**/client_secret*.json
+*credentials*.json
+**/service-account*.json
+**/*.pem
+**/*.key
+**/*.p12
+**/*credential*.env
+project.portfolio.private.json
+**/project.portfolio.private.json
+**/id_rsa*
+**/id_ed25519*
+
+// Git ve bagimliliklar (her makine kendi kopyasi)
+(?d).git
+(?d)**/node_modules
+(?d)**/vendor
+(?d)**/.venv
+(?d)**/venv
+(?d)**/__pycache__
+(?d)**/*.pyc
+(?d)**/.next
+(?d)**/.nuxt
+(?d)**/.turbo
+(?d)**/dist
+(?d)**/build
+(?d)**/out
+(?d)**/coverage
+(?d)**/.cache
+(?d)**/*.tsbuildinfo
+(?d).playwright-cli
+(?d).agents
+(?d).codex
+
+// Runtime / log / pid -- makineye ozel
+(?d)logs
+(?d)**/*.log
+(?d)*.pid
+**/*.sqlite
+**/*.sqlite-shm
+**/*.sqlite-wal
+
+// Ham veri / musteri materyali -- makine disina cikmaz
+**/*.xlsx
+**/*.xls
+**/*.docx
+// Bu repoda tespit edilen hassas/agir yollar:
+(?d)backend/uploads
+(?d).release
+
+
+// Sistem
+.DS_Store
