@@ -13,6 +13,7 @@ import { Sparkles } from "lucide-react";
 
 import { useAdminT } from "@/app/(main)/admin/_components/common/useAdminT";
 import RichContentEditor from "@/app/(main)/admin/_components/common/RichContentEditor";
+import ArticleSeoPanel from "./ArticleSeoPanel";
 import { Button } from "@/components/ui/button";
 import type { ArticleCategory, ArticleDto, AiEnhanceResult } from "@/integrations/shared";
 import { resolveMediaUrl } from "@/lib/media-url";
@@ -419,6 +420,18 @@ export const ArticlesForm: React.FC<ArticlesFormProps> = ({
 
             {/* Sidebar */}
             <div className="space-y-4 lg:col-span-4">
+
+              {/* Canlı SEO / GEO kalite paneli — form değerlerinden anlık hesaplanır */}
+              <ArticleSeoPanel
+                input={{
+                  title: values.title,
+                  excerpt: values.excerpt,
+                  content: values.content,
+                  meta_title: values.meta_title,
+                  meta_description: values.meta_description,
+                  image_url: values.cover_image_url,
+                }}
+              />
 
               {/* AI Enhance — only in edit mode when handler provided */}
               {onAiEnhance && mode === "edit" ? (
